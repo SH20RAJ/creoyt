@@ -1,6 +1,3 @@
-Here's a step-by-step plan to create a website for **CreoYT**:
-
----
 
 ### **Phase 1: Planning and Research**
 1. **Define Goals and Features:**
@@ -109,6 +106,3 @@ Here's a step-by-step plan to create a website for **CreoYT**:
 3. **Bug Fixes:**
    - Ensure the platform remains stable and secure.
 
----
-
-Would you like a detailed design draft for any specific section, like the dashboard or homepage?
