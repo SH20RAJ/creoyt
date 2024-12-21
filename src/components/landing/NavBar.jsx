@@ -42,9 +42,9 @@ const NavBar = () => {
               width={50}
               height={50}
               className="h-8 w-8 object-contain"
-              src="/_next/image?url=%2Flogo.png&w=128&q=75"
+              src="/logo.svg"
             />
-            <span className="font-semibold text-xl">CreoYT</span>
+            <span className="font-semibold text-xl">Creo<span className=" text-fuchsia-500">YT</span></span>
           </Link>
 
           {/* Navigation Links */}
@@ -77,13 +77,13 @@ const NavBar = () => {
               Community
             </Link>
             <Link
-              href="/login"
+              href="/join"
               className="text-sm font-medium px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
             >
               Log in
             </Link>
             <Link
-              href="/signup"
+              href="/join"
               className="text-sm font-medium px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-600 rounded-md"
             >
               Get Started
