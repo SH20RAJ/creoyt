@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 // Handler hook for when Outside click dropdown close
@@ -44,7 +45,7 @@ const Video = () => {
               <div
                 className={`absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-primary bg-opacity-90`}
               >
-                <a
+                <Link
                   href="/#"
                   onClick={() => setvideoOpen(true)}
                   className="absolute z-20 flex h-20 w-20 items-center justify-center rounded-full bg-white text-primary dark:bg-dark-2 dark:text-white md:h-[100px] md:w-[100px]"
@@ -58,7 +59,7 @@ const Video = () => {
                   >
                     <path d="M22.5 12.634C23.1667 13.0189 23.1667 13.9811 22.5 14.366L2.25 26.0574C1.58333 26.4423 0.750001 25.9611 0.750001 25.1913L0.750002 1.80866C0.750002 1.03886 1.58334 0.557731 2.25 0.942631L22.5 12.634Z" />
                   </svg>
-                </a>
+                </Link>
               </div>
 
               <div>
