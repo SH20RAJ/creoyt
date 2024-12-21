@@ -3,15 +3,15 @@
 import * as React from "react"
 import {
   BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
+  LineChart,
+  Video,
   Settings2,
-  SquareTerminal,
+  Layout,
+  Users,
+  TrendingUp,
+  MessageSquare,
+  HelpCircle,
+  Send,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -30,92 +30,88 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "CreoYT User",
+    email: "creator@creoyt.com",
+    avatar: "/avatars/default.jpg",
   },
   navMain: [
     {
-      title: "Playground",
+      title: "Dashboard",
       url: "#",
-      icon: SquareTerminal,
+      icon: Layout,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Overview",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Analytics",
           url: "#",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Reports",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Content",
       url: "#",
-      icon: BookOpen,
+      icon: Video,
       items: [
         {
-          title: "Introduction",
+          title: "Videos",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Thumbnails",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Drafts",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "Analytics",
       url: "#",
-      icon: Settings2,
+      icon: LineChart,
       items: [
         {
-          title: "General",
+          title: "Performance",
           url: "#",
         },
         {
-          title: "Team",
+          title: "Audience",
           url: "#",
         },
         {
-          title: "Billing",
+          title: "Engagement",
           url: "#",
         },
         {
-          title: "Limits",
+          title: "Growth",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Growth",
+      url: "#",
+      icon: TrendingUp,
+      items: [
+        {
+          title: "AI Assistant",
+          url: "#",
+        },
+        {
+          title: "SEO Tools",
+          url: "#",
+        },
+        {
+          title: "Optimization",
           url: "#",
         },
       ],
@@ -125,7 +121,7 @@ const data = {
     {
       title: "Support",
       url: "#",
-      icon: LifeBuoy,
+      icon: HelpCircle,
     },
     {
       title: "Feedback",
@@ -135,19 +131,19 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Channel Settings",
       url: "#",
-      icon: Frame,
+      icon: Settings2,
     },
     {
-      name: "Sales & Marketing",
+      name: "Community",
       url: "#",
-      icon: PieChart,
+      icon: Users,
     },
     {
-      name: "Travel",
+      name: "Comments",
       url: "#",
-      icon: Map,
+      icon: MessageSquare,
     },
   ],
 }
@@ -162,13 +158,12 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div
-                  className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-500 text-white">
+                  <Video className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-semibold">CreoYT</span>
+                  <span className="truncate text-xs">Content Creator</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -186,3 +181,4 @@ export function AppSidebar({
     </Sidebar>)
   );
 }
+
