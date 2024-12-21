@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   BookOpen,
   LineChart,
@@ -12,12 +12,12 @@ import {
   MessageSquare,
   HelpCircle,
   Send,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -26,7 +26,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const data = {
   user: {
@@ -39,7 +39,6 @@ const data = {
       title: "Dashboard",
       url: "#",
       icon: Layout,
-      isActive: true,
       items: [
         {
           title: "Overview",
@@ -59,7 +58,12 @@ const data = {
       title: "Content",
       url: "#",
       icon: Video,
+      isActive: true,
       items: [
+        {
+          title: "Research",
+          url: "#",
+        },
         {
           title: "Videos",
           url: "#",
@@ -146,14 +150,12 @@ const data = {
       icon: MessageSquare,
     },
   ],
-}
+};
 
-export function AppSidebar({
-  ...props
-}) {
+export function AppSidebar({ ...props }) {
   return (
-    (<Sidebar variant="inset" {...props}>
-      <SidebarHeader>
+    <Sidebar variant="inset" {...props} className=" bg-transparent ">
+      <SidebarHeader className="bg-transparent">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -178,7 +180,6 @@ export function AppSidebar({
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
-    </Sidebar>)
+    </Sidebar>
   );
 }
-

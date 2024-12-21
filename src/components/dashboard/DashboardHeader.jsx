@@ -21,6 +21,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 
 
@@ -42,9 +43,9 @@ export default function DashboardHeader() {
                 className="h-8 w-8 object-contain"
                 src="/logo.svg"
               />
-              <span className="dark:text-white">
+              <Link href={"/"} className="dark:text-white">
                 Creo<span className="text-fuchsia-400">YT</span>
-              </span>
+              </Link>
             </h1>
           </div>
         </div>

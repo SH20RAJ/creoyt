@@ -10,9 +10,11 @@ import {
 export default function Layout({ children }) {
   return (
     <SidebarProvider className="relative">
-      <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
+      <div className="absolute bottom-0 left-[-20%] right-0 top-[-10%] size-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]" />
+      <div className="absolute bottom-0 right-[-20%] top-[-10%] size-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]" />
+      
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className=" ">
         <DashboardHeader />
         {children}
       </SidebarInset>
