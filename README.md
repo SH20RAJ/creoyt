@@ -63,8 +63,8 @@ Choose a plan that fits your needs:
 ## 🛠️ **Tech Stack**  
 **CreoYT** is built using:  
 - **Frontend**: React.js/Next.js ⚛️  
-- **Backend**: Node.js + Express.js 🌐  
-- **Database**: MongoDB/PostgreSQL 🗄️  
+- **Backend**: Next.js 🌐  
+- **Database**: MongoDB/MySQL 🗄️  
 - **AI Models**: OpenAI GPT for content generation, TensorFlow.js for analysis 🤖  
 
 ---
