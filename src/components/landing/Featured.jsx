@@ -107,10 +107,11 @@ export const BouncyCardsFeatures = () => {
           </div>
         </BounceCard>
         <BounceCard className="col-span-12 md:col-span-8 bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg">
-          <CardTitle>AI Title Generator</CardTitle>
+          <CardTitle>AI Content Researcher</CardTitle>
           <div className="absolute bottom-0 left-4 right-4 top-32 translate-y-8 rounded-t-2xl bg-gradient-to-br from-yellow-500 to-orange-600 p-4 shadow-md transition-transform duration-[250ms] group-hover:translate-y-4 group-hover:rotate-[2deg]">
             <span className="block text-center font-semibold text-white">
-              Generate SEO-optimized titles that boost CTR
+              Generates research content titles, descriptions, tags, playlist
+              names, and ideas for the next topic.
             </span>
           </div>
         </BounceCard>

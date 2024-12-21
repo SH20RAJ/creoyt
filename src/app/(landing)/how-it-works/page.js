@@ -138,27 +138,27 @@ export default function HowItWorksPage() {
 
 const features = [
   {
-    title: "AI Title Generator",
-    description: "Generate high-converting titles using machine learning algorithms"
+    title: "AI Content Generator",
+    description: "Get data-driven suggestions for titles, description, tags, topics that rank higher in search"
   },
   {
-    title: "Thumbnail Creator",
-    description: "Create eye-catching thumbnails with A/B testing capabilities"
-  },
-  {
-    title: "Content Analysis",
-    description: "Get deep insights into your content performance and audience"
+    title: "Trend Discovery",
+    description: "Find trending topics and playlist ideas in your niche"
   },
   {
     title: "SEO Optimization",
-    description: "Optimize your content for better search visibility"
+    description: "Generate SEO-optimized content based on competitor analysis"
   },
   {
-    title: "Competitor Analysis",
-    description: "Track and analyze your competitors' strategies"
+    title: "Smart Recommendations",
+    description: "Receive personalized content ideas for future videos"
   },
   {
-    title: "Growth Insights",
-    description: "Get personalized recommendations for channel growth"
+    title: "Topic Research",
+    description: "Discover high-potential topics your audience wants"
+  },
+  {
+    title: "Performance Insights",
+    description: "Track content performance and optimize for better results"
   }
 ];
