@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const HeroSection = () => {
@@ -15,14 +16,16 @@ const HeroSection = () => {
         <p className="text-base md:text-lg text-slate-700 my-4 md:my-6">
           Join CreoYT to create engaging YouTube content, analyze performance, and grow your channel with AI-powered insights and tools.
         </p>
+        <Link href="/join">
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="bg-indigo-500 text-white font-medium py-2 px-6 rounded-lg transition-colors hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           aria-label="Get Started"
-        >
+          >
           Get Started
         </motion.button>
+          </Link>
       </div>
       <ShuffleGrid />
     </section>

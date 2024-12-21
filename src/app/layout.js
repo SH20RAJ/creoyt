@@ -14,20 +14,70 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "CreoYT",
-  description: "CreoYT - Best Social Media Part",
+  title: "CreoYT - Best Social Media Platform",
+  description:
+    "CreoYT - Your go-to platform for social media content creation, sharing, and engagement. Join our community today!",
+  keywords:
+    "social media, content creation, video sharing, community, creators",
+  openGraph: {
+    title: "CreoYT - Best Social Media Platform",
+    description:
+      "CreoYT - Your go-to platform for social media content creation, sharing, and engagement",
+    type: "website",
+    locale: "en_US",
+    url: "https://creoyt.com",
+    siteName: "CreoYT",
+    images: [
+      {
+        url: "https://creoyt.com/creoyt-social.png",
+        width: 1200,
+        height: 630,
+        alt: "CreoYT - Best Social Media Platform",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CreoYT - Best Social Media Platform",
+    description:
+      "CreoYT - Your go-to platform for social media content creation",
+    creator: "@creoyt",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }) {
+  let html = `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G941ZJM59F');`;
   return (
     <SessionProvider>
-    <html lang="en" className="dark" suppressHydrationWarning={true}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+      <html lang="en" className="dark" suppressHydrationWarning={true}>
+        <head>
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1828915420581549"
+            crossOrigin="anonymous"
+          ></script>
+
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-G941ZJM59F"
+          ></script>
+          <script dangerouslySetInnerHTML={{ __html: html }}></script>
+        </head>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </html>
     </SessionProvider>
   );
 }

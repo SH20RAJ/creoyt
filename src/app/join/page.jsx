@@ -1,10 +1,18 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 
 export default function SignUp() {
+  const { data: session } = useSession();
+
+  if (session?.user) {
+    // redirect to dashboard if user is already logged in
+    redirect("/dashboard");
+    return null;
+  }
   return (
     <div className="flex h-screen flex-col md:flex-row dark:bg-gray-900">
       {/* Image Section */}

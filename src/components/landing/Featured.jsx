@@ -2,6 +2,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
 
 const ShuffleGrid = () => {
   return (
@@ -18,10 +19,13 @@ const ShuffleGrid = () => {
 
 const HeroSection = () => {
   return (
-    <section className="relative w-full px-8 py-24 md:py-32 overflow-hidden" aria-label="Hero section">
+    <section
+      className="relative w-full px-8 py-24 md:py-32 overflow-hidden"
+      aria-label="Hero section"
+    >
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-12">
         <div className="relative z-10">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="inline-block px-4 py-2 rounded-full text-sm md:text-base text-indigo-600 bg-indigo-50 border border-indigo-200 font-medium"
@@ -29,7 +33,7 @@ const HeroSection = () => {
           >
             Create with CreoYT
           </motion.span>
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -37,25 +41,28 @@ const HeroSection = () => {
           >
             Your Ultimate YouTube Content Assistant
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-base md:text-lg text-muted-foreground mb-8 max-w-lg"
           >
-            Join CreoYT to create engaging YouTube content, analyze performance, and grow your channel with AI-powered insights and tools.
-          </motion.p>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-indigo-500 text-white font-medium py-3 px-8 rounded-lg transition-all hover:bg-indigo-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:ring-offset-background"
-            aria-label="Get Started"
-          >
-            Get Started
-          </motion.button>
+            Join CreoYT to create engaging YouTube content, analyze performance,
+            and grow your channel with AI-powered insights and tools.
+          </motion.p>{" "}
+          <Link href="/join">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-indigo-500 text-white font-medium py-3 px-8 rounded-lg transition-all hover:bg-indigo-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:ring-offset-background"
+              aria-label="Get Started"
+            >
+              Get Started
+            </motion.button>{" "}
+          </Link>
         </div>
         <div className="relative z-10">
           <ShuffleGrid />
@@ -76,16 +83,19 @@ export const BouncyCardsFeatures = () => {
     <section className="mx-auto max-w-7xl px-4 py-12 text-foreground">
       <div className="mb-8 flex flex-col items-center justify-between  gap-4 md:flex-row md:items-end md:px-4">
         <h2 className="max-w-lg text-4xl font-bold md:text-5xl">
-          Grow 
-          <span className="text-muted-foreground"> </span> with <span className="text-indigo-500"> AI-powered</span> tools
+          Grow
+          <span className="text-muted-foreground"> </span> with{" "}
+          <span className="text-indigo-500"> AI-powered</span> tools
         </h2>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="whitespace-nowrap rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 px-4 py-2 font-medium text-white shadow-xl transition-transform hover:from-purple-600 hover:to-indigo-700"
-        >
-          Get Started
-        </motion.button>
+        <Link href={"/features"}>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="whitespace-nowrap rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 px-4 py-2 font-medium text-white shadow-xl transition-transform hover:from-purple-600 hover:to-indigo-700"
+          >
+            Get Started
+          </motion.button>
+        </Link>
       </div>
       <div className="mb-4 grid grid-cols-12 gap-4">
         <BounceCard className="col-span-12 md:col-span-4 bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg">
@@ -126,7 +136,6 @@ export const BouncyCardsFeatures = () => {
     </section>
   );
 };
-
 
 const BounceCard = ({ className, children }) => {
   return (
