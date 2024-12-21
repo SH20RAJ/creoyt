@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function SignUp() {
   return (
@@ -45,7 +46,7 @@ export default function SignUp() {
           <div className="mt-8">
             <Button
               className="w-full flex items-center justify-center"
-              onClick={() => console.log("Google Sign In")}
+              onClick={() => signIn("google")}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
