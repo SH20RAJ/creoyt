@@ -1,3 +1,5 @@
+"use client";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 
@@ -26,10 +28,12 @@ const MenuOptions = [
     id: 5,
     name: "Contact",
     path: "/contact",
-  }
+  },
 ];
 
 const NavBar = () => {
+  const { data: session } = useSession();
+
   return (
     <header className="z-[100] sticky top-0 w-full border-b backdrop-blur-sm bg-white/80 dark:bg-black/80 border-neutral-200 dark:border-white/[0.1]">
       <div className="hidden lg:block">
@@ -44,7 +48,9 @@ const NavBar = () => {
               className="h-8 w-8 object-contain"
               src="/logo.svg"
             />
-            <span className="font-semibold text-xl">Creo<span className=" text-fuchsia-500">YT</span></span>
+            <span className="font-semibold text-xl">
+              Creo<span className=" text-fuchsia-500">YT</span>
+            </span>
           </Link>
 
           {/* Navigation Links */}
@@ -56,7 +62,7 @@ const NavBar = () => {
               ["How It Works", "/how-it-works"],
               ["About", "/about"],
               ["Resources", "/resources"],
-              ["Contact", "/contact"]
+              ["Contact", "/contact"],
             ].map(([label, path]) => (
               <Link
                 key={path}
@@ -76,18 +82,29 @@ const NavBar = () => {
             >
               Community
             </Link>
-            <Link
-              href="/join"
-              className="text-sm font-medium px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/join"
-              className="text-sm font-medium px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-600 rounded-md"
-            >
-              Get Started
-            </Link>
+            {session?.user ? (
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-600 rounded-md"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/join"
+                  className="text-sm font-medium px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/join"
+                  className="text-sm font-medium px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-600 rounded-md"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -106,7 +123,7 @@ const NavBar = () => {
             />
             <span className="font-semibold text-lg">CreoYT</span>
           </Link>
-          <button 
+          <button
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
             aria-label="Toggle Menu"
           >
