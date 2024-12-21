@@ -1,13 +1,11 @@
-import { EnterTopic } from "@/components/dashboard/EnterTopic";
-import { LineChart, Type, Image, Bot } from "lucide-react";
+import { Bot, LineChart, Type } from 'lucide-react'
+import Image from 'next/image'
+import React from 'react'
 
-export default function page() {
+export default function ToolCards() {
   return (
-    <div className="relative">
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <EnterTopic />
-        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
           {/* Channel Analysis Card */}
           <div className="group relative overflow-hidden rounded-xl bg-card p-6 hover:bg-accent/50 hover:scale-105 hover:shadow-xl transition-all duration-300 cursor-pointer">
             <div className="absolute right-0 top-0 translate-x-4 -translate-y-4">
@@ -80,7 +78,6 @@ export default function page() {
             </div>
           </div>
         </div>
-      </div>
     </div>
-  );
+  )
 }

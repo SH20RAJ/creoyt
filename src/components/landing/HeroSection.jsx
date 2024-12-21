@@ -2,30 +2,41 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { Badge } from "../ui/badge";
 
 const HeroSection = () => {
   return (
-    <section className="w-full px-8 py-12 grid grid-cols-1 md:grid-cols-2 items-center gap-8 max-w-6xl mx-auto" aria-label="Hero section">
+    <section
+      className="w-full px-8 py-12 grid grid-cols-1 md:grid-cols-2 items-center gap-8 max-w-6xl mx-auto"
+      aria-label="Hero section"
+    >
       <div>
-        <span className="block mb-4 text-xs md:text-sm text-indigo-500 font-medium" role="text">
-          Create with CreoYT
+        <span>
+          <Badge
+            className=" mb-4 text-xs md:text-sm text-indigo-500   border-fuchsia-400 rounded-lg font-medium"
+            role="text"
+            // variant="outline"
+          >
+            Create with CreoYT
+          </Badge>
         </span>
         <h1 className="text-4xl md:text-6xl font-semibold">
           Your Ultimate YouTube Content Assistant
         </h1>
         <p className="text-base md:text-lg text-slate-700 my-4 md:my-6">
-          Join CreoYT to create engaging YouTube content, analyze performance, and grow your channel with AI-powered insights and tools.
+          Join CreoYT to create engaging YouTube content, analyze performance,
+          and grow your channel with AI-powered insights and tools.
         </p>
         <Link href="/join">
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-indigo-500 text-white font-medium py-2 px-6 rounded-lg transition-colors hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          aria-label="Get Started"
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-indigo-500 text-white font-medium py-2 px-6 rounded-lg transition-colors hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            aria-label="Get Started"
           >
-          Get Started
-        </motion.button>
-          </Link>
+            Get Started
+          </motion.button>
+        </Link>
       </div>
       <ShuffleGrid />
     </section>
