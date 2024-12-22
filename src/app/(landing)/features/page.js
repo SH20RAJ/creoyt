@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { motion } from "framer-motion";
-import { Bot, Zap, BarChart, Search, Users, TrendingUp } from "lucide-react";
+import { Bot, Zap, BarChart, Search, Users, TrendingUp, LineChart, Image, Brain, Calendar, GraduationCap } from "lucide-react";
 
 export default function FeaturesPage() {
   return (
@@ -56,9 +56,9 @@ export default function FeaturesPage() {
             Join thousands of creators who are growing their channels with CreoYT
           </p>
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHovern={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3p rounded-lg bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition-colors"
           >
             Get Started Now
           </motion.button>
@@ -70,81 +70,76 @@ export default function FeaturesPage() {
 
 const features = [
   {
-    title: "AI Content Assistant",
-    description: "Generate engaging content ideas and optimize your videos for maximum reach",
-    icon: <Bot className="w-6 h-6" />,
+    title: "Channel Analysis",
+    icon: <LineChart className="wm-6 h-6" />,
+    bgColor: "bg-indigo-500/10",
+    textColor: "text-indigo-500",
+    description: "Deep dive into your channel's performance using advanced machine learning.",
+    capabilities: [
+      "Performance analytics and insights",
+      "Video and subtitle  analysis",
+      "Actionable growth recommendations"
+    ]
+  },
+  {
+    title: "AI Content Researcher",
+    icon: <Search className="w-6 h-6" />,
     bgColor: "bg-purple-500/10",
     textColor: "text-purple-500",
+    description: "Data-driven content optimization and research tools.",
     capabilities: [
-      "Smart title generation",
-      "Description optimization",
-      "Tag recommendations",
-      "Script writing assistance"
-    ]
-  },
-  {
-    title: "Advanced Analytics",
-    description: "Deep insights into your channel's performance and audience behavior",
-    icon: <BarChart className="w-6 h-6" />,
-    bgColor: "bg-blue-500/10",
-    textColor: "text-blue-500",
-    capabilities: [
-      "Real-time performance tracking",
-      "Audience insights",
-      "Engagement analytics",
-      "Growth trends"
-    ]
-  },
-  {
-    title: "SEO Optimization",
-    description: "Improve your videos' visibility and reach in search results",
-    icon: <Search className="w-6 h-6" />,
-    bgColor: "bg-green-500/10",
-    textColor: "text-green-500",
-    capabilities: [
-      "Keyword research",
-      "Ranking optimization",
-      "Search trend analysis",
-      "Metadata enhancement"
+      "SEO-optimized title suggestions",
+      "Trending topics discovery",
+      "Competitor-based content strategies"
     ]
   },
   {
     title: "Thumbnail Creator",
-    description: "Create eye-catching thumbnails that boost click-through rates",
-    icon: <Zap className="w-6 h-6" />,
-    bgColor: "bg-amber-500/10",
-    textColor: "text-amber-500",
-    capabilities: [
-      "A/B testing",
-      "Template library",
-      "Custom branding",
-      "Performance analytics"
-    ]
-  },
-  {
-    title: "Community Management",
-    description: "Engage with your audience and build a loyal community",
-    icon: <Users className="w-6 h-6" />,
+    icon: <Image className="w-6 h-6"u />,
     bgColor: "bg-pink-500/10",
     textColor: "text-pink-500",
+    description: "Create engaging thumbnails with AI-powered tools.",
     capabilities: [
-      "Comment moderation",
-      "Fan engagement",
-      "Community insights",
-      "Collaboration tools"
+      "AI image generation",
+      "Thumbnail A/B testing",
+      "Click-through rate optimization"
     ]
   },
   {
-    title: "Monetization Tools",
-    description: "Maximize your revenue with advanced monetization strategies",
-    icon: <TrendingUp className="w-6 h-6" />,
-    bgColor: "bg-red-500/10",
-    textColor: "text-red-500",
+    title: "Virtual AI Coach",
+    icon: <Brain className="w-6 h-6" />,
+    bgColor: "bg-blue-n500/10",
+    textColor: "text-blue-500",
+    description: "Get personalized coaching for channel growth.",
     capabilities: [
-      "Ad revenue optimization",
-      "Sponsorship management",
-      "Merchandise integration",
-      "Affiliate marketing"
+      "Custom growth strategies",
+      "Performance optimization tips",
+      "Content improvement  suggestions"
+    ]
+  },
+  {
+    title: "Content Management",
+    icon: <Calendar className="w-6 h-6" />,
+    bgColor: "bg-green-500/10",
+    textColor: "text-green-500",
+    description: "Streamline your content planning and management.",
+    capabilities: [
+      "Video scheduling system",
+      "Bulk editing tools",
+      "Content calendar management"
+    ]
+  },
+  {
+    title: "CreoYT Academy",
+    icon: <GraduationCap className="w-6 h-6" />,
+    bgColor: "bg-orange-d500/10",
+    textColor: "text-orange-500",
+    description: "Comprehensive learning platform for creators.",
+    capabilities: [
+      "YouTube growth strategies",
+      "Expert-led workshops",
+      "Platform optimization techniques"
     ]
   }
 ];
+ev
