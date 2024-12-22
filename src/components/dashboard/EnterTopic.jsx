@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
+import { useRouter } from "next/navigation";
 import { PlaceholdersAndVanishInput } from "../ui/placeholders-and-vanish-input";
-
 export function EnterTopic() {
   const placeholders = [
     "Gaming setup and equipment reviews",
@@ -16,13 +16,26 @@ export function EnterTopic() {
   ];
 
   const handleChange = (e) => {
+    console.log("Change Event:");
     console.log(e.target.value);
   };
   
+  const router = useRouter();
+
   const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("submitted");
+    e.preventDefault(); // Prevent the default form submission behavior
+  
+    const formData = new FormData(e.target);
+    const topic = formData.get('topic'); // Retrieve the 'topic' input value
+    console.log("Submitted Topic:", topic);
+  
+    if (topic) {
+      router.push(`/dashboard/research?topic=${encodeURIComponent(topic)}`);
+    } else {
+      console.error("Topic is undefined or empty.");
+    }
   };
+  
 
   return (
     <div className="h-[20rem] flex flex-col justify-center items-center px-4">
@@ -31,10 +44,11 @@ export function EnterTopic() {
       </h2>
       <PlaceholdersAndVanishInput
         placeholders={placeholders}
-        onChange={handleChange}
-        onSubmit={onSubmit}
+        onChange={()=>console.log("Change Event:")}
+        onSubmit={()=>console.log("Change Event:")}
         placeholder="Enter your content topic..."
-      />
+
+        />
     </div>
   );
 }

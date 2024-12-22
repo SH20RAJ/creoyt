@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { Copy, Check } from "lucide-react";  
 import {
   Card,
   CardContent,
@@ -18,13 +19,32 @@ export default function TopicPage() {
   const topic = searchParams.get("topic");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [copiedStates, setCopiedStates] = useState({});
+
+  const handleCopy = (text, id) => {
+    navigator.clipboard.writeText(text);
+    setCopiedStates({ ...copiedStates, [id]: true });
+    setTimeout(() => {
+      setCopiedStates({ ...copiedStates, [id]: false });
+    }, 2000);
+  };
+
+  // Add new function to handle copying all tags
+  const handleCopyAllTags = () => {
+    if (data?.tags) {
+      const allTags = data.tags.join(", ");
+      navigator.clipboard.writeText(allTags);
+      setCopiedStates({ ...copiedStates, allTags: true });
+      setTimeout(() => {
+        setCopiedStates({ ...copiedStates, allTags: false });
+      }, 2000);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `/api/ai?title=${encodeURIComponent(topic)}`
-        );
+        const response = await fetch(`/api/ai?title=${encodeURIComponent(topic)}`);
         const result = await response.json();
         setData(result);
         setLoading(false);
@@ -50,7 +70,6 @@ export default function TopicPage() {
   return (
     <div className="min-h-screen bg-background p-6 md:p-12">
       <div className="mx-auto max-w-5xl space-y-8">
-        {/* Topic Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,9 +78,7 @@ export default function TopicPage() {
           <h1 className="text-4xl font-bold text-foreground mb-4 capitalize">
             {topic}
           </h1>
-          <p className="text-muted-foreground">
-            AI-Generated Content Suggestions
-          </p>
+          <p className="text-muted-foreground">AI-Generated Content Suggestions</p>
         </motion.div>
 
         {loading ? (
@@ -74,79 +91,127 @@ export default function TopicPage() {
               <TabsTrigger value="tags">Tags</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Description</CardTitle>
-                  <CardDescription>
-                    AI-generated content description
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {data?.description}
-                  </p>
-                </CardContent>
-              </Card>
+            <TabsContent value="overview">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div>
+                      <CardTitle>Description</CardTitle>
+                      <CardDescription>AI-generated content description</CardDescription>
+                    </div>
+                    <button
+                      onClick={() => handleCopy(data?.description, 'description')}
+                      className="inline-flex items-center justify-center rounded-md h-8 w-8 hover:bg-accent transition-colors"
+                    >
+                      {copiedStates['description'] ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <Copy className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </button>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {data?.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </TabsContent>
 
-            <TabsContent value="titles" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Suggested Titles</CardTitle>
-                  <CardDescription>Click to copy</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {data?.title.map((title, index) => (
-                      <motion.li
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <button
-                          onClick={() => navigator.clipboard.writeText(title)}
-                          className="w-full text-left p-3 rounded-lg hover:bg-accent transition-colors text-foreground hover:text-accent-foreground"
+            <TabsContent value="titles">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Suggested Titles</CardTitle>
+                    <CardDescription>Click to copy any title</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {data?.title.map((title, index) => (
+                        <li
+                          key={index}
+                          className="flex items-center justify-between rounded-lg p-3 hover:bg-accent group transition-colors"
                         >
-                          {title}
-                        </button>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                          <span className="text-foreground">{title}</span>
+                          <button
+                            onClick={() => handleCopy(title, `title-${index}`)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            {copiedStates[`title-${index}`] ? (
+                              <Check className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <Copy className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </TabsContent>
 
-            <TabsContent value="tags" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recommended Tags</CardTitle>
-                  <CardDescription>
-                    Click to copy individual tags
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {data?.tags.map((tag, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
+            <TabsContent value="tags">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div>
+                      <CardTitle>Recommended Tags</CardTitle>
+                      <CardDescription>Click any tag to copy</CardDescription>
+                    </div>
+                    <button
+                      onClick={handleCopyAllTags}
+                      className="inline-flex items-center justify-center gap-2 rounded-md px-3 py-1 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                    >
+                      {copiedStates.allTags ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          <span>Copied All</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          <span>Copy All Tags</span>
+                        </>
+                      )}
+                    </button>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {data?.tags.map((tag, index) => (
                         <Badge
+                          key={index}
                           variant="secondary"
-                          className="cursor-pointer hover:bg-accent"
-                          onClick={() => navigator.clipboard.writeText(tag)}
+                          className="cursor-pointer hover:bg-accent group transition-colors px-3 py-1"
+                          onClick={() => handleCopy(tag, `tag-${index}`)}
                         >
-                          {tag}
+                          <span>{tag}</span>
+                          <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity inline-flex">
+                            {copiedStates[`tag-${index}`] ? (
+                              <Check className="h-3 w-3 text-green-500" />
+                            ) : (
+                              <Copy className="h-3 w-3 text-muted-foreground" />
+                            )}
+                          </span>
                         </Badge>
-                      </motion.div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </TabsContent>
           </Tabs>
         )}

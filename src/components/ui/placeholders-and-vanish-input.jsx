@@ -162,7 +162,7 @@ export function PlaceholdersAndVanishInput({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => {    
     e.preventDefault();
     vanishAndSubmit();
     onSubmit && onSubmit(e);
