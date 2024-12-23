@@ -27,6 +27,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -37,26 +38,26 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: Layout,
       items: [
         {
           title: "Overview",
-          url: "#",
+          url: "/dashboard",
         },
         {
           title: "Analytics",
-          url: "#",
+          url: "/dashboard/analytics",
         },
         {
           title: "Reports",
-          url: "#",
+          url: "/dashboard/reports",
         },
       ],
     },
     {
       title: "Content",
-      url: "#",
+      url: "/dashboard/content",
       icon: Video,
       isActive: true,
       items: [
@@ -66,57 +67,57 @@ const data = {
         },
         {
           title: "Videos",
-          url: "#",
+          url: "/dashboard/content/videos",
         },
         {
           title: "Thumbnails",
-          url: "#",
+          url: "/dashboard/content/thumbnails",
         },
         {
           title: "Drafts",
-          url: "#",
+          url: "/dashboard/content/drafts",
         },
       ],
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "/dashboard/analytics",
       icon: LineChart,
       items: [
         {
           title: "Performance",
-          url: "#",
+          url: "/dashboard/analytics/performance",
         },
         {
           title: "Audience",
-          url: "#",
+          url: "/dashboard/analytics/audience",
         },
         {
           title: "Engagement",
-          url: "#",
+          url: "/dashboard/analytics/engagement",
         },
         {
           title: "Growth",
-          url: "#",
+          url: "/dashboard/analytics/growth",
         },
       ],
     },
     {
       title: "Growth",
-      url: "#",
+      url: "/dashboard/growth",
       icon: TrendingUp,
       items: [
         {
           title: "AI Assistant",
-          url: "#",
+          url: "/dashboard/growth/ai-assistant",
         },
         {
           title: "SEO Tools",
-          url: "#",
+          url: "/dashboard/growth/seo-tools",
         },
         {
           title: "Optimization",
-          url: "#",
+          url: "/dashboard/growth/optimization",
         },
       ],
     },
@@ -124,29 +125,29 @@ const data = {
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: "/support",
       icon: HelpCircle,
     },
     {
       title: "Feedback",
-      url: "#",
+      url: "/feedback",
       icon: Send,
     },
   ],
   projects: [
     {
       name: "Channel Settings",
-      url: "#",
+      url: "/dashboard/settings",
       icon: Settings2,
     },
     {
       name: "Community",
-      url: "#",
+      url: "/dashboard/community",
       icon: Users,
     },
     {
       name: "Comments",
-      url: "#",
+      url: "/dashboard/comments",
       icon: MessageSquare,
     },
   ],
@@ -159,7 +160,7 @@ export function AppSidebar({ ...props }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-500 text-white">
                   <Video className="size-4" />
                 </div>
@@ -167,7 +168,7 @@ export function AppSidebar({ ...props }) {
                   <span className="truncate font-semibold">CreoYT</span>
                   <span className="truncate text-xs">Content Creator</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

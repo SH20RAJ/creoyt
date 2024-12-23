@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import {
   Breadcrumb,
@@ -22,13 +23,17 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 
 
 export default function DashboardHeader() {
+
+  let session = useSession();
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2  ">
-      <div className="flex w-full items-center justify-between p-4 border-b  ">
+    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 backdrop-blur-sm bg-background/80 border-b">
+      <div className="flex w-full items-center justify-between p-4">
         <div className="flex w-full items-center gap-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
@@ -80,21 +85,14 @@ export default function DashboardHeader() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 dark:text-gray-200"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Avatar>
+                  <AvatarImage src={session?.data?.user?.image} alt="User" />
+                  <AvatarFallback>
+                    {session?.data?.user?.name?.[0] || 'U'}
+                  </AvatarFallback>
+                </Avatar>
               </button>
+             
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>Profile</DropdownMenuItem>

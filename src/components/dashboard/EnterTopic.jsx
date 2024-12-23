@@ -3,7 +3,10 @@
 
 import { useRouter } from "next/navigation";
 import { PlaceholdersAndVanishInput } from "../ui/placeholders-and-vanish-input";
+import { useState } from "react";
+
 export function EnterTopic() {
+  let [topic, setTopic] = useState("");
   const placeholders = [
     "Gaming setup and equipment reviews",
     "DIY home improvement tutorials",
@@ -16,26 +19,18 @@ export function EnterTopic() {
   ];
 
   const handleChange = (e) => {
-    console.log("Change Event:");
-    console.log(e.target.value);
+    console.log("Change Event:", e.target.value);
+    setTopic(e.target.value);
   };
-  
+
   const router = useRouter();
 
   const onSubmit = (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-  
-    const formData = new FormData(e.target);
-    const topic = formData.get('topic'); // Retrieve the 'topic' input value
-    console.log("Submitted Topic:", topic);
-  
-    if (topic) {
-      router.push(`/dashboard/research?topic=${encodeURIComponent(topic)}`);
-    } else {
-      console.error("Topic is undefined or empty.");
-    }
+    e.preventDefault();
+    
+    // Only redirect if we have a valid topic
+    router.push(`/dashboard/research?topic=${encodeURIComponent(topic)}`);
   };
-  
 
   return (
     <div className="h-[20rem] flex flex-col justify-center items-center px-4">
@@ -44,11 +39,11 @@ export function EnterTopic() {
       </h2>
       <PlaceholdersAndVanishInput
         placeholders={placeholders}
-        onChange={()=>console.log("Change Event:")}
-        onSubmit={()=>console.log("Change Event:")}
+        onChange={handleChange}
+        onSubmit={onSubmit}
         placeholder="Enter your content topic..."
-
-        />
+        name="topic"
+      />
     </div>
   );
 }

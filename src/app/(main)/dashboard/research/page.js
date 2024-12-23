@@ -1,8 +1,11 @@
 "use client";
-import React, { useEffect, useState, Suspense } from "react";
+import useSWR from "swr";
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Copy, Check } from "lucide-react";
+import { useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -12,14 +15,31 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EnterTopic } from "@/components/dashboard/EnterTopic";
 
-// Create a wrapper component that uses useSearchParams
+// Fetch function for SWR
+const fetcher = async (url) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return response.json();
+};
+
 function TopicPageContent() {
   const searchParams = useSearchParams();
   const topic = searchParams.get("topic");
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [copiedStates, setCopiedStates] = useState({});
+
+  // Replace useState and useEffect with useSWR
+  const { data, error, isLoading } = useSWR(
+    topic ? `/api/ai?title=${encodeURIComponent(topic)}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false, // Don't revalidate on window focus
+      revalidateOnReconnect: false, // Don't revalidate on reconnect
+    }
+  );
 
   const handleCopy = (text, id) => {
     navigator.clipboard.writeText(text);
@@ -40,33 +60,19 @@ function TopicPageContent() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/ai?title=${encodeURIComponent(topic)}`);
-        const result = await response.json();
-        setData(result);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
-
-    if (topic) {
-      fetchData();
-    }
-  }, [topic]);
-
   if (!topic) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <h1 className="text-2xl text-muted-foreground">No topic specified</h1>
+      <div className="min-h-screen bg-background">
+        <EnterTopic />
       </div>
     );
   }
 
-  if (loading) {
+  if (error) {
+    return <div>Error loading data</div>;
+  }
+
+  if (isLoading) {
     return <LoadingSkeleton />;
   }
 
@@ -81,14 +87,17 @@ function TopicPageContent() {
           <h1 className="text-4xl font-bold text-foreground mb-4 capitalize">
             {topic}
           </h1>
-          <p className="text-muted-foreground">AI-Generated Content Suggestions</p>
+          <p className="text-muted-foreground">
+            AI-Generated Content Suggestions
+          </p>
         </motion.div>
 
         <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px] mx-auto">
+          <TabsList className="grid w-full grid-cols-4 lg:w-[400px] mx-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="titles">Titles</TabsTrigger>
             <TabsTrigger value="tags">Tags</TabsTrigger>
+            <TabsTrigger value="thumbnails">Thumbnails</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -96,7 +105,9 @@ function TopicPageContent() {
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <div>
                   <CardTitle>Description</CardTitle>
-                  <CardDescription>AI-generated content description</CardDescription>
+                  <CardDescription>
+                    AI-generated content description
+                  </CardDescription>
                 </div>
                 <button
                   onClick={() => handleCopy(data?.description, "description")}
@@ -195,6 +206,44 @@ function TopicPageContent() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="thumbnails">
+            <Card>
+              <CardHeader>
+                <CardTitle>Thumbnail Preview</CardTitle>
+                <CardDescription>Generated thumbnail for your content</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="rounded-lg overflow-hidden shadow-lg">
+                    <img
+                      src={`https://cdn.statically.io/og/theme=dark/${encodeURIComponent(topic)}.jpg`}
+                      alt={`Thumbnail for ${topic}`}
+                      className="w-full h-auto"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => handleCopy(`https://cdn.statically.io/og/theme=dark/${encodeURIComponent(topic)}.jpg`, "thumbnail-url")}
+                      className="inline-flex items-center justify-center gap-2 rounded-md px-3 py-1 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                    >
+                      {copiedStates["thumbnail-url"] ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          <span>Copied URL</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          <span>Copy URL</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
@@ -209,7 +258,6 @@ export default function TopicPage() {
     </Suspense>
   );
 }
-
 
 const LoadingSkeleton = () => {
   return (
