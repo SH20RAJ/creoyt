@@ -105,7 +105,7 @@ const FeatureList = () => {
             <div className="aspect-video flex flex-col items-center   justify-center rounded-xl overflow-hidden shadow-xl">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/WhWc3b3KhnY"
+                src="https://www.youtube.com/embed/zjG6bv-VJuM"
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
