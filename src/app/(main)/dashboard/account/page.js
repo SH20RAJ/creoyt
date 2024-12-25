@@ -9,6 +9,10 @@ import { CalendarDays, Mail, User } from "lucide-react";
 export default function AccountPage() {
   const { data: session, status } = useSession();
 
+  const isUserLoading = status === "loading";
+
+  
+
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center">

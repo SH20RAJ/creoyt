@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+"use client";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -35,6 +36,16 @@ const HeroSection = () => {
             aria-label="Get Started"
           >
             Get Started
+          </motion.button>
+        </Link>
+        <Link href="https://forms.gle/R9jFgAdqW6ciSWnQ7" target="_blank" rel="noopener noreferrer"> 
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-white text-indigo-500 border border-indigo-500 font-medium py-2 px-6 rounded-lg ml-4 transition-colors hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            aria-label="Join Waitlist"
+          >
+            Join Waitlist
           </motion.button>
         </Link>
       </div>

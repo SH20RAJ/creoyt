@@ -14,13 +14,13 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "CreoYT - Best Social Media Platform",
+  title: "CreoYT - Your Ultimate YouTube Content Assistant",
   description:
     "CreoYT - Your go-to platform for social media content creation, sharing, and engagement. Join our community today!",
   keywords:
     "social media, content creation, video sharing, community, creators",
   openGraph: {
-    title: "CreoYT - Best Social Media Platform",
+    title: "CreoYT - Your Ultimate YouTube Content Assistant",
     description:
       "CreoYT - Your go-to platform for social media content creation, sharing, and engagement",
     type: "website",
@@ -32,13 +32,13 @@ export const metadata = {
         url: "https://creoyt.com/creoyt-social.png",
         width: 1200,
         height: 630,
-        alt: "CreoYT - Best Social Media Platform",
+        alt: "CreoYT - Your Ultimate YouTube Content Assistant",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CreoYT - Best Social Media Platform",
+    title: "CreoYT - Your Ultimate YouTube Content Assistant",
     description:
       "CreoYT - Your go-to platform for social media content creation",
     creator: "@creoyt",
