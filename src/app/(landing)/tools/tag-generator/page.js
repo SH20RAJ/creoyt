@@ -162,6 +162,13 @@ export default function TagGenerator() {
               onClick={() => setTopic("how to make a website")}
               >How to make a website</span>
             </div>
+
+            <Button
+              onClick={() => window.location.href = 'https://forms.gle/R9jFgAdqW6ciSWnQ7'}
+              className="mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg hover:shadow-blue-500/30"
+            >
+              Join Launch Waitlist 🚀
+            </Button>
           </div>
         )}
       </div>

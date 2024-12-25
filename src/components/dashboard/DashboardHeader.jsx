@@ -98,7 +98,7 @@ export default function DashboardHeader() {
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
+              <DropdownMenuItem><Link href={"/logout"}>Log out</Link></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
