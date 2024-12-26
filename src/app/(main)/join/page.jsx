@@ -42,7 +42,10 @@ export default function SignUp() {
           <div className="text-center">
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
               Welcome to{" "}
-              <Link href={"/"} className="text-orange-100 decoration-wavy underline-offset-4 decoration-1 underline">
+              <Link
+                href={"/"}
+                className="text-orange-100 decoration-wavy underline-offset-4 decoration-1 underline"
+              >
                 CreoYT
               </Link>
             </h2>

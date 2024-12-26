@@ -1,13 +1,4 @@
-'use client'
-import React from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,13 +14,10 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-
-
 export default function DashboardHeader() {
-
   let session = useSession();
   return (
     <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 backdrop-blur-sm bg-background/80 border-b">
@@ -88,17 +76,18 @@ export default function DashboardHeader() {
                 <Avatar>
                   <AvatarImage src={session?.data?.user?.image} alt="User" />
                   <AvatarFallback>
-                    {session?.data?.user?.name?.[0] || 'U'}
+                    {session?.data?.user?.name?.[0] || "U"}
                   </AvatarFallback>
                 </Avatar>
               </button>
-             
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><Link href={"/logout"}>Log out</Link></DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut()}>
+                Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
