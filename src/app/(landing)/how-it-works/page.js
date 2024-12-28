@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
-import React from 'react';
+;
 import { motion } from "framer-motion";
 import { ArrowRight, Zap, Target, BarChart } from "lucide-react";
 

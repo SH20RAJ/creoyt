@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react';
+;
 import { Mail, MapPin, Phone } from 'lucide-react';
 
 export default function ContactPage() {

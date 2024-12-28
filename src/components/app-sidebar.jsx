@@ -92,37 +92,37 @@ const data = {
       items: [
         {
           title: "AI Assistant",
-          url: "/dashboard/growth/ai-assistant",
+          url: "/dashboard/scout/ai-assistant",
         },
         {
           title: "Article Generator",
-          url: "/dashboard/growth/content-tools",
+          url: "/dashboard/scout/content-tools",
         },
         {
           title: "Script Generator",
-          url: "/dashboard/growth/design-tools",
+          url: "/dashboard/scout/design-tools",
         },
         {
           title: "Keyword Research",
-          url: "/dashboard/growth/development-tools",
+          url: "/dashboard/scout/development-tools",
         },
         {
           title: "Marketing Tools",
-          url: "/dashboard/growth/marketing-tools",
+          url: "/dashboard/scout/marketing-tools",
         },
         {
           title: "SEO Tools",
-          url: "/dashboard/growth/seo-tools",
+          url: "/dashboard/scout/seo-tools",
         },
         {
           title: "Optimization",
-          url: "/dashboard/growth/optimization",
+          url: "/dashboard/scout/optimization",
         },
       ],
     },
     {
       title: "Scout",
-      url: "/dashboard/growth",
+      url: "/dashboard/scout",
       icon: MagnetIcon,
     },
     // add research and optimise

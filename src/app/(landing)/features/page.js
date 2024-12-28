@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+;
 import { motion } from "framer-motion";
 import { Bot, Zap, BarChart, Search, Users, TrendingUp, LineChart, Image, Brain, Calendar, GraduationCap } from "lucide-react";
 
