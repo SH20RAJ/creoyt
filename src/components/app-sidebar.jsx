@@ -45,24 +45,28 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: Layout,
+      isActive: false,
     },
-   
     {
       title: "Ideas",
       url: "/dashboard/ideas",
       icon: Lightbulb,
+      isActive: false,
       items: [
         {
           title: "All Ideas",
           url: "/dashboard/ideas",
+          isActive: false,
         },
         {
           title: "New Idea",
           url: "/dashboard/ideas/new",
+          isActive: false,
         },
         {
           title: "Saved Ideas",
           url: "/dashboard/ideas/1",
+          isActive: false,
         },
       ],
     },
@@ -70,53 +74,65 @@ const data = {
       title: "Projects",
       url: "/dashboard/projects",
       icon: BookOpen,
+      isActive: false,
       items: [
         {
           title: "All Projects",
           url: "/dashboard/projects",
+          isActive: false,
         },
         {
           title: "New Project",
           url: "/dashboard/projects/new",
+          isActive: false,
         },
         {
           title: "Saved Projects",
           url: "/dashboard/projects/1",
+          isActive: false,
         },
       ],
-    },{
+    },
+    {
       title: "Tools",
       url: "/dashboard/tools",
       icon: TrendingUp,
-      // isActive: true,
+      isActive: false,
       items: [
         {
           title: "AI Assistant",
           url: "/dashboard/scout/ai-assistant",
+          isActive: false,
         },
         {
           title: "Article Generator",
           url: "/dashboard/scout/content-tools",
+          isActive: false,
         },
         {
           title: "Script Generator",
           url: "/dashboard/scout/design-tools",
+          isActive: false,
         },
         {
           title: "Keyword Research",
           url: "/dashboard/scout/development-tools",
+          isActive: false,
         },
         {
           title: "Marketing Tools",
           url: "/dashboard/scout/marketing-tools",
+          isActive: false,
         },
         {
           title: "SEO Tools",
           url: "/dashboard/scout/seo-tools",
+          isActive: false,
         },
         {
           title: "Optimization",
           url: "/dashboard/scout/optimization",
+          isActive: false,
         },
       ],
     },
@@ -124,30 +140,32 @@ const data = {
       title: "Scout",
       url: "/dashboard/scout",
       icon: MagnetIcon,
+      isActive: false,
     },
-    // add research and optimise
     {
       title: "Research",
       url: "/dashboard/research",
       icon: Sparkles,
+      isActive: false,
     },
     {
       title: "Optimize",
       url: "/dashboard/optimize",
       icon: Settings2,
+      isActive: false,
     },
-    
-    ,{
+    {
       title: "Outliner",
       url: "/dashboard/outliner",
       icon: MessageSquare,
-    }
-    ,{
+      isActive: false,
+    },
+    {
       title: "Trends",
       url: "/dashboard/trends",
       icon: LineChart,
+      isActive: false,
     },
-    
   ],
   navSecondary: [
     {
@@ -170,6 +188,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
+
   return (
     <Sidebar variant="inset" {...props} className=" bg-transparent ">
       <SidebarHeader className="bg-transparent">
@@ -190,7 +209,8 @@ export function AppSidebar({ ...props }) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="gap-0">
-        <NavMain items={data.navMain} />
+      <NavMain  items={data.navMain} />
+
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
