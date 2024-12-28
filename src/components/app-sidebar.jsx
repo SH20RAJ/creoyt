@@ -12,6 +12,10 @@ import {
   MessageSquare,
   HelpCircle,
   Send,
+  Lightbulb,
+  User2,
+  MagnetIcon,
+  Sparkles,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -28,6 +32,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { title } from "process";
 
 const data = {
   user: {
@@ -40,76 +45,70 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: Layout,
+    },
+   
+    {
+      title: "Ideas",
+      url: "/dashboard/ideas",
+      icon: Lightbulb,
       items: [
         {
-          title: "Overview",
-          url: "/dashboard",
+          title: "All Ideas",
+          url: "/dashboard/ideas",
         },
         {
-          title: "Analytics",
-          url: "/dashboard/analytics",
+          title: "New Idea",
+          url: "/dashboard/ideas/new",
         },
         {
-          title: "Reports",
-          url: "/dashboard/reports",
+          title: "Saved Ideas",
+          url: "/dashboard/ideas/1",
         },
       ],
     },
     {
-      title: "Content",
-      url: "/dashboard/content",
-      icon: Video,
-      isActive: true,
+      title: "Projects",
+      url: "/dashboard/projects",
+      icon: BookOpen,
       items: [
         {
-          title: "Research",
-          url: "/dashboard/research",
+          title: "All Projects",
+          url: "/dashboard/projects",
         },
         {
-          title: "Videos",
-          url: "/dashboard/content/videos",
+          title: "New Project",
+          url: "/dashboard/projects/new",
         },
         {
-          title: "Thumbnails",
-          url: "/dashboard/content/thumbnails",
-        },
-        {
-          title: "Drafts",
-          url: "/dashboard/content/drafts",
+          title: "Saved Projects",
+          url: "/dashboard/projects/1",
         },
       ],
-    },
-    {
-      title: "Analytics",
-      url: "/dashboard/analytics",
-      icon: LineChart,
-      items: [
-        {
-          title: "Performance",
-          url: "/dashboard/analytics/performance",
-        },
-        {
-          title: "Audience",
-          url: "/dashboard/analytics/audience",
-        },
-        {
-          title: "Engagement",
-          url: "/dashboard/analytics/engagement",
-        },
-        {
-          title: "Growth",
-          url: "/dashboard/analytics/growth",
-        },
-      ],
-    },
-    {
-      title: "Growth",
-      url: "/dashboard/growth",
+    },{
+      title: "Tools",
+      url: "/dashboard/tools",
       icon: TrendingUp,
+      // isActive: true,
       items: [
         {
           title: "AI Assistant",
           url: "/dashboard/growth/ai-assistant",
+        },
+        {
+          title: "Article Generator",
+          url: "/dashboard/growth/content-tools",
+        },
+        {
+          title: "Script Generator",
+          url: "/dashboard/growth/design-tools",
+        },
+        {
+          title: "Keyword Research",
+          url: "/dashboard/growth/development-tools",
+        },
+        {
+          title: "Marketing Tools",
+          url: "/dashboard/growth/marketing-tools",
         },
         {
           title: "SEO Tools",
@@ -121,6 +120,34 @@ const data = {
         },
       ],
     },
+    {
+      title: "Scout",
+      url: "/dashboard/growth",
+      icon: MagnetIcon,
+    },
+    // add research and optimise
+    {
+      title: "Research",
+      url: "/dashboard/research",
+      icon: Sparkles,
+    },
+    {
+      title: "Optimize",
+      url: "/dashboard/optimize",
+      icon: Settings2,
+    },
+    
+    ,{
+      title: "Outliner",
+      url: "/dashboard/outliner",
+      icon: MessageSquare,
+    }
+    ,{
+      title: "Trends",
+      url: "/dashboard/trends",
+      icon: LineChart,
+    },
+    
   ],
   navSecondary: [
     {
@@ -134,22 +161,11 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
-    {
-      name: "Channel Settings",
-      url: "/dashboard/settings",
-      icon: Settings2,
-    },
-    {
-      name: "Community",
-      url: "/dashboard/community",
-      icon: Users,
-    },
-    {
-      name: "Comments",
-      url: "/dashboard/comments",
-      icon: MessageSquare,
-    },
+  projects: [{
+    name: "Learn",
+    url: "/learn",
+    icon: BookOpen,
+  }
   ],
 };
 
@@ -173,7 +189,7 @@ export function AppSidebar({ ...props }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="gap-0">
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
