@@ -1,4 +1,5 @@
 import { EnterTopic } from "@/components/dashboard/EnterTopic";
+import ExternalToolList from "@/components/dashboard/ExternalToolList";
 import Settings from "@/components/dashboard/Settings";
 import ToolList1 from "@/components/dashboard/tools/ToolList1";
 
@@ -11,6 +12,8 @@ export default function page() {
         <div className="flex flex-1 flex-col w-full gap-4">
 
         <Settings name="Add/Change Channel URL"/>
+
+        <ExternalToolList />
         </div>
       </div>
     </div>
