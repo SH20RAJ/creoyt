@@ -34,7 +34,7 @@ export function NavMain({ items }) {
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
-              <SidebarMenuButton className={item.url == pathname && " text-orange-400 "} asChild tooltip={item.title}>
+              <SidebarMenuButton className={item.url == pathname && " text-orange-400 hover:text-orange-200 "} asChild tooltip={item.title}>
                 <Link href={item.url}>
                   <item.icon className="text-lg text-blue-300" />
                   <span>{item.title}</span>
