@@ -63,6 +63,29 @@ export default function IdeasPage() {
     }, 2000);
   };
 
+  // Add function to toggle completion
+  const toggleDailyIdeaComplete = (id) => {
+    setDailyIdeas(
+      dailyIdeas.map((idea) =>
+        idea.id === id ? { ...idea, completed: !idea.completed } : idea
+      )
+    );
+  };
+
+  // Add function to save daily idea
+  const saveDailyIdea = (text) => {
+    setSavedIdeas((prev) => [...prev, text]);
+  };
+
+  // Add function to copy idea text
+  const copyDailyIdea = (text, id) => {
+    navigator.clipboard.writeText(text);
+    setCopiedStates({ ...copiedStates, [id]: true });
+    setTimeout(() => {
+      setCopiedStates({ ...copiedStates, [id]: false });
+    }, 2000);
+  };
+
   return (
     <div className="min-h-screen p-6 space-y-8">
       <motion.div
@@ -72,8 +95,12 @@ export default function IdeasPage() {
       >
         <Tabs defaultValue="ideas" className="space-y-8">
           <TabsList className="w-full">
-            <TabsTrigger value="ideas" className="w-full">Ideas</TabsTrigger>
-            <TabsTrigger value="saved" className="w-full">Saved Ideas</TabsTrigger>
+            <TabsTrigger value="ideas" className="w-full">
+              Ideas
+            </TabsTrigger>
+            <TabsTrigger value="saved" className="w-full">
+              Saved Ideas
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="ideas" className="space-y-8">
@@ -155,13 +182,7 @@ export default function IdeasPage() {
                         id={`idea-${idea.id}`}
                         checked={idea.completed}
                         onCheckedChange={(checked) => {
-                          setDailyIdeas(
-                            dailyIdeas.map((i) =>
-                              i.id === idea.id
-                                ? { ...i, completed: checked }
-                                : i
-                            )
-                          );
+                          toggleDailyIdeaComplete(idea.id);
                         }}
                       />
                       <label
@@ -170,13 +191,28 @@ export default function IdeasPage() {
                       >
                         {idea.text}
                       </label>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleSaveIdea(idea.text)}
-                      >
-                        <Save className="w-4 h-4" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            copyDailyIdea(idea.text, `daily-${idea.id}`)
+                          }
+                        >
+                          {copiedStates[`daily-${idea.id}`] ? (
+                            <Check className="w-4 h-4 text-green-500" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => saveDailyIdea(idea.text)}
+                        >
+                          <Save className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </ScrollArea>
