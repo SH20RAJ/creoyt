@@ -29,9 +29,9 @@ export const metadata = {
     siteName: "CreoYT",
     images: [
       {
-        url: "https://creoyt.com/creoyt-social.png",
-        width: 1200,
-        height: 630,
+        url: "https://creoyt.com/og-image.png",
+        width: 1280,
+        height: 720,
         alt: "CreoYT - Your Ultimate YouTube Content Assistant",
       },
     ],
