@@ -1,30 +1,38 @@
-'use client';
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Card, 
+"use client";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Card,
   CardHeader,
-  CardTitle, 
+  CardTitle,
   CardDescription,
   CardContent,
-  CardFooter 
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Lightbulb, Save, X, Wand2, Brain } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Lightbulb, Save, X, Wand2, Brain, Copy, Check } from "lucide-react"; // Add Copy and Check to the imports
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function IdeasPage() {
-  const [topic, setTopic] = useState('');
+  const [topic, setTopic] = useState("");
   const [generatedIdeas, setGeneratedIdeas] = useState([]);
   const [savedIdeas, setSavedIdeas] = useState([]);
   const [dailyIdeas, setDailyIdeas] = useState([
-    { id: 1, text: "10 Hidden Features in Latest iPhone Update", completed: false },
-    { id: 2, text: "How to Start a Successful YouTube Channel in 2024", completed: false },
-    { id: 3, text: "Best Budget Gaming Setup Under $500", completed: false }
+    {
+      id: 1,
+      text: "10 Hidden Features in Latest iPhone Update",
+      completed: false,
+    },
+    {
+      id: 2,
+      text: "How to Start a Successful YouTube Channel in 2024",
+      completed: false,
+    },
+    { id: 3, text: "Best Budget Gaming Setup Under $500", completed: false },
   ]);
+  const [copiedStates, setCopiedStates] = useState({}); // Add this state
 
   const handleGenerateIdeas = () => {
     // Mock generated ideas - Replace with actual API call
@@ -33,7 +41,7 @@ export default function IdeasPage() {
       "Beginner's Guide to " + topic,
       "What Nobody Tells You About " + topic,
       "How to Master " + topic + " in 30 Days",
-      topic + " Tips & Tricks 2024"
+      topic + " Tips & Tricks 2024",
     ];
     setGeneratedIdeas(mockIdeas);
   };
@@ -43,20 +51,29 @@ export default function IdeasPage() {
   };
 
   const handleRemoveIdea = (ideaToRemove) => {
-    setSavedIdeas(savedIdeas.filter(idea => idea !== ideaToRemove));
+    setSavedIdeas(savedIdeas.filter((idea) => idea !== ideaToRemove));
+  };
+
+  // Add this function to handle copying
+  const handleCopy = (text, id) => {
+    navigator.clipboard.writeText(text);
+    setCopiedStates({ ...copiedStates, [id]: true });
+    setTimeout(() => {
+      setCopiedStates({ ...copiedStates, [id]: false });
+    }, 2000);
   };
 
   return (
     <div className="min-h-screen p-6 space-y-8">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-6xl mx-auto"
       >
-        <Tabs defaultValue="generate" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 mx-auto">
-            <TabsTrigger value="ideas"> Ideas</TabsTrigger>
-            <TabsTrigger value="saved">Saved Ideas</TabsTrigger>
+        <Tabs defaultValue="ideas" className="space-y-8">
+          <TabsList className="w-full">
+            <TabsTrigger value="ideas" className="w-full">Ideas</TabsTrigger>
+            <TabsTrigger value="saved" className="w-full">Saved Ideas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="ideas" className="space-y-8">
@@ -72,7 +89,7 @@ export default function IdeasPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex gap-2">
-                  <Input 
+                  <Input
                     placeholder="Enter your topic..."
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
@@ -84,19 +101,39 @@ export default function IdeasPage() {
                 </div>
                 <ScrollArea className="h-[200px]">
                   {generatedIdeas.map((idea, index) => (
-                    <Card key={index} className="p-4 mb-2 hover:bg-accent transition-colors">
+                    <Card
+                      key={index}
+                      className="p-4 mb-2 hover:bg-accent transition-colors"
+                    >
                       <div className="flex items-center justify-between">
                         <p>{idea}</p>
-                        <Button variant="ghost" size="sm" onClick={() => handleSaveIdea(idea)}>
-                          <Save className="w-4 h-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy(idea, `gen-${index}`)}
+                          >
+                            {copiedStates[`gen-${index}`] ? (
+                              <Check className="w-4 h-4 text-green-500" />
+                            ) : (
+                              <Copy className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleSaveIdea(idea)}
+                          >
+                            <Save className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </Card>
                   ))}
                 </ScrollArea>
               </CardContent>
-            </Card>  
-            
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -110,20 +147,34 @@ export default function IdeasPage() {
               <CardContent>
                 <ScrollArea className="h-[200px]">
                   {dailyIdeas.map((idea) => (
-                    <div key={idea.id} className="flex items-center space-x-4 mb-2">
-                      <Checkbox 
+                    <div
+                      key={idea.id}
+                      className="flex items-center space-x-4 mb-2"
+                    >
+                      <Checkbox
                         id={`idea-${idea.id}`}
                         checked={idea.completed}
                         onCheckedChange={(checked) => {
-                          setDailyIdeas(dailyIdeas.map(i => 
-                            i.id === idea.id ? { ...i, completed: checked } : i
-                          ));
+                          setDailyIdeas(
+                            dailyIdeas.map((i) =>
+                              i.id === idea.id
+                                ? { ...i, completed: checked }
+                                : i
+                            )
+                          );
                         }}
                       />
-                      <label htmlFor={`idea-${idea.id}`} className="flex-1 text-sm">
+                      <label
+                        htmlFor={`idea-${idea.id}`}
+                        className="flex-1 text-sm"
+                      >
                         {idea.text}
                       </label>
-                      <Button variant="ghost" size="sm" onClick={() => handleSaveIdea(idea.text)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleSaveIdea(idea.text)}
+                      >
                         <Save className="w-4 h-4" />
                       </Button>
                     </div>
@@ -131,11 +182,8 @@ export default function IdeasPage() {
                 </ScrollArea>
               </CardContent>
             </Card>
-
-
           </TabsContent>
 
-       
           <TabsContent value="saved">
             <Card>
               <CardHeader>
@@ -153,13 +201,26 @@ export default function IdeasPage() {
                     <Card key={index} className="p-4 mb-2">
                       <div className="flex items-center justify-between">
                         <p>{idea}</p>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleRemoveIdea(idea)}
-                        >
-                          <X className="w-4 h-4 text-red-500" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy(idea, `saved-${index}`)}
+                          >
+                            {copiedStates[`saved-${index}`] ? (
+                              <Check className="w-4 h-4 text-green-500" />
+                            ) : (
+                              <Copy className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveIdea(idea)}
+                          >
+                            <X className="w-4 h-4 text-red-500" />
+                          </Button>
+                        </div>
                       </div>
                     </Card>
                   ))}
