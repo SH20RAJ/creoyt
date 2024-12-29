@@ -68,6 +68,46 @@ export default function ExternalToolList() {
       color: "green",
       link: "https://chat.openai.com/",
     },
+    {
+      id: "notebooklm",
+      name: "NotebookLM",
+      description: "Your Personalized AI Research Assistant",
+      icon: Bot,
+      color: "green",
+      link: "https://notebooklm.google.com/",
+    },
+    {
+      id: "socialpilot",
+      name: "SocialPilot",
+      description: "Social Media Management Tool",
+      icon: LineChart,
+      color: "blue",
+      link: "https://www.socialpilot.co/",
+    },
+    {
+      id: "pexels",
+      name: "Pexels",
+      description: "Free Stock Photos & Videos",
+      icon: Image,
+      color: "purple",
+      link: "https://www.pexels.com/",
+    },
+    {
+      id: "unsplash",
+      name: "Unsplash",
+      description: "Free Stock Photos & Videos",
+      icon: Image,
+      color: "purple",
+      link: "https://unsplash.com/",
+    },
+    {
+      id: "loom",
+      name: "Loom",
+      description: "Screen Recording and Video Messaging",
+      icon: Type,
+      color: "red",
+      link: "https://www.loom.com",
+    },
   ];
 
   return (
