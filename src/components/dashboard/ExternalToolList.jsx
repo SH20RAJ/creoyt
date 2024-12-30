@@ -131,7 +131,7 @@ export default function ExternalToolList() {
                 className={`h-24 w-24 rounded-full bg-${tool.color}-500/10 group-hover:scale-110 transition-transform duration-300`}
               />
             </div>
-            <Link href={tool.link} className="relative">
+            <Link href={tool.link} target="_" className="relative">
               <div
                 className={`mb-4 inline-flex items-center justify-center rounded-lg bg-${tool.color}-500/10 p-2 text-${tool.color}-500`}
               >
