@@ -5,7 +5,7 @@ export default function App() {
   const [data, setData] = useState("\n# Project Title \n---\n\n## Chapter 1\n\nThis is a novel editor. You can write your novel here.");
 
   return (
-    <div className="min-h-screen w-screen">
+    <div className="min-h-screen  ">
       <Editor
         className="dark backdrop-blur-lg min-h-screen w-full"
         defaultValue={data}

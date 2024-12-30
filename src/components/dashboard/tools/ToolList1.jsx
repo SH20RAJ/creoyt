@@ -1,4 +1,4 @@
-import { LineChart, Type, Image, Bot } from "lucide-react";
+import { LineChart, Type, Image, Bot, Projector } from "lucide-react";
 import Link from "next/link";
 
 const tools = [
@@ -10,16 +10,16 @@ const tools = [
     link: "https://studio.youtube.com/",
   },
   {
-    title: "AI Content Research",
-    description: "Generate titles, tags, descriptions & playlist ideas",
+    title: "Tags generator",
+    description: "Generate tags for your videos, based on AI and ML",
     icon: Type,
     color: "blue",
-    link: "/dashboard/research",
+    link: "/dashboard/tools/tag-generator",
   },
   {
     title: "Project Management",
-    description: "Manage your projects with ease",
-    icon: Image,
+    description: "Manage your projects with ease, all in one place",
+    icon: Projector,
     color: "green",
     link: "/dashboard/projects",
   },

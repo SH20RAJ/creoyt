@@ -106,7 +106,7 @@ const data = {
         },
         {
           title: "Tag Generator",
-          url: "/dashboard/tag-generator",
+          url: "/dashboard/tools/tag-generator",
           isActive: false,
         },
         {

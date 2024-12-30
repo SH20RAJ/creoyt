@@ -8,6 +8,7 @@ export default function HomePage() {
   return (
     <div>
       <NovelEditor
+      className="h-screen w-full"
         content={content}
         setContent={setContent}
         title="Your Editor Title"
