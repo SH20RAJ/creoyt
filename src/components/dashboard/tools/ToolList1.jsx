@@ -17,11 +17,11 @@ const tools = [
     link: "/dashboard/research",
   },
   {
-    title: "Thumbnail Creator",
-    description: "Create eye-catching thumbnails with A/B testing",
+    title: "Project Management",
+    description: "Manage your projects with ease",
     icon: Image,
     color: "green",
-    link: "/tools/thumbnail-creator",
+    link: "/dashboard/projects",
   },
   {
     title: "Virtual AI Coach",

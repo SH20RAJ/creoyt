@@ -1,11 +1,17 @@
-import ToolList1 from "@/components/dashboard/tools/ToolList1";
+'use client';
+import NovelEditor from "@/components/dashboard/NovelEditor";
+import React, { useState } from "react";
 
+export default function HomePage() {
+  const [content, setContent] = useState("");
 
-export default function ToolsPage() {
   return (
     <div>
-    <ToolList1 />
-    
+      <NovelEditor
+        content={content}
+        setContent={setContent}
+        title="Your Editor Title"
+      />
     </div>
-  )
+  );
 }

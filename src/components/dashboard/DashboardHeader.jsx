@@ -36,7 +36,7 @@ export default function DashboardHeader() {
                 className="h-8 w-8 object-contain"
                 src="/logo.svg"
               />
-              <Link href={"/"} className="dark:text-white">
+              <Link href={"/dashboard"} className="dark:text-white">
                 Creo<span className="text-fuchsia-400">YT</span>
               </Link>
             </h1>
