@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { Bot, Send, User, Brain, TrendingUp, Target, Users } from "lucide-react";
 
-export default function ChatBot() {
+export default function ChatBot({props}) {
   const [messages, setMessages] = useState([
     {
       role: "bot",
@@ -64,7 +64,7 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex" {...props}>
       <Card className="flex-1 rounded-none border-0 shadow-none">
         <CardHeader className="border-b bg-card px-6 py-4 sticky top-0 z-10">
           <CardTitle className="flex items-center gap-2">

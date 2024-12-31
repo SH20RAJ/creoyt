@@ -2,7 +2,7 @@ import { Editor } from "novel-lightweight";
 import { useState } from "react";
 
 export default function App() {
-  const [data, setData] = useState("\n# Project Title \n---\n\n## Chapter 1\n\nThis is a novel editor. You can write your novel here.");
+  const [data, setData] = useState("\n# Project Title \n---\n\n## Chapter 1\n\nThis is a novel editor. You can write your novel here.\n\n\n\n\n");
 
   return (
     <div className="min-h-screen  ">

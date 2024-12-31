@@ -22,8 +22,8 @@ export default function Settings({ name = "Settings" }) {
 
   return (
     <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">{name}</Button>
+      <DrawerTrigger asChild className="p-10">
+        <Button className="w-full " variant="outline">{name}</Button>
       </DrawerTrigger>
       
       <DrawerContent>

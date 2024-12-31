@@ -2,7 +2,7 @@
 import NovelEditor from "@/components/dashboard/NovelEditor";
 import React, { useState } from "react";
 
-export default function HomePage() {
+export default function ProjectsPage() {
   const [content, setContent] = useState("");
 
   return (

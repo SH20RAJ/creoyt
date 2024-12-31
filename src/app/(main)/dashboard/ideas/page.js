@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Lightbulb, Save, X, Wand2, Brain, Copy, Check } from "lucide-react"; // Add Copy and Check to the imports
 import { ScrollArea } from "@/components/ui/scroll-area";
+import DailyIdeas from "@/components/dashboard/ideas/DailyIdeas";
 
 export default function IdeasPage() {
   const [topic, setTopic] = useState("");
@@ -161,63 +161,13 @@ export default function IdeasPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Lightbulb className="w-5 h-5 text-yellow-500" />
-                  Ideas for Today
-                </CardTitle>
-                <CardDescription>
-                  Check off ideas you want to create or save for later
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[200px]">
-                  {dailyIdeas.map((idea) => (
-                    <div
-                      key={idea.id}
-                      className="flex items-center space-x-4 mb-2"
-                    >
-                      <Checkbox
-                        id={`idea-${idea.id}`}
-                        checked={idea.completed}
-                        onCheckedChange={(checked) => {
-                          toggleDailyIdeaComplete(idea.id);
-                        }}
-                      />
-                      <label
-                        htmlFor={`idea-${idea.id}`}
-                        className="flex-1 text-sm"
-                      >
-                        {idea.text}
-                      </label>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            copyDailyIdea(idea.text, `daily-${idea.id}`)
-                          }
-                        >
-                          {copiedStates[`daily-${idea.id}`] ? (
-                            <Check className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <Copy className="w-4 h-4" />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => saveDailyIdea(idea.text)}
-                        >
-                          <Save className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </ScrollArea>
-              </CardContent>
-            </Card>
+            <DailyIdeas
+              dailyIdeas={dailyIdeas}
+              toggleDailyIdeaComplete={toggleDailyIdeaComplete}
+              copyDailyIdea={copyDailyIdea}
+              saveDailyIdea={saveDailyIdea}
+              copiedStates={copiedStates}
+            />
           </TabsContent>
 
           <TabsContent value="saved">
