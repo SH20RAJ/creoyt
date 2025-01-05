@@ -8,8 +8,8 @@ import ProjectsPage from "./projects/page";
 
 export default function page() {
   return (
-    <div className="relative">
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+    <div className="relative m-0">
+      <div className="flex flex-1 flex-col gap-4  ">
         <EnterTopic />
         <ToolList1 />
         <Settings name="Channel Settings" />

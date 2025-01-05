@@ -23,7 +23,10 @@ export default async function Layout({ children }) {
       <div className="absolute bottom-0 right-[-20%] top-[-10%] size-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]" />
 
       <AppSidebar />
-      <SidebarInset className="flex flex-col flex-1 relative z-0">
+      <SidebarInset
+        variant="inset"
+        className="flex flex-col flex-1 relative z-0  "
+      >
         <div className="absolute bottom-0 -z-10 left-[30%] right-0 top-[-10%] size-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]" />
         <div className="absolute bottom-0 -z-10 right-[-20%] top-[40%] size-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]" />
 

@@ -93,7 +93,7 @@ export default function PricingPage() {
             <h3 className="text-2xl font-bold mb-4">Pro</h3>
             <p className="text-white/80 mb-6">Best for growing channels</p>
             <div className="mb-6">
-              <span className="text-4xl font-bold">$29</span>
+              <span className="text-4xl font-bold">$10</span>
               <span className="text-white/80">/month</span>
             </div>
             <ul className="space-y-4 mb-8">
@@ -175,7 +175,7 @@ export default function PricingPage() {
               For professional creators
             </p>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-foreground">$99</span>
+              <span className="text-4xl font-bold text-foreground">$TBD</span>
               <span className="text-muted-foreground">/month</span>
             </div>
             <ul className="space-y-4 mb-8">
