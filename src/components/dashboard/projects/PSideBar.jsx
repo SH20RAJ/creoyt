@@ -14,10 +14,10 @@ import { useEffect } from "react";
 
 export default function PSideBar({ projectId, pageId }) {
   const { isMobile, state, toggleSidebar } = useSidebar();
-
   useEffect(() => {
-    toggleSidebar();
-  }, []);
+    // alert(state);
+    if (state === "expanded") toggleSidebar();
+  }, [state, toggleSidebar]);
 
   let projects = [
     {
