@@ -44,8 +44,8 @@ model User {
 
   @@index([email])
   @@index([username])
-  Project Project[]
-  Article Article[]
+  project Project[]
+  article Article[]
 }
 
 model Project {
@@ -57,7 +57,7 @@ model Project {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Article     Article[]
+  article     Article[]
   @@index([userId])
 }
 
@@ -70,7 +70,7 @@ model Article {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Project     Project   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Article_projectId_fkey")
+  projectId     Project   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Article_projectId_fkey")
   articleType  ArticleType?
   @@index([userId])
 }
