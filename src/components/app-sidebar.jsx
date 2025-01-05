@@ -101,7 +101,7 @@ const data = {
       items: [
         {
           title: "AI Assistant",
-          url: "/dashboard/scout/ai-assistant",
+          url: "/dashboard/scout/",
           isActive: false,
         },
         {
@@ -111,37 +111,37 @@ const data = {
         },
         {
           title: "Video Generator",
-          url: "/dashboard/#UnderConstruction",
+          url: "/dashboard/scout",
           isActive: false,
         },
         {
           title: "Article Generator",
-          url: "/dashboard/#UnderConstruction",
+          url: "/dashboard/scout",
           isActive: false,
         },
         {
           title: "Script Generator",
-          url: "/dashboard/#UnderConstruction",
+          url: "/dashboard/scout",
           isActive: false,
         },
         {
           title: "Keyword Research",
-          url: "/dashboard/keyword-research",
+          url: "/dashboard/scout",
           isActive: false,
         },
         {
           title: "Marketing Tools",
-          url: "/dashboard/marketing-tools",
+          url: "/dashboard/scout",
           isActive: false,
         },
         {
           title: "SEO Tools",
-          url: "/dashboard/seo-tools",
+          url: "/dashboard/scout",
           isActive: false,
         },
         {
           title: "Optimization",
-          url: "/dashboard/optimization",
+          url: "/dashboard/scout",
           isActive: false,
         },
       ],
