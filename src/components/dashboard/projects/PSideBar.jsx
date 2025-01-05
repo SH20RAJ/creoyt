@@ -9,8 +9,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useEffect } from "react";
 
 export default function PSideBar({ projectId, pageId }) {
+  const { isMobile, state, toggleSidebar } = useSidebar();
+
+  useEffect(() => {
+    toggleSidebar();
+  }, []);
+
   let projects = [
     {
       id: 1,
