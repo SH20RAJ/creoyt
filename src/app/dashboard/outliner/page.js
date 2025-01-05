@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Check, Copy, Sparkles, Save, Trash2, FileText } from "lucide-react";
+import { Check, Copy, Sparkles, Save, Trash2, FileText, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useSWR from 'swr';
+import { generateOutline } from '@/app/actions/outliner';
 
 export default function OutlinerPage() {
   const [topic, setTopic] = useState('');
@@ -16,16 +18,20 @@ export default function OutlinerPage() {
   const [generatedOutline, setGeneratedOutline] = useState([]);
   const [savedOutlines, setSavedOutlines] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleGenerate = () => {
-    // Mock outline generation - Replace with actual AI call
-    const mockOutline = [
-      { title: "Introduction", points: ["Hook", "Context", "Thesis"] },
-      { title: "Main Point 1", points: ["Supporting evidence", "Example", "Analysis"] },
-      { title: "Main Point 2", points: ["Data", "Case study", "Impact"] },
-      { title: "Conclusion", points: ["Summary", "Call to action"] }
-    ];
-    setGeneratedOutline(mockOutline);
+  const handleGenerate = async () => {
+    if (!topic) return;
+    
+    setIsGenerating(true);
+    try {
+      const result = await generateOutline(topic, content);
+      setGeneratedOutline(result.sections);
+    } catch (error) {
+      toast.error('Failed to generate outline');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleSave = () => {
@@ -53,7 +59,7 @@ export default function OutlinerPage() {
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-b from-background to-muted">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-6xl mx-auto space-y-8"
@@ -72,7 +78,8 @@ export default function OutlinerPage() {
                   AI Video Outline Generator
                 </CardTitle>
                 <CardDescription>
-                  Enter your video topic and content to generate a structured outline
+                  Enter your video topic and content to generate a structured
+                  outline
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -92,28 +99,55 @@ export default function OutlinerPage() {
                     className="min-h-[200px]"
                   />
                 </div>
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   size="lg"
                   onClick={handleGenerate}
+                  disabled={isGenerating || !topic}
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Generate Outline
+                  {isGenerating ? (
+                    <>
+                      {" "}
+                      <Loader className="w-4 h-4 mr-2 animate-spin" />
+                      Generating Outline...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate Outline
+                    </>
+                  )}
                 </Button>
 
                 {generatedOutline.length > 0 && (
                   <div className="w-full p-4 rounded-lg bg-muted">
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold">Generated Outline</h3>
+                      <h3 className="text-lg font-semibold">
+                        Generated Outline
+                      </h3>
                       <div className="space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => {
-                          navigator.clipboard.writeText(JSON.stringify(generatedOutline, null, 2));
-                          setIsCopied(true);
-                          setTimeout(() => setIsCopied(false), 2000);
-                        }}>
-                          {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              JSON.stringify(generatedOutline, null, 2)
+                            );
+                            setIsCopied(true);
+                            setTimeout(() => setIsCopied(false), 2000);
+                          }}
+                        >
+                          {isCopied ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
                         </Button>
-                        <Button variant="outline" size="sm" onClick={handleSave}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleSave}
+                        >
                           <Save className="w-4 h-4" />
                         </Button>
                       </div>
@@ -130,7 +164,9 @@ export default function OutlinerPage() {
                           <h4 className="font-medium mb-2">{section.title}</h4>
                           <ul className="space-y-1 ml-4">
                             {section.points.map((point, idx) => (
-                              <li key={idx} className="text-muted-foreground">• {point}</li>
+                              <li key={idx} className="text-muted-foreground">
+                                • {point}
+                              </li>
                             ))}
                           </ul>
                         </motion.div>
@@ -167,11 +203,13 @@ export default function OutlinerPage() {
                       >
                         <div className="flex justify-between items-start mb-2">
                           <h3 className="font-medium">{saved.topic}</h3>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => {
-                              setSavedOutlines(savedOutlines.filter(o => o.id !== saved.id));
+                              setSavedOutlines(
+                                savedOutlines.filter((o) => o.id !== saved.id)
+                              );
                               toast.success("Outline deleted successfully!");
                             }}
                           >

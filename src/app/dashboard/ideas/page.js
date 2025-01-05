@@ -219,7 +219,7 @@ export default function IdeasPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-[200px]">
+                <ScrollArea className="min-h-[400px]">
                   {savedIdeas?.map((idea, index) => (
                     <Card key={index} className="p-4 mb-2">
                       <div className="flex items-center justify-between">
