@@ -1,20 +1,35 @@
-'use client';
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+"use client";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Check, Copy, Sparkles, Save, Trash2, FileText, Loader } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Sparkles,
+  Save,
+  Trash2,
+  FileText,
+  Loader,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import useSWR from 'swr';
-import { generateOutline } from '@/app/actions/outliner';
+import useSWR from "swr";
+import { generateOutline } from "@/app/actions/outliner";
 
 export default function OutlinerPage() {
-  const [topic, setTopic] = useState('');
-  const [content, setContent] = useState('');
+  const [topic, setTopic] = useState("");
+  const [content, setContent] = useState("");
   const [generatedOutline, setGeneratedOutline] = useState([]);
   const [savedOutlines, setSavedOutlines] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
@@ -22,36 +37,44 @@ export default function OutlinerPage() {
 
   const handleGenerate = async () => {
     if (!topic) return;
-    
+
     setIsGenerating(true);
     try {
       const result = await generateOutline(topic, content);
       setGeneratedOutline(result.sections);
     } catch (error) {
-      toast.error('Failed to generate outline');
+      toast.error("Failed to generate outline");
     } finally {
       setIsGenerating(false);
     }
   };
 
   const handleSave = () => {
-    setSavedOutlines([...savedOutlines, { 
-      id: Date.now(),
-      topic,
-      outline: generatedOutline 
-    }]);
+    setSavedOutlines([
+      ...savedOutlines,
+      {
+        id: Date.now(),
+        topic,
+        outline: generatedOutline,
+      },
+    ]);
     toast.success("Outline saved successfully!");
   };
 
   const handleDelete = (id) => {
-    setSavedOutlines(savedOutlines.filter(outline => outline.id !== id));
+    setSavedOutlines(savedOutlines.filter((outline) => outline.id !== id));
     toast.error("Outline deleted!");
   };
 
   const copyToClipboard = () => {
     const outlineText = generatedOutline
-      .map(section => `${section.title}\n${section.points.map(point => `  • ${point}`).join('\n')}`)
-      .join('\n\n');
+      .map(
+        (section) =>
+          `${section.title}\n${section.points
+            .map((point) => `  • ${point}`)
+            .join("\n")}`
+      )
+      .join("\n\n");
     navigator.clipboard.writeText(outlineText);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);

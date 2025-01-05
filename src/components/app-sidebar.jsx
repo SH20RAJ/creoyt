@@ -170,12 +170,12 @@ const data = {
       icon: MessageSquare,
       isActive: false,
     },
-    {
-      title: "Trends",
-      url: "/dashboard/trends",
-      icon: LineChart,
-      isActive: false,
-    },
+    // {
+    //   title: "Trends",
+    //   url: "/dashboard/trends",
+    //   icon: LineChart,
+    //   isActive: false,
+    // },
   ],
   navSecondary: [
     {
@@ -189,16 +189,22 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [{
-    name: "Learn",
-    url: "/learn",
-    icon: BookOpen,
-  }
+  projects: [
+    {
+      name: "Subscription",
+      url: "/dashboard/subscription",
+      icon: Users,
+    },
+
+    {
+      name: "Learn",
+      url: "/learn",
+      icon: BookOpen,
+    },
   ],
 };
 
 export function AppSidebar({ ...props }) {
-
   return (
     <Sidebar variant="inset" {...props} className=" bg-transparent ">
       <SidebarHeader className="bg-transparent">
@@ -219,7 +225,7 @@ export function AppSidebar({ ...props }) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="gap-0">
-      <NavMain  items={data.navMain} />
+        <NavMain items={data.navMain} />
 
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
