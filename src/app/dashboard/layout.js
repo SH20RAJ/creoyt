@@ -9,6 +9,10 @@ import {
 } from "@/components/ui/sidebar";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+  title: "Dashboard",
+};
+
 export default async function Layout({ children }) {
   const session = await auth();
 

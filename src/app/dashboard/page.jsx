@@ -15,10 +15,7 @@ export default function page() {
         <Settings name="Channel Settings" />
         <IdeasPage />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <ProjectsPage />
-          <ChatBot />
-        </div>
+        <ProjectsPage />
         <div className="flex flex-1 flex-col w-full gap-4">
           <ExternalToolList />
         </div>

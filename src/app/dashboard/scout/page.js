@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import ReactMarkdown from 'react-markdown';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -53,14 +54,64 @@ export default function ChatBot({props}) {
     setInput("");
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      // Get previous messages for context (excluding the initial bot greeting)
+      const contextMessages = messages.slice(1).map(msg => msg.content).join("\n");
+      
+      const response = await fetch('/api/scout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: input,
+          context: contextMessages // Send conversation history
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
       const botResponse = {
         role: "bot",
-        content: "Thank you for your message. I'm analyzing your query to provide the best possible assistance for your YouTube channel growth.",
+        content: data.content,
       };
+
       setMessages((prev) => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMessage = {
+        role: "bot", 
+        content: "I apologize, but I'm having trouble processing your request. Please try again."
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const MessageContent = ({ content, isUser }) => {
+    return isUser ? (
+      <p className="text-sm leading-relaxed">{content}</p>
+    ) : (
+      <ReactMarkdown 
+        className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+        components={{
+          // Style markdown elements
+          h1: ({node, ...props}) => <h1 className="text-xl font-bold my-2" {...props}/>,
+          h2: ({node, ...props}) => <h2 className="text-lg font-bold my-2" {...props}/>,
+          h3: ({node, ...props}) => <h3 className="text-md font-bold my-2" {...props}/>,
+          ul: ({node, ...props}) => <ul className="list-disc ml-4 my-2" {...props}/>,
+          ol: ({node, ...props}) => <ol className="list-decimal ml-4 my-2" {...props}/>,
+          li: ({node, ...props}) => <li className="my-1" {...props}/>,
+          code: ({node, ...props}) => <code className="bg-muted px-1 py-0.5 rounded" {...props}/>,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
   };
 
   return (
@@ -100,7 +151,10 @@ export default function ChatBot({props}) {
                         : "bg-muted"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed">{message.content}</p>
+                    <MessageContent 
+                      content={message.content} 
+                      isUser={message.role === "user"} 
+                    />
                   </div>
                 </div>
               ))}
