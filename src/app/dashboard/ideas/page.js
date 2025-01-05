@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -11,39 +11,34 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Lightbulb, Save, X, Wand2, Brain, Copy, Check } from "lucide-react"; // Add Copy and Check to the imports
+import { Save, X, Wand2, Brain, Copy, Check } from "lucide-react"; // Add Copy and Check to the imports
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DailyIdeas from "@/components/dashboard/ideas/DailyIdeas";
+import { getIdeas, getMocupIdeas } from "@/app/actions/ideas";
 
 export default function IdeasPage() {
   const [topic, setTopic] = useState("");
   const [generatedIdeas, setGeneratedIdeas] = useState([]);
   const [savedIdeas, setSavedIdeas] = useState([]);
-  const [dailyIdeas, setDailyIdeas] = useState([
-    {
-      id: 1,
-      text: "10 Hidden Features in Latest iPhone Update",
-      completed: false,
-    },
-    {
-      id: 2,
-      text: "How to Start a Successful YouTube Channel in 2024",
-      completed: false,
-    },
-    { id: 3, text: "Best Budget Gaming Setup Under $500", completed: false },
-  ]);
+  const [dailyIdeas, setDailyIdeas] = useState([]); // Initialize with empty array
   const [copiedStates, setCopiedStates] = useState({}); // Add this state
 
-  const handleGenerateIdeas = () => {
+  useEffect(() => {
+    const fetchIdeas = async () => {
+      const ideas = await getIdeas();
+      console.log(ideas);
+      
+      setDailyIdeas(ideas?.ideas);
+    };
+    fetchIdeas();
+  }, []);
+
+  const handleGenerateIdeas = async () => {
     // Mock generated ideas - Replace with actual API call
-    const mockIdeas = [
-      "5 Advanced Tips for " + topic,
-      "Beginner's Guide to " + topic,
-      "What Nobody Tells You About " + topic,
-      "How to Master " + topic + " in 30 Days",
-      topic + " Tips & Tricks 2024",
-    ];
-    setGeneratedIdeas(mockIdeas);
+    const mockIdeas = await getMocupIdeas({ topic });
+    console.log(mockIdeas);
+    
+    setGeneratedIdeas(mockIdeas?.ideas);
   };
 
   const handleSaveIdea = (idea) => {
@@ -133,8 +128,15 @@ export default function IdeasPage() {
                       className="p-4 mb-2 hover:bg-accent transition-colors"
                     >
                       <div className="flex items-center justify-between">
-                        <p>{idea}</p>
+                        <p>{idea?.text}</p>
                         <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            // onClick={() => handleCopy(idea.text, `gen-${index}`)}
+                          >
+                            {idea?.score}
+                            </Button>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -149,7 +151,7 @@ export default function IdeasPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleSaveIdea(idea)}
+                            onClick={() => handleSaveIdea(idea.text)}
                           >
                             <Save className="w-4 h-4" />
                           </Button>
@@ -186,8 +188,15 @@ export default function IdeasPage() {
                   {savedIdeas.map((idea, index) => (
                     <Card key={index} className="p-4 mb-2">
                       <div className="flex items-center justify-between">
-                        <p>{idea}</p>
+                        <p>{idea?.text}</p>
                         <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy(idea, `saved-${index}`)}
+                          >
+                            {idea?.score}
+                          </Button>
                           <Button
                             variant="ghost"
                             size="sm"

@@ -1,4 +1,5 @@
-import TagGenerator from "@/app/(landing)/tools/tag-generator/page";
+
+import TagGenerator from "@/components/dashboard/tools/TagGenerator";
 import React from "react";
 
 export default function page() {
