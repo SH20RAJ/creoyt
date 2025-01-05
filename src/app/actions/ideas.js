@@ -40,7 +40,7 @@ const schema = {
 };
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+  model: "gemini-1.5-flash",
   generationConfig: {
     responseMimeType: "application/json",
     responseSchema: schema,
@@ -63,7 +63,6 @@ export async function getIdeas() {
 }
 
 export async function getMocupIdeas({ topic }) {
- 
   const result = await model.generateContent(
     `Generate YouTube video ideas for a ${YouTubeSettings.channelType} channel topic:  ${topic}
         

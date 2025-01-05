@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -7,7 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export async function generateOutline(topic, content) {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.7,
         topK: 1,
@@ -31,9 +31,8 @@ export async function generateOutline(topic, content) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return JSON.parse(response.text());
-
   } catch (error) {
-    console.error('Error generating outline:', error);
-    throw new Error('Failed to generate outline');
+    console.error("Error generating outline:", error);
+    throw new Error("Failed to generate outline");
   }
 }

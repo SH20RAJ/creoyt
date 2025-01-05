@@ -30,7 +30,7 @@ export default function DailyIdeas({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {dailyIdeas.length < 0 && <ScrollArea className="h-[200px]">
+        {dailyIdeas.length > 0 && <ScrollArea className="h-[200px]">
           {dailyIdeas.map((idea) => (
             <div key={idea.id} className="flex items-center space-x-4 mb-2">
               <Checkbox

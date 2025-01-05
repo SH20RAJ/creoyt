@@ -9,7 +9,7 @@ export async function POST(req) {
     const { message, context } = await req.json();
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.7,
         topK: 1,
