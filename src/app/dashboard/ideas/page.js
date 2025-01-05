@@ -1,5 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
+import useSWR, { mutate } from "swr";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -11,75 +13,109 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Save, X, Wand2, Brain, Copy, Check } from "lucide-react"; // Add Copy and Check to the imports
+import { Save, X, Wand2, Brain, Copy, Check, Loader } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DailyIdeas from "@/components/dashboard/ideas/DailyIdeas";
 import { getIdeas, getMocupIdeas } from "@/app/actions/ideas";
+import { useEffect } from "react";
+// Custom fetchers
+const dailyIdeasFetcher = async () => {
+  const ideas = await getIdeas();
+  return ideas?.ideas || [];
+};
+
+const generatedIdeasFetcher = async (_, topic) => {
+  const ideas = await getMocupIdeas({ topic });
+  return ideas?.ideas || [];
+};
 
 export default function IdeasPage() {
   const [topic, setTopic] = useState("");
-  const [generatedIdeas, setGeneratedIdeas] = useState([]);
+  const [copiedStates, setCopiedStates] = useState({});
   const [savedIdeas, setSavedIdeas] = useState([]);
-  const [dailyIdeas, setDailyIdeas] = useState([]); // Initialize with empty array
-  const [copiedStates, setCopiedStates] = useState({}); // Add this state
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchIdeas = async () => {
-      const ideas = await getIdeas();
-      console.log(ideas);
-      
-      setDailyIdeas(ideas?.ideas);
-    };
-    fetchIdeas();
-  }, []);
+  // SWR hooks for data fetching
+  const { data: dailyIdeas = [], mutate: mutateDailyIdeas } = useSWR(
+    "daily-ideas",
+    dailyIdeasFetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+      dedupingInterval: 300000, // 5 minutes
+    }
+  );
+
+  const { data: generatedIdeas = [], mutate: mutateGeneratedIdeas } = useSWR(
+    topic ? ["generated-ideas", topic] : null,
+    () => generatedIdeasFetcher(null, topic),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 300000,
+      revalidateIfStale: false,
+    }
+  );
 
   const handleGenerateIdeas = async () => {
-    // Mock generated ideas - Replace with actual API call
-    const mockIdeas = await getMocupIdeas({ topic });
-    console.log(mockIdeas);
-    
-    setGeneratedIdeas(mockIdeas?.ideas);
+    if (!topic) return;
+
+    setLoading(true);
+    // Trigger revalidation of generated ideas
+    await mutateGeneratedIdeas();
+    setLoading(false);
   };
 
-  const handleSaveIdea = (idea) => {
-    setSavedIdeas([...savedIdeas, idea]);
+  const handleSaveIdea = async (ideaText) => {
+    setSavedIdeas((prev) => [...prev, { text: ideaText }]);
+    // After saving, revalidate both caches
+    await Promise.all([mutateDailyIdeas(), mutateGeneratedIdeas()]);
   };
 
   const handleRemoveIdea = (ideaToRemove) => {
-    setSavedIdeas(savedIdeas.filter((idea) => idea !== ideaToRemove));
+    setSavedIdeas((prev) =>
+      prev.filter((idea) => idea.text !== ideaToRemove.text)
+    );
   };
 
-  // Add this function to handle copying
   const handleCopy = (text, id) => {
     navigator.clipboard.writeText(text);
     setCopiedStates({ ...copiedStates, [id]: true });
     setTimeout(() => {
-      setCopiedStates({ ...copiedStates, [id]: false });
+      setCopiedStates((prev) => ({ ...prev, [id]: false }));
     }, 2000);
   };
 
-  // Add function to toggle completion
   const toggleDailyIdeaComplete = (id) => {
-    setDailyIdeas(
+    mutateDailyIdeas(
       dailyIdeas.map((idea) =>
         idea.id === id ? { ...idea, completed: !idea.completed } : idea
-      )
+      ),
+      false
     );
   };
 
-  // Add function to save daily idea
-  const saveDailyIdea = (text) => {
-    setSavedIdeas((prev) => [...prev, text]);
-  };
-
-  // Add function to copy idea text
   const copyDailyIdea = (text, id) => {
     navigator.clipboard.writeText(text);
     setCopiedStates({ ...copiedStates, [id]: true });
     setTimeout(() => {
-      setCopiedStates({ ...copiedStates, [id]: false });
+      setCopiedStates((prev) => ({ ...prev, [id]: false }));
     }, 2000);
   };
+
+  const saveDailyIdea = (idea) => {
+    setSavedIdeas((prev) => [...prev, { text: idea.text }]);
+  };
+
+  // Load saved ideas from localStorage on component mount
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("savedIdeas")) || [];
+    setSavedIdeas(saved);
+  }, []);
+
+  // Save ideas to localStorage whenever savedIdeas state changes
+  useEffect(() => {
+    localStorage.setItem("savedIdeas", JSON.stringify(savedIdeas));
+  }, [savedIdeas]);
 
   return (
     <div className="min-h-screen p-6 space-y-8">
@@ -116,8 +152,12 @@ export default function IdeasPage() {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                   />
-                  <Button onClick={handleGenerateIdeas}>
-                    <Brain className="w-4 h-4 mr-2" />
+                  <Button onClick={handleGenerateIdeas} disabled={loading}>
+                    {loading ? (
+                      <Loader className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Brain className="w-4 h-4 mr-2" />
+                    )}
                     Generate
                   </Button>
                 </div>
@@ -133,14 +173,9 @@ export default function IdeasPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            // onClick={() => handleCopy(idea.text, `gen-${index}`)}
-                          >
-                            {idea?.score}
-                            </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleCopy(idea, `gen-${index}`)}
+                            onClick={() =>
+                              handleCopy(idea.text, `gen-${index}`)
+                            }
                           >
                             {copiedStates[`gen-${index}`] ? (
                               <Check className="w-4 h-4 text-green-500" />
@@ -185,7 +220,7 @@ export default function IdeasPage() {
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[200px]">
-                  {savedIdeas.map((idea, index) => (
+                  {savedIdeas?.map((idea, index) => (
                     <Card key={index} className="p-4 mb-2">
                       <div className="flex items-center justify-between">
                         <p>{idea?.text}</p>
@@ -193,14 +228,9 @@ export default function IdeasPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleCopy(idea, `saved-${index}`)}
-                          >
-                            {idea?.score}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleCopy(idea, `saved-${index}`)}
+                            onClick={() =>
+                              handleCopy(idea.text, `saved-${index}`)
+                            }
                           >
                             {copiedStates[`saved-${index}`] ? (
                               <Check className="w-4 h-4 text-green-500" />
