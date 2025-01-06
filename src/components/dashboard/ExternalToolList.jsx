@@ -13,12 +13,13 @@ export default function ExternalToolList() {
       link: "https://vidiq.com/",
     },
     {
-      id: "tubebuddy",
-      name: "TubeBuddy",
-      description: "Bulk processing, thumbnail A/B testing, and tag tools",
+      id: "tl-draw",
+      name: "tldraw",
+      description:
+        "whiteboard, canvas, collaborative whiteboard, online drawing, team collaboration tool, free whiteboard app",
       icon: Bot,
       color: "blue",
-      link: "https://www.tubebuddy.com/",
+      link: "https://www.tldraw.com/",
     },
     {
       id: "canva",
