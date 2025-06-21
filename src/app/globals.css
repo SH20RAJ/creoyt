@@ -145,3 +145,6 @@
 .hero-gradient {
   @apply bg-gradient-to-br from-primary/5 via-transparent to-secondary/5;
 }
+
+
+@import "./clay.css"
