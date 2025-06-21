@@ -42,7 +42,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return null; // Mock: user not found in development
     }
-    const [user] = await this.getDB().select().from(users).where(eq(users.id, id)).limit(1);
+    const [user] = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
     return user;
   }
 
@@ -50,7 +50,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return null; // Mock: user not found in development
     }
-    const [user] = await this.getDB().select().from(users).where(eq(users.email, email)).limit(1);
+    const [user] = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
     return user;
   }
 
@@ -58,7 +58,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse({ id, ...userData });
     }
-    const [user] = await this.getDB().update(users).set(userData).where(eq(users.id, id)).returning();
+    const [user] = await this.db.update(users).set(userData).where(eq(users.id, id)).returning();
     return user;
   }
 
@@ -67,7 +67,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse(projectData);
     }
-    const [project] = await this.getDB().insert(projects).values(projectData).returning();
+    const [project] = await this.db.insert(projects).values(projectData).returning();
     return project;
   }
 
@@ -75,14 +75,14 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return []; // Mock: no projects in development
     }
-    return await this.getDB().select().from(projects).where(eq(projects.userId, userId));
+    return await this.db.select().from(projects).where(eq(projects.userId, userId));
   }
 
   async getProjectById(id) {
     if (this.isDevelopmentMock) {
       return null;
     }
-    const [project] = await this.getDB().select().from(projects).where(eq(projects.id, id)).limit(1);
+    const [project] = await this.db.select().from(projects).where(eq(projects.id, id)).limit(1);
     return project;
   }
 
@@ -90,7 +90,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse({ id, ...projectData });
     }
-    const [project] = await this.getDB().update(projects).set(projectData).where(eq(projects.id, id)).returning();
+    const [project] = await this.db.update(projects).set(projectData).where(eq(projects.id, id)).returning();
     return project;
   }
 
@@ -98,7 +98,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return; // Mock: deletion successful
     }
-    await this.getDB().delete(projects).where(eq(projects.id, id));
+    await this.db.delete(projects).where(eq(projects.id, id));
   }
 
   // Ideas operations
@@ -106,7 +106,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse(ideaData);
     }
-    const [idea] = await this.getDB().insert(ideas).values(ideaData).returning();
+    const [idea] = await this.db.insert(ideas).values(ideaData).returning();
     return idea;
   }
 
@@ -114,14 +114,14 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return []; // Mock: no ideas in development
     }
-    return await this.getDB().select().from(ideas).where(eq(ideas.userId, userId));
+    return await this.db.select().from(ideas).where(eq(ideas.userId, userId));
   }
 
   async getIdeaById(id) {
     if (this.isDevelopmentMock) {
       return null;
     }
-    const [idea] = await this.getDB().select().from(ideas).where(eq(ideas.id, id)).limit(1);
+    const [idea] = await this.db.select().from(ideas).where(eq(ideas.id, id)).limit(1);
     return idea;
   }
 
@@ -129,7 +129,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse({ id, ...ideaData });
     }
-    const [idea] = await this.getDB().update(ideas).set(ideaData).where(eq(ideas.id, id)).returning();
+    const [idea] = await this.db.update(ideas).set(ideaData).where(eq(ideas.id, id)).returning();
     return idea;
   }
 
@@ -137,7 +137,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return; // Mock: deletion successful
     }
-    await this.getDB().delete(ideas).where(eq(ideas.id, id));
+    await this.db.delete(ideas).where(eq(ideas.id, id));
   }
 
   // Waitlist operations
@@ -145,7 +145,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse({ email, name });
     }
-    const [entry] = await this.getDB().insert(waitlist).values({
+    const [entry] = await this.db.insert(waitlist).values({
       id: crypto.randomUUID(),
       email,
       name,
@@ -158,7 +158,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse(subscriptionData);
     }
-    const [subscription] = await this.getDB().insert(subscriptions).values(subscriptionData).returning();
+    const [subscription] = await this.db.insert(subscriptions).values(subscriptionData).returning();
     return subscription;
   }
 
@@ -166,7 +166,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return null;
     }
-    const [subscription] = await this.getDB().select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
+    const [subscription] = await this.db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
     return subscription;
   }
 
@@ -174,7 +174,7 @@ export class DatabaseService {
     if (this.isDevelopmentMock) {
       return this.mockResponse({ id, ...subscriptionData });
     }
-    const [subscription] = await this.getDB().update(subscriptions).set(subscriptionData).where(eq(subscriptions.id, id)).returning();
+    const [subscription] = await this.db.update(subscriptions).set(subscriptionData).where(eq(subscriptions.id, id)).returning();
     return subscription;
   }
 }

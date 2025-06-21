@@ -9,9 +9,9 @@ export function getDB() {
     if (typeof globalThis.DB !== 'undefined') {
       db = drizzle(globalThis.DB, { schema });
     }
-    // In development environment - use a mock database for now
-    else if (process.env.NODE_ENV === 'development') {
-      console.warn('Development mode: Using mock database. Set up Cloudflare D1 for full functionality.');
+    // In development environment or build time - use a mock database
+    else if (process.env.NODE_ENV === 'development' || process.env.NEXT_PHASE === 'phase-production-build') {
+      console.warn('Development/Build mode: Using mock database. Set up Cloudflare D1 for full functionality.');
       // Create a mock database that doesn't actually persist data
       const mockDB = {
         insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) }),

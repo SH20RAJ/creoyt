@@ -1,97 +1,75 @@
 "use client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+import { Search, Bell, MessageSquare } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarHeader,
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-import { useUser, useClerk } from "@clerk/nextjs";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useUser } from "@clerk/nextjs";
 
 export default function DashboardHeader() {
   const { user } = useUser();
-  const { signOut } = useClerk();
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 backdrop-blur-sm bg-background/80 border-b">
-      <div className="flex w-full items-center justify-between p-4">
-        <div className="flex w-full items-center gap-4">
+    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 backdrop-blur-sm bg-card border-b border-border">
+      <div className="flex w-full items-center justify-between px-6">
+        <div className="flex items-center gap-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
-
-          <div className="text-2xl font-semibold">
-            <h1 className="flex items-center gap-4">
-              <img
-                alt="Logo"
-                loading="lazy"
-                width={50}
-                height={50}
-                className="h-8 w-8 object-contain"
-                src="/logo.svg"
+          
+          {/* Search Bar */}
+          <div className="flex-1 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="Search tools, projects, or ideas..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-background border-border text-sm h-10 rounded-lg"
               />
-              <Link href={"/dashboard"} className="dark:text-white">
-                Creo<span className="text-fuchsia-400">vate</span>
-              </Link>
-            </h1>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 dark:text-gray-200"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Notifications</DropdownMenuItem>
-              <DropdownMenuItem>Mark all as read</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
-                <Avatar>
-                  <AvatarImage src={user?.imageUrl} alt="User" />
-                  <AvatarFallback>
-                    {user?.firstName?.[0] || user?.username?.[0] || "U"}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut()}>
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {/* Right Actions */}
+        <div className="flex items-center gap-3">
+          {/* Messages */}
+          <Button variant="ghost" size="sm" className="p-2 w-10 h-10 rounded-lg">
+            <MessageSquare className="w-5 h-5 text-foreground" />
+          </Button>
+
+          {/* Notifications */}
+          <Button variant="ghost" size="sm" className="relative p-2 w-10 h-10 rounded-lg">
+            <Bell className="w-5 h-5 text-foreground" />
+            <Badge 
+              variant="destructive" 
+              className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs bg-accent border-none"
+            >
+              3
+            </Badge>
+          </Button>
+
+          {/* User Profile */}
+          <div className="flex items-center gap-3 ml-2">
+            <Avatar className="w-10 h-10">
+              <AvatarImage src={user?.imageUrl} />
+              <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                {user?.firstName?.[0]}{user?.lastName?.[0]}
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden sm:block">
+              <p className="text-sm font-medium text-foreground">
+                {user?.firstName} {user?.lastName || 'Ranti'}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Student
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </header>

@@ -3,6 +3,10 @@ import { db } from '@/lib/database';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
+// Force dynamic runtime to prevent static generation
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(req) {

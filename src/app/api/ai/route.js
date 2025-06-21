@@ -1,6 +1,10 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { log } from "console";
 import { NextResponse } from "next/server";
+
+// Force dynamic runtime to prevent static generation
+export const dynamic = 'force-dynamic';
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const schema = {

@@ -165,12 +165,6 @@ const data = {
       icon: MessageSquare,
       isActive: false,
     },
-    // {
-    //   title: "Trends",
-    //   url: "/dashboard/trends",
-    //   icon: LineChart,
-    //   isActive: false,
-    // },
   ],
   navSecondary: [
     {
@@ -190,7 +184,6 @@ const data = {
       url: "/dashboard/subscription",
       icon: Users,
     },
-
     {
       name: "Learn",
       url: "/learn",
@@ -201,18 +194,18 @@ const data = {
 
 export function AppSidebar({ ...props }) {
   return (
-    <Sidebar variant="inset" {...props} className=" bg-transparent ">
+    <Sidebar variant="inset" {...props} className="bg-card border-r border-border">
       <SidebarHeader className="bg-transparent">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-500 text-white">
-                  <Sparkles className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg" style={{background: 'linear-gradient(135deg, #7C5CFC 0%, #9C7DFF 100%)'}}>
+                  <Sparkles className="size-4 text-white" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Creovate</span>
-                  <span className="truncate text-xs">Creative Assistant</span>
+                  <span className="truncate text-xs text-muted-foreground">Creative Assistant</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -221,7 +214,6 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent className="gap-0">
         <NavMain items={data.navMain} />
-
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
