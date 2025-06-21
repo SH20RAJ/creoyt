@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboard/navigation";
+import { useUser, UserButton } from '@clerk/nextjs';
 import { 
   LayoutDashboard, 
   Lightbulb, 
@@ -35,6 +36,7 @@ export function DashboardSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useUser();
 
   const toggleCollapsed = () => setIsCollapsed(!isCollapsed);
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
@@ -120,14 +122,32 @@ export function DashboardSidebar() {
               "flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-accent cursor-pointer",
               isCollapsed && !isMobileOpen && "justify-center"
             )}>
-              <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium">U</span>
-              </div>
-              {(!isCollapsed || isMobileOpen) && (
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">User Name</p>
-                  <p className="text-xs text-muted-foreground truncate">Free Plan</p>
+              {(!isCollapsed || isMobileOpen) ? (
+                <div className="flex items-center space-x-3">
+                  <UserButton 
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-8 h-8"
+                      }
+                    }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {user?.firstName || user?.emailAddresses[0]?.emailAddress || 'User'}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">Pro Plan</p>
+                  </div>
                 </div>
+              ) : (
+                <UserButton 
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8"
+                    }
+                  }}
+                />
               )}
             </div>
           </div>
