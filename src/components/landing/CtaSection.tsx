@@ -29,12 +29,16 @@ export function CtaSection() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="px-8 py-6 text-lg font-semibold">
-                Start Creating for Free
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" className="px-8 py-6 text-lg font-semibold" asChild>
+                <a href="/signup">
+                  Start Creating for Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </a>
               </Button>
-              <Button variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold">
-                Schedule a Demo
+              <Button variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold" asChild>
+                <a href="/login">
+                  Schedule a Demo
+                </a>
               </Button>
             </div>
             

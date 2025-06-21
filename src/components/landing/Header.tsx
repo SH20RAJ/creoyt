@@ -42,11 +42,11 @@ export function Header() {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center space-x-3">
-          <Button variant="ghost" size="sm">
-            Sign In
+          <Button variant="ghost" size="sm" asChild>
+            <a href="/login">Sign In</a>
           </Button>
-          <Button size="sm">
-            Get Started
+          <Button size="sm" asChild>
+            <a href="/signup">Get Started</a>
           </Button>
         </div>
 
@@ -75,11 +75,11 @@ export function Header() {
               </button>
             ))}
             <div className="pt-4 space-y-2">
-              <Button variant="ghost" size="sm" className="w-full">
-                Sign In
+              <Button variant="ghost" size="sm" className="w-full" asChild>
+                <a href="/login">Sign In</a>
               </Button>
-              <Button size="sm" className="w-full">
-                Get Started
+              <Button size="sm" className="w-full" asChild>
+                <a href="/signup">Get Started</a>
               </Button>
             </div>
           </nav>
