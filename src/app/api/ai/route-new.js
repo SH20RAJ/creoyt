@@ -2,7 +2,6 @@ import { getAIService } from '@/lib/cloudflare-ai';
 import { NextResponse } from "next/server";
 
 // Force dynamic runtime to prevent static generation
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req, env) {

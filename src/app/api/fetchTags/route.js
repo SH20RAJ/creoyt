@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 
 // Force dynamic runtime to prevent static generation
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
@@ -16,6 +17,9 @@ export async function POST(req) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.error("Failed to fetch tags");
+    return NextResponse.json(
+      { error: "Failed to fetch tags" },
+      { status: 500 }
+    );
   }
 }

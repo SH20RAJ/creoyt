@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import Settings from '@/components/dashboard/Settings'
 import React from 'react'
 

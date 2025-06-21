@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 
 import TagGenerator from "@/components/dashboard/tools/TagGenerator";
 import React from "react";

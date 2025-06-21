@@ -10,6 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
+    "setup:db": "wrangler d1 execute creovate-db --file=./schema.sql && wrangler d1 execute creovate-db-preview --file=./schema.sql",
     "deploy": "wrangler deploy",
     "cf:dev": "wrangler dev"
   },
@@ -88,7 +89,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.5",
+    "@cloudflare/next-on-pages": "^1.13.12",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "22.10.2",
     "drizzle-kit": "^0.28.0",

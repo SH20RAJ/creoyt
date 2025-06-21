@@ -5,13 +5,13 @@ let db;
 
 export function getDB() {
   if (!db) {
-    // In Cloudflare Workers environment
+    // In Cloudflare Workers environment with D1 binding
     if (typeof globalThis.DB !== 'undefined') {
       db = drizzle(globalThis.DB, { schema });
     }
     // In development environment or build time - use a mock database
-    else if (process.env.NODE_ENV === 'development' || process.env.NEXT_PHASE === 'phase-production-build') {
-      console.warn('Development/Build mode: Using mock database. Set up Cloudflare D1 for full functionality.');
+    else if (process.env.NODE_ENV === 'development' || process.env.NEXT_PHASE === 'phase-production-build' || typeof window !== 'undefined') {
+      console.warn('Development/Build mode: Using mock database. Deploy to Cloudflare for full D1 functionality.');
       // Create a mock database that doesn't actually persist data
       const mockDB = {
         insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) }),
@@ -22,7 +22,7 @@ export function getDB() {
       db = mockDB;
     }
     else {
-      throw new Error('Database connection not available');
+      throw new Error('Database connection not available. Please deploy to Cloudflare Workers with D1 binding.');
     }
   }
   return db;

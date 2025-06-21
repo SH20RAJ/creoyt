@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { EnterTopic } from "@/components/dashboard/EnterTopic";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import ExternalToolList from "@/components/dashboard/ExternalToolList";

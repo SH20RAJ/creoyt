@@ -1,25 +1,51 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "creovate"
-main = ".vercel/cache/wrangler_deploy/index.js"
-compatibility_date = "2024-05-15"
+main = ".vercel/output/static/_worker.js/index.js"
+compatibility_date = "2024-11-18"
 compatibility_flags = ["nodejs_compat"]
 
 # Bind a D1 database. D1 is Cloudflare's native serverless SQL database.
 [[d1_databases]]
 binding = "DB"
 database_name = "creovate-db"
-database_id = "your-database-id" # This will be replaced when you create the database
+database_id = "ddb16a3e-8cad-4880-b333-9131071b53f3"
+
+# Bind Cloudflare AI for Llama 3
+[ai]
+binding = "AI"
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
 
 [build]
-command = "npx @cloudflare/next-on-pages@1"
+command = "npx @cloudflare/next-on-pages"
 
-[[build.upload.rules]]
+[[rules]]
 type = "CompiledWasm"
 globs = ["**/*.wasm"]
 fallthrough = true
 
+[env.preview]
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "creovate-db-preview"
+database_id = "8dc23625-0d22-4a1c-81de-e9c8a2adc443"
+
+[env.preview.ai]
+binding = "AI"
+
 [env.preview.vars]
 NODE_ENV = "development"
+
+[env.production]
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "creovate-db"
+database_id = "ddb16a3e-8cad-4880-b333-9131071b53f3"
+
+[env.production.ai]
+binding = "AI"
 
 [env.production.vars]
 NODE_ENV = "production"

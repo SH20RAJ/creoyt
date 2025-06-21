@@ -1,36 +1,47 @@
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 export async function generateOutline(topic, content) {
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        temperature: 0.7,
-        topK: 1,
-        maxOutputTokens: 2048,
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/ai`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        task: 'content',
+        topic: topic,
+        content: content,
+        settings: {
+          type: 'outline',
+          format: 'json'
+        }
+      }),
     });
 
-    const prompt = `Create a detailed video outline for: ${topic}
-    Additional context: ${content}
-    
-    Format the response as JSON with this structure:
-    {
-      "sections": [
-        {
-          "title": "section name",
-          "points": ["point 1", "point 2"]
-        }
-      ]
-    }`;
+    if (!response.ok) {
+      throw new Error('Failed to generate outline');
+    }
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    return JSON.parse(response.text());
+    const data = await response.json();
+    
+    // Try to parse the content as JSON if it's a string
+    if (typeof data.content === 'string') {
+      try {
+        return JSON.parse(data.content);
+      } catch {
+        // If parsing fails, return a structured format
+        return {
+          sections: [
+            {
+              title: "Generated Outline",
+              points: data.content.split('\n').filter(line => line.trim())
+            }
+          ]
+        };
+      }
+    }
+    
+    return data.content || data;
   } catch (error) {
     console.error("Error generating outline:", error);
     throw new Error("Failed to generate outline");

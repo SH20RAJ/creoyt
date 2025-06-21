@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import ExternalToolList from "@/components/dashboard/ExternalToolList";
 import ToolList1 from "@/components/dashboard/tools/ToolList1";
 

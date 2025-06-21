@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import PEditor from "@/components/dashboard/projects/PEditor";
 import PSideBar from "@/components/dashboard/projects/PSideBar";
 import React from "react";

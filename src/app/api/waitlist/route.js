@@ -2,6 +2,7 @@ import { db } from '@/lib/database';
 import { NextResponse } from 'next/server';
 
 // Force dynamic runtime to prevent static generation
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request) {

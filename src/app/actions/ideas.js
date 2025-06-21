@@ -1,75 +1,62 @@
 "use server";
 
 import { YouTubeSettings } from "@/lib/settings";
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { NextResponse } from "next/server";
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-const schema = {
-  type: SchemaType.OBJECT,
-  properties: {
-    ideas: {
-      type: SchemaType.ARRAY,
-      description: "List of video ideas",
-      items: {
-        type: SchemaType.OBJECT,
-        properties: {
-          id: {
-            type: SchemaType.NUMBER,
-            description: "Unique identifier for the idea",
-          },
-          text: {
-            type: SchemaType.STRING,
-            description: "The video idea title",
-          },
-          completed: {
-            type: SchemaType.BOOLEAN,
-            description: "Whether the idea has been completed",
-          },
-          score: {
-            type: SchemaType.NUMBER,
-            description:
-              "a number between 0 and 100 indicating the relevance of the idea",
-          },
-        },
-        required: ["id", "text", "completed"],
-      },
-    },
-  },
-  required: ["ideas"],
-};
-
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-  generationConfig: {
-    responseMimeType: "application/json",
-    responseSchema: schema,
-  },
-});
 
 export async function getIdeas() {
-  const result = await model.generateContent(
-    `Generate YouTube video ideas for a ${
-      YouTubeSettings.channelType
-    } channel about:  ${YouTubeSettings.channelTags.join(", ")}
-        Channel focus: ${YouTubeSettings.channelTags.join(", ")}
-        
-        Make the ideas engaging and optimized for YouTube search. Include trending topics and keyword-rich`
-  );
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/ai`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        task: 'ideas',
+        topic: `${YouTubeSettings.channelType} channel about: ${YouTubeSettings.channelTags.join(", ")}`,
+        settings: {
+          channelType: YouTubeSettings.channelType,
+          channelTags: YouTubeSettings.channelTags,
+          focusAreas: YouTubeSettings.channelTags,
+        }
+      }),
+    });
 
-  // console.log(result.response.text());
+    if (!response.ok) {
+      throw new Error('Failed to generate ideas');
+    }
 
-  return JSON.parse(result.response.text());
+    const data = await response.json();
+    return data.ideas || [];
+  } catch (error) {
+    console.error('Error generating ideas:', error);
+    return [];
+  }
 }
 
 export async function getMocupIdeas({ topic }) {
-  const result = await model.generateContent(
-    `Generate YouTube video ideas for a ${YouTubeSettings.channelType} channel topic:  ${topic}
-        
-        Make the ideas engaging and optimized for YouTube search. Include trending topics and keyword-rich`
-  );
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/ai`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        task: 'ideas',
+        topic: topic,
+        settings: {
+          channelType: YouTubeSettings.channelType,
+          channelTags: YouTubeSettings.channelTags,
+        }
+      }),
+    });
 
-  // console.log(result.response.text());
+    if (!response.ok) {
+      throw new Error('Failed to generate ideas');
+    }
 
-  return JSON.parse(result.response.text());
+    const data = await response.json();
+    return data.ideas || [];
+  } catch (error) {
+    console.error('Error generating ideas:', error);
+    return [];
+  }
 }

@@ -1,24 +1,17 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getAIService } from "@/lib/cloudflare-ai";
 import { YouTubeSettings } from "@/lib/settings";
 
 // Force dynamic runtime to prevent static generation
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-export async function POST(req) {
+export async function POST(req, env) {
   try {
     const { message, context } = await req.json();
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        temperature: 0.7,
-        topK: 1,
-        maxOutputTokens: 2048,
-      },
-    });
+    // Get AI service with Cloudflare AI binding
+    const aiService = getAIService(env);
 
     const prompt = `You are CreoYT AI Assistant, an expert in YouTube growth and content strategy.
 
@@ -32,17 +25,23 @@ Current query: ${message}
 
 Please provide helpful advice for the current query. Keep responses concise and actionable.`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const result = await aiService.generateContent(prompt, {
+      maxTokens: 2048,
+      temperature: 0.7
+    });
+
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to generate response');
+    }
 
     return NextResponse.json({
-      content: response.text(),
+      content: result.content,
     });
   } catch (error) {
     console.error("Chat API Error:", error);
-    return NextResponse.error({
-      status: 500,
-      body: "Internal Server Error",
-    });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

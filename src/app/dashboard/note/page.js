@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { auth } from "@clerk/nextjs/server";
 import React from "react";
 

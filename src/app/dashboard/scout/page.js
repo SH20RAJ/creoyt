@@ -1,4 +1,7 @@
 "use client";
+export const runtime = 'edge';
+
+
 import { useState } from "react";
 import ReactMarkdown from 'react-markdown';
 import { Button } from "@/components/ui/button";

@@ -1,15 +1,13 @@
 import { auth } from '@clerk/nextjs/server';
 import { db } from '@/lib/database';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getAIService } from '@/lib/cloudflare-ai';
 import { NextResponse } from "next/server";
 
 // Force dynamic runtime to prevent static generation
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-export async function POST(req) {
+export async function POST(req, env) {
   try {
     const { userId } = await auth();
 
@@ -22,64 +20,58 @@ export async function POST(req) {
 
     const { topic, settings } = await req.json();
 
-    const prompt = `
-      Generate creative content ideas for: ${topic}
-      Focus areas: ${settings?.channelTags?.join(", ") || "general content"}
-      
-      Please return a JSON object with the following structure:
-      {
-        "title": "Main idea title",
-        "description": "Detailed description of the content idea",
-        "tags": ["tag1", "tag2", "tag3"]
-      }
-      
-      Make the ideas engaging and optimized for content creation.
-    `;
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 1024,
-      },
-    });
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    let ideaData;
-    try {
-      ideaData = JSON.parse(text);
-    } catch (parseError) {
-      // Fallback if JSON parsing fails
-      ideaData = {
-        title: `Ideas for: ${topic}`,
-        description: text,
-        tags: [topic]
-      };
+    if (!topic || topic.trim().length === 0) {
+      return NextResponse.json(
+        { error: 'Topic is required' },
+        { status: 400 }
+      );
     }
 
-    // Save to database
-    const savedIdea = await db.createIdea({
-      id: crypto.randomUUID(),
-      title: ideaData.title,
-      description: ideaData.description,
-      content: text,
-      userId: userId,
-      tags: JSON.stringify(ideaData.tags || []),
-      category: 'generated',
-      status: 'draft'
-    });
+    // Get AI service with Cloudflare AI binding
+    const aiService = getAIService(env);
+    
+    // Generate ideas using Llama 3
+    const result = await aiService.generateIdeas(topic, settings);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Failed to generate ideas' },
+        { status: 500 }
+      );
+    }
+
+    // Save ideas to database
+    const savedIdeas = [];
+    for (const idea of result.ideas) {
+      try {
+        const ideaData = {
+          id: crypto.randomUUID(),
+          title: idea.title || `${topic} Idea`,
+          description: idea.description || 'AI-generated business idea',
+          content: JSON.stringify(idea),
+          userId: userId,
+          tags: JSON.stringify([topic, idea.category].filter(Boolean)),
+          category: 'generated',
+          status: 'draft'
+        };
+
+        const savedIdea = await db.createIdea(ideaData);
+        savedIdeas.push(savedIdea);
+      } catch (dbError) {
+        console.error('Database error saving idea:', dbError);
+        // Continue with other ideas even if one fails
+      }
+    }
 
     return NextResponse.json({
-      ...ideaData,
-      id: savedIdea.id
+      ideas: result.ideas,
+      savedIdeas,
+      model: result.model,
+      usage: result.usage
     });
+
   } catch (error) {
-    console.error("Error generating ideas:", error);
+    console.error('Error in ideas API:', error);
     return NextResponse.json(
       { error: 'Failed to generate ideas' },
       { status: 500 }
@@ -87,7 +79,7 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+export async function GET(req) {
   try {
     const { userId } = await auth();
 
@@ -99,10 +91,13 @@ export async function GET() {
     }
 
     const ideas = await db.getIdeasByUserId(userId);
+    
+    return NextResponse.json({
+      ideas: ideas || []
+    });
 
-    return NextResponse.json({ ideas });
   } catch (error) {
-    console.error("Error fetching ideas:", error);
+    console.error('Error fetching ideas:', error);
     return NextResponse.json(
       { error: 'Failed to fetch ideas' },
       { status: 500 }
