@@ -35,11 +35,6 @@ import Link from "next/link";
 import { title } from "process";
 
 const data = {
-  user: {
-    name: "CreoYT User",
-    email: "creator@creoyt.com",
-    avatar: "/avatars/default.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -213,11 +208,11 @@ export function AppSidebar({ ...props }) {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-500 text-white">
-                  <Video className="size-4" />
+                  <Sparkles className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">CreoYT</span>
-                  <span className="truncate text-xs">Content Creator</span>
+                  <span className="truncate font-semibold">Creovate</span>
+                  <span className="truncate text-xs">Creative Assistant</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -231,7 +226,7 @@ export function AppSidebar({ ...props }) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

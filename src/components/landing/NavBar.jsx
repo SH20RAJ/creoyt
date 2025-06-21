@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 
@@ -32,7 +32,7 @@ const MenuOptions = [
 ];
 
 const NavBar = () => {
-  const { data: session } = useSession();
+  const { isSignedIn, user } = useUser();
 
   return (
     <header className="z-[100] sticky top-0 w-full border-b backdrop-blur-sm bg-white/80 dark:bg-black/80 border-neutral-200 dark:border-white/[0.1]">
@@ -49,7 +49,7 @@ const NavBar = () => {
               src="/logo.svg"
             />
             <span className="font-semibold text-xl">
-              Creo<span className=" text-fuchsia-500">YT</span>
+              Creo<span className=" text-fuchsia-500">vate</span>
             </span>
           </Link>
 
@@ -82,7 +82,7 @@ const NavBar = () => {
             >
               Community
             </Link>
-            {session?.user ? (
+            {isSignedIn ? (
               <Link
                 href="/dashboard"
                 className="text-sm font-medium px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-600 rounded-md"
@@ -92,13 +92,13 @@ const NavBar = () => {
             ) : (
               <>
                 <Link
-                  href="/join"
+                  href="/sign-in"
                   className="text-sm font-medium px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                 >
                   Log in
                 </Link>
                 <Link
-                  href="/join"
+                  href="/sign-up"
                   className="text-sm font-medium px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-600 rounded-md"
                 >
                   Get Started
@@ -121,7 +121,7 @@ const NavBar = () => {
               className="h-8 w-8 object-contain"
               src="/_next/image?url=%2Flogo.png&w=128&q=75"
             />
-            <span className="font-semibold text-lg">CreoYT</span>
+            <span className="font-semibold text-lg">Creovate</span>
           </Link>
           <button
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"

@@ -1,12 +1,12 @@
-# 🎥 **CreoYT: Your Ultimate YouTube Content Assistant**
+# ✨ **Creovate: Your Ultimate Creative Content Assistant**
 
-[![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2FSH20RAJ%2Fcreoyt&labelColor=%23f47373&countColor=%23697689&style=flat)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2FSH20RAJ%2Fcreoyt)
+[![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fcreovate&labelColor=%23f47373&countColor=%23697689&style=flat)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fcreovate)
 
-![creoyt](https://socialify.git.ci/sh20raj/creoyt/image?description=1&language=1&name=1&owner=1&pattern=Circuit+Board&pulls=1&stargazers=1&theme=Dark)
+![creovate](https://socialify.git.ci/creovate/creovate/image?description=1&language=1&name=1&owner=1&pattern=Circuit+Board&pulls=1&stargazers=1&theme=Dark)
 
-Welcome to **CreoYT**, the all-in-one platform to help YouTube creators grow and manage their channels effortlessly! 🚀 Whether you're a seasoned creator or just starting, **CreoYT** has the tools you need to take your channel to the next level.
+Welcome to **Creovate**, the all-in-one platform for creators to generate ideas, manage projects, and bring creative visions to life! 🚀 Whether you're a content creator, writer, entrepreneur, or creative professional, **Creovate** provides the AI-powered tools you need to innovate and create.
 
-Visit our website: [https://creoyt.netlify.app/](https://creoyt.netlify.app/)
+Visit our website: [https://creovate.com/](https://creovate.com/)
 
 ---
 

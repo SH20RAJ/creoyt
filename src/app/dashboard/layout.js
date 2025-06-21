@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from '@clerk/nextjs/server';
 import { AppSidebar } from "@/components/app-sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
@@ -10,14 +10,14 @@ import {
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Dashboard",
+  title: "Dashboard - Creovate",
 };
 
 export default async function Layout({ children }) {
-  const session = await auth();
+  const { userId } = await auth();
 
-  if (!session?.user) {
-    redirect("/join");
+  if (!userId) {
+    redirect("/sign-in");
     return null;
   }
 

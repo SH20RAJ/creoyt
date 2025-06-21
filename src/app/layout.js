@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import { ClerkProvider } from '@clerk/nextjs';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -14,34 +14,34 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "CreoYT - Your Ultimate YouTube Content Assistant",
+  title: "Creovate - Your Ultimate Creative Content Assistant",
   description:
-    "CreoYT - Your go-to platform for social media content creation, sharing, and engagement. Join our community today!",
+    "Creovate - Your go-to platform for creative content creation, idea generation, and project management. Join our community today!",
   keywords:
-    "social media, content creation, video sharing, community, creators",
+    "content creation, idea generation, creative tools, project management, creators",
   openGraph: {
-    title: "CreoYT - Your Ultimate YouTube Content Assistant",
+    title: "Creovate - Your Ultimate Creative Content Assistant",
     description:
-      "CreoYT - Your go-to platform for social media content creation, sharing, and engagement",
+      "Creovate - Your go-to platform for creative content creation and idea generation",
     type: "website",
     locale: "en_US",
-    url: "https://creoyt.com",
-    siteName: "CreoYT",
+    url: "https://creovate.com",
+    siteName: "Creovate",
     images: [
       {
-        url: "https://creoyt.com/og-image.png",
+        url: "https://creovate.com/og-image.png",
         width: 1280,
         height: 720,
-        alt: "CreoYT - Your Ultimate YouTube Content Assistant",
+        alt: "Creovate - Your Ultimate Creative Content Assistant",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CreoYT - Your Ultimate YouTube Content Assistant",
+    title: "Creovate - Your Ultimate Creative Content Assistant",
     description:
-      "CreoYT - Your go-to platform for social media content creation",
-    creator: "@creoyt",
+      "Creovate - Your go-to platform for creative content creation",
+    creator: "@creovate",
   },
   robots: {
     index: true,
@@ -57,7 +57,7 @@ export default function RootLayout({ children }) {
 
   gtag('config', 'G-G941ZJM59F');`;
   return (
-    <SessionProvider>
+    <ClerkProvider>
       <html lang="en" className="dark" suppressHydrationWarning={true}>
         <head>
           <script
@@ -78,6 +78,6 @@ export default function RootLayout({ children }) {
           {children}
         </body>
       </html>
-    </SessionProvider>
+    </ClerkProvider>
   );
 }

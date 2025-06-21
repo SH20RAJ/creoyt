@@ -1,25 +1,26 @@
 import { EnterTopic } from "@/components/dashboard/EnterTopic";
+import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import ExternalToolList from "@/components/dashboard/ExternalToolList";
 import Settings from "@/components/dashboard/Settings";
 import ToolList1 from "@/components/dashboard/tools/ToolList1";
-import IdeasPage from "./ideas/page";
-import ChatBot from "./scout/page";
-import ProjectsPage from "./projects/page";
 
-export default function page() {
+export default function DashboardPage() {
   return (
-    <div className="relative m-0">
-      <div className="flex flex-1 flex-col gap-4  ">
-        <EnterTopic />
-        <ToolList1 />
-        <Settings name="Channel Settings" />
-        <IdeasPage />
+    <main className="flex-1 space-y-8 p-4 md:p-6 lg:p-8">
+      {/* Hero Section */}
+      <EnterTopic />
 
-        <ProjectsPage />
-        <div className="flex flex-1 flex-col w-full gap-4">
-          <ExternalToolList />
-        </div>
-      </div>
-    </div>
+      {/* Dashboard Overview */}
+      <DashboardOverview />
+
+      {/* Tools Section */}
+      <section className="space-y-6">
+        <ToolList1 />
+        <ExternalToolList />
+      </section>
+
+      {/* Settings */}
+      <Settings name="Dashboard Settings" />
+    </main>
   );
 }

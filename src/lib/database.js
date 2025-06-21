@@ -1,0 +1,174 @@
+import { getDB } from '@/db';
+import { users, projects, ideas, waitlist, subscriptions } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+
+export class DatabaseService {
+  constructor() {
+    this.db = getDB();
+    this.isDevelopmentMock = process.env.NODE_ENV === 'development' && !globalThis.DB;
+  }
+
+  // Helper method to handle mock responses
+  mockResponse(data = {}) {
+    if (this.isDevelopmentMock) {
+      return {
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        ...data
+      };
+    }
+    return data;
+  }
+
+  // User operations
+  async createUser(userData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse(userData);
+    }
+    const [user] = await this.db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  async getUserById(id) {
+    if (this.isDevelopmentMock) {
+      return null; // Mock: user not found in development
+    }
+    const [user] = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
+    return user;
+  }
+
+  async getUserByEmail(email) {
+    if (this.isDevelopmentMock) {
+      return null; // Mock: user not found in development
+    }
+    const [user] = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
+    return user;
+  }
+
+  async updateUser(id, userData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse({ id, ...userData });
+    }
+    const [user] = await this.db.update(users).set(userData).where(eq(users.id, id)).returning();
+    return user;
+  }
+
+  // Project operations
+  async createProject(projectData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse(projectData);
+    }
+    const [project] = await this.db.insert(projects).values(projectData).returning();
+    return project;
+  }
+
+  async getProjectsByUserId(userId) {
+    if (this.isDevelopmentMock) {
+      return []; // Mock: no projects in development
+    }
+    return await this.db.select().from(projects).where(eq(projects.userId, userId));
+  }
+
+  async getProjectById(id) {
+    if (this.isDevelopmentMock) {
+      return null;
+    }
+    const [project] = await this.db.select().from(projects).where(eq(projects.id, id)).limit(1);
+    return project;
+  }
+
+  async updateProject(id, projectData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse({ id, ...projectData });
+    }
+    const [project] = await this.db.update(projects).set(projectData).where(eq(projects.id, id)).returning();
+    return project;
+  }
+
+  async deleteProject(id) {
+    if (this.isDevelopmentMock) {
+      return; // Mock: deletion successful
+    }
+    await this.db.delete(projects).where(eq(projects.id, id));
+  }
+
+  // Ideas operations
+  async createIdea(ideaData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse(ideaData);
+    }
+    const [idea] = await this.db.insert(ideas).values(ideaData).returning();
+    return idea;
+  }
+
+  async getIdeasByUserId(userId) {
+    if (this.isDevelopmentMock) {
+      return []; // Mock: no ideas in development
+    }
+    return await this.db.select().from(ideas).where(eq(ideas.userId, userId));
+  }
+
+  async getIdeaById(id) {
+    if (this.isDevelopmentMock) {
+      return null;
+    }
+    const [idea] = await this.db.select().from(ideas).where(eq(ideas.id, id)).limit(1);
+    return idea;
+  }
+
+  async updateIdea(id, ideaData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse({ id, ...ideaData });
+    }
+    const [idea] = await this.db.update(ideas).set(ideaData).where(eq(ideas.id, id)).returning();
+    return idea;
+  }
+
+  async deleteIdea(id) {
+    if (this.isDevelopmentMock) {
+      return; // Mock: deletion successful
+    }
+    await this.db.delete(ideas).where(eq(ideas.id, id));
+  }
+
+  // Waitlist operations
+  async addToWaitlist(email, name) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse({ email, name });
+    }
+    const [entry] = await this.db.insert(waitlist).values({
+      id: crypto.randomUUID(),
+      email,
+      name,
+    }).returning();
+    return entry;
+  }
+
+  // Subscription operations
+  async createSubscription(subscriptionData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse(subscriptionData);
+    }
+    const [subscription] = await this.db.insert(subscriptions).values(subscriptionData).returning();
+    return subscription;
+  }
+
+  async getSubscriptionByUserId(userId) {
+    if (this.isDevelopmentMock) {
+      return null;
+    }
+    const [subscription] = await this.db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
+    return subscription;
+  }
+
+  async updateSubscription(id, subscriptionData) {
+    if (this.isDevelopmentMock) {
+      return this.mockResponse({ id, ...subscriptionData });
+    }
+    const [subscription] = await this.db.update(subscriptions).set(subscriptionData).where(eq(subscriptions.id, id)).returning();
+    return subscription;
+  }
+}
+
+export const db = new DatabaseService();

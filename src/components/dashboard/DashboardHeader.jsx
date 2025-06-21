@@ -14,11 +14,13 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function DashboardHeader() {
-  let session = useSession();
+  const { user } = useUser();
+  const { signOut } = useClerk();
+
   return (
     <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 backdrop-blur-sm bg-background/80 border-b">
       <div className="flex w-full items-center justify-between p-4">
@@ -37,7 +39,7 @@ export default function DashboardHeader() {
                 src="/logo.svg"
               />
               <Link href={"/dashboard"} className="dark:text-white">
-                Creo<span className="text-fuchsia-400">YT</span>
+                Creo<span className="text-fuchsia-400">vate</span>
               </Link>
             </h1>
           </div>
@@ -74,9 +76,9 @@ export default function DashboardHeader() {
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
                 <Avatar>
-                  <AvatarImage src={session?.data?.user?.image} alt="User" />
+                  <AvatarImage src={user?.imageUrl} alt="User" />
                   <AvatarFallback>
-                    {session?.data?.user?.name?.[0] || "U"}
+                    {user?.firstName?.[0] || user?.username?.[0] || "U"}
                   </AvatarFallback>
                 </Avatar>
               </button>

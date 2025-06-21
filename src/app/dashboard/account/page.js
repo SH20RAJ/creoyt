@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -7,13 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarDays, Mail, User } from "lucide-react";
 
 export default function AccountPage() {
-  const { data: session, status } = useSession();
+  const { user, isLoaded } = useUser();
 
-  const isUserLoading = status === "loading";
-
-  
-
-  if (status === "loading") {
+  if (!isLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="space-y-4 text-center">
@@ -24,8 +20,8 @@ export default function AccountPage() {
     );
   }
 
-  if (!session?.user) {
-    redirect("/join");
+  if (!user) {
+    redirect("/sign-in");
     return null;
   }
 
@@ -36,17 +32,17 @@ export default function AccountPage() {
           <CardHeader className="pb-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={session.user.image} alt={session.user.name} />
+                <AvatarImage src={user.imageUrl} alt={user.fullName || user.username} />
                 <AvatarFallback>
-                  {session.user.name?.charAt(0).toUpperCase()}
+                  {user.firstName?.charAt(0).toUpperCase() || user.username?.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-2xl">{session.user.name}</CardTitle>
+                <CardTitle className="text-2xl">{user.fullName || user.username}</CardTitle>
                 <CardDescription className="flex items-center gap-2 mt-2">
                   <Badge variant="secondary">Free Plan</Badge>
                   <span className="text-muted-foreground">·</span>
-                  <span className="text-muted-foreground">Member since 2024</span>
+                  <span className="text-muted-foreground">Member since {new Date(user.createdAt).getFullYear()}</span>
                 </CardDescription>
               </div>
             </div>
@@ -55,17 +51,17 @@ export default function AccountPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="h-5 w-5" />
-                <span>{session.user.email}</span>
+                <span>{user.primaryEmailAddress?.emailAddress}</span>
               </div>
-              {session.user.username && (
+              {user.username && (
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <User className="h-5 w-5" />
-                  <span>@{session.user.username}</span>
+                  <span>@{user.username}</span>
                 </div>
               )}
               <div className="flex items-center gap-3 text-muted-foreground">
                 <CalendarDays className="h-5 w-5" />
-                <span>Joined {new Date(session.user.createdAt || Date.now()).toLocaleDateString()}</span>
+                <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
           </CardContent>
