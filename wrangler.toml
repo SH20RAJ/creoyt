@@ -1,6 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "creovate"
 main = ".vercel/output/static/_worker.js/index.js"
+pages_build_output_dir = ".vercel/output/static"
 compatibility_date = "2024-11-18"
 compatibility_flags = ["nodejs_compat"]
 
