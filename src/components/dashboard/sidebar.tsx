@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboard/navigation";
 import { useUser, UserButton } from '@stackframe/stack';
+import { useSidebar } from "@/contexts/sidebar-context";
 import { 
   LayoutDashboard, 
   Lightbulb, 
@@ -33,8 +33,7 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function DashboardSidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen } = useSidebar();
   const pathname = usePathname();
   const user = useUser();
 
