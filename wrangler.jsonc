@@ -23,6 +23,9 @@
 			"migrations_dir": "./drizzle"
 		}
 	],
+	"ai": {
+		"binding": "AI"
+	},
 	"observability": {
 		"enabled": true
 	}
