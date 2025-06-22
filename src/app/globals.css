@@ -146,5 +146,11 @@
   @apply bg-gradient-to-br from-primary/5 via-transparent to-secondary/5;
 }
 
+.lab-bg::before {
+  overflow: hidden;
+  max-width: 100vw;
+  max-height: 100vh;
+  box-sizing: border-box;
+}
 
 @import "./clay.css"
