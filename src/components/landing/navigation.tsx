@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NAVIGATION_ITEMS } from "@/constants/landing/navigation";
 import { Menu, X } from "lucide-react";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { useUser, useStackApp, UserButton } from '@stackframe/stack';
 import Link from 'next/link';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const user = useUser();
+  const app = useStackApp();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -40,26 +42,29 @@ export function Navigation() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button variant="ghost">
-                  Sign In
-                </Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <Button>
-                  Get Started
-                </Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href="/dashboard">
-                <Button variant="ghost">
-                  Dashboard
-                </Button>
-              </Link>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            {!user ? (
+              <>
+                <Link href="/handler/sign-in">
+                  <Button variant="ghost">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/handler/sign-up">
+                  <Button>
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="ghost">
+                    Dashboard
+                  </Button>
+                </Link>
+                <UserButton />
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -88,29 +93,32 @@ export function Navigation() {
                 </a>
               ))}
               <div className="flex flex-col space-y-2 pt-4 mt-4 border-t border-border/50">
-                <SignedOut>
-                  <SignInButton mode="modal">
-                    <Button variant="ghost" className="justify-start">
-                      Sign In
-                    </Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <Button className="justify-start">
-                      Get Started
-                    </Button>
-                  </SignUpButton>
-                </SignedOut>
-                <SignedIn>
-                  <Link href="/dashboard">
-                    <Button variant="ghost" className="justify-start">
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <div className="flex items-center space-x-2 px-3 py-2">
-                    <UserButton afterSignOutUrl="/" />
-                    <span className="text-sm text-muted-foreground">Account</span>
-                  </div>
-                </SignedIn>
+                {!user ? (
+                  <>
+                    <Link href="/handler/sign-in">
+                      <Button variant="ghost" className="justify-start">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link href="/handler/sign-up">
+                      <Button className="justify-start">
+                        Get Started
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/dashboard">
+                      <Button variant="ghost" className="justify-start">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <div className="flex items-center space-x-2 px-3 py-2">
+                      <UserButton />
+                      <span className="text-sm text-muted-foreground">Account</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
