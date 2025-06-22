@@ -34,7 +34,7 @@ export class AIService {
     const startTime = Date.now();
     
     try {
-      const response: any = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      const response = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
         messages: params.messages,
         max_tokens: params.maxTokens || 1000,
         temperature: params.temperature || 0.7,
@@ -44,7 +44,7 @@ export class AIService {
         repetition_penalty: 1.1,
         frequency_penalty: 0.1,
         presence_penalty: 0.1
-      });
+      }) as { response: string; usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number } };
 
       const responseTime = Date.now() - startTime;
 

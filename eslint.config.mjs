@@ -16,6 +16,7 @@ const eslintConfig = [
       "react/jsx-props-no-spreading": "off",
       "react/react-in-jsx-scope": "off",
       "react/no-unescaped-entities": "off",
+      "@next/next/no-img-element": "warn", // Allow img elements for now
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
