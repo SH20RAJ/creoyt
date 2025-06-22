@@ -8,6 +8,13 @@
       "when": 1750558198609,
       "tag": "0000_mysterious_punisher",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1750562830756,
+      "tag": "0001_nifty_sugar_man",
+      "breakpoints": true
     }
   ]
 }
