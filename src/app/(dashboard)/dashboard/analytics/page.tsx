@@ -12,13 +12,10 @@ import {
 } from "@/components/ui/select";
 import { 
   BarChart3, 
-  TrendingUp, 
-  TrendingDown,
   Eye, 
   Heart, 
   Share2,
   Users,
-  Clock,
   Target,
   Download,
   Calendar,
@@ -269,7 +266,7 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {topPerformingContent.map((content, index) => (
+              {topPerformingContent.map((content, _index) => (
                 <div key={content.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent/50 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">

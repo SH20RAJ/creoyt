@@ -5,6 +5,7 @@ import { NAVIGATION_ITEMS } from '@/constants/landing';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { scrollToSection } from '@/utils/landing';
+import Link from 'next/link';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,10 +44,10 @@ export function Header() {
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center space-x-3">
           <Button variant="ghost" size="sm" asChild>
-            <a href="/handler/sign-in">Sign In</a>
+            <Link href="/handler/sign-in">Sign In</Link>
           </Button>
           <Button size="sm" asChild>
-            <a href="/handler/sign-up">Get Started</a>
+            <Link href="/handler/sign-up">Get Started</Link>
           </Button>
         </div>
 
@@ -76,10 +77,10 @@ export function Header() {
             ))}
             <div className="pt-4 space-y-2">
               <Button variant="ghost" size="sm" className="w-full" asChild>
-                <a href="/handler/sign-in">Sign In</a>
+                <Link href="/handler/sign-in">Sign In</Link>
               </Button>
               <Button size="sm" className="w-full" asChild>
-                <a href="/handler/sign-up">Get Started</a>
+                <Link href="/handler/sign-up">Get Started</Link>
               </Button>
             </div>
           </nav>

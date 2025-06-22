@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export function CtaSection() {
   return (
@@ -30,15 +31,15 @@ export function CtaSection() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button size="lg" className="px-8 py-6 text-lg font-semibold" asChild>
-                <a href="/handler/sign-up">
+                <Link href="/handler/sign-up">
                   Start Creating for Free
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
+                </Link>
               </Button>
               <Button variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold" asChild>
-                <a href="/handler/sign-in">
+                <Link href="/handler/sign-in">
                   Schedule a Demo
-                </a>
+                </Link>
               </Button>
             </div>
             

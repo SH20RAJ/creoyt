@@ -9,7 +9,12 @@
 		"lint": "next lint",
 		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "wrangler d1 migrations apply creaovate-db --local",
+		"db:migrate:prod": "wrangler d1 migrations apply creaovate-db --remote",
+		"db:status": "wrangler d1 migrations list creaovate-db",
+		"db:create": "wrangler d1 create creaovate-db"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.1.1",
@@ -41,10 +46,13 @@
 		"@radix-ui/react-toggle-group": "^1.1.10",
 		"@radix-ui/react-tooltip": "^1.2.7",
 		"@stackframe/stack": "^2.8.12",
+		"better-sqlite3": "^12.0.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
 		"date-fns": "^4.1.0",
+		"drizzle-kit": "^0.31.1",
+		"drizzle-orm": "^0.44.2",
 		"embla-carousel-react": "^8.6.0",
 		"input-otp": "^1.4.2",
 		"lucide-react": "^0.522.0",

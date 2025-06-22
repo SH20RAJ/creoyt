@@ -4,13 +4,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NAVIGATION_ITEMS } from "@/constants/landing/navigation";
 import { Menu, X } from "lucide-react";
-import { useUser, useStackApp, UserButton } from '@stackframe/stack';
+import { useUser, UserButton } from '@stackframe/stack';
 import Link from 'next/link';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUser();
-  const app = useStackApp();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 

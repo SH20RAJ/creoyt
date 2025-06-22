@@ -15,6 +15,14 @@
 		"binding": "ASSETS",
 		"directory": ".open-next/assets"
 	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "creaovate-db",
+			"database_id": "c7bc31dd-cdba-4a32-b526-1d8ec0ceabcb",
+			"migrations_dir": "./drizzle"
+		}
+	],
 	"observability": {
 		"enabled": true
 	}

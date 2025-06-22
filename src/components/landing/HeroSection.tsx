@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HERO_CONTENT } from '@/constants/landing';
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export function HeroSection() {
   return (
@@ -39,10 +40,10 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Button size="lg" className="px-8 py-6 text-lg font-semibold" asChild>
-              <a href="/handler/sign-up">
+              <Link href="/handler/sign-up">
                 {HERO_CONTENT.primaryCta}
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
+              </Link>
             </Button>
             <Button variant="outline" size="lg" className="px-8 py-6 text-lg font-semibold" asChild>
               <a href="#demo">
