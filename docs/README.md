@@ -6,7 +6,7 @@ A comprehensive, production-ready Next.js 15 application featuring AI-powered co
 
 ### 🤖 AI-Powered Content Generation
 - **5 Content Types**: Blog posts, social media, marketing copy, email campaigns, product descriptions
-- **Llama 3.1/4 Integration**: Advanced AI models via Cloudflare Workers AI
+- **OpenAI Integration**: Advanced AI models via OpenAI GPT-3.5-turbo and GPT-4
 - **Smart Templates**: Pre-configured prompts for optimal results
 - **Real-time Generation**: Streaming responses for instant feedback
 
@@ -46,7 +46,7 @@ A comprehensive, production-ready Next.js 15 application featuring AI-powered co
 - **Cloudflare Workers** - Edge computing platform
 - **Drizzle ORM** - Type-safe database toolkit
 - **Cloudflare D1** - Serverless SQLite database
-- **Cloudflare AI** - Llama 3.1/4 model access
+- **OpenAI API** - GPT-3.5-turbo and GPT-4 model access
 
 ### Development
 - **TypeScript** - Full-stack type safety
@@ -188,7 +188,7 @@ src/
 
 ### ✅ Completed
 - Full-stack application architecture
-- AI integration with Llama 3.1
+- AI integration with OpenAI GPT-3.5-turbo
 - Database schema and migrations
 - Complete API endpoints
 - Modern dashboard UI

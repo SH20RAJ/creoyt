@@ -8,8 +8,8 @@ DATABASE_URL="file:./dev.db"
 D1_DATABASE_URL="your-d1-database-url"
 
 # AI Configuration
-CLOUDFLARE_AI_API_TOKEN="your-cloudflare-ai-token"
-AI_MODEL="@cf/meta/llama-3.1-8b-instruct"
+OPENAI_API_KEY="your-openai-api-key"
+OPENAI_MODEL="gpt-3.5-turbo"
 
 # Authentication (Stack Auth)
 STACK_AUTH_PROJECT_ID="your-stack-auth-project-id"
@@ -48,9 +48,9 @@ NODE_ENV="development"
    ```
 
 3. **Available Models:**
-   - `@cf/meta/llama-3.1-8b-instruct` (Recommended)
-   - `@cf/meta/llama-3.1-70b-instruct` (More powerful)
-   - `@cf/meta/llama-2-7b-chat-int8`
+   - `gpt-3.5-turbo` (Recommended, cost-effective)
+   - `gpt-4` (More powerful, higher cost)
+   - `gpt-4-turbo` (Latest GPT-4 model)
 
 ## Database Setup
 

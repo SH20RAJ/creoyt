@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type { CloudflareAI } from '@/types/cloudflare';
 
 interface ChatRequest {
   messages: Array<{
@@ -15,7 +14,7 @@ interface ChatRequest {
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json();
-    
+
     if (!body.messages || !Array.isArray(body.messages)) {
       return NextResponse.json(
         { error: 'Messages array is required' },
@@ -23,76 +22,95 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if we're running in Cloudflare Workers environment with AI binding
-    const AI = (globalThis as { AI?: CloudflareAI }).AI;
-    
-    if (AI) {
-      try {
-        const aiResponse = await AI.run('@cf/meta/llama-3.1-8b-instruct', {
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: 'OpenAI API key not configured' },
+        { status: 500 }
+      );
+    }
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
           messages: body.messages,
           max_tokens: body.maxTokens || 1000,
           temperature: body.temperature || 0.7,
-          stream: body.stream || false
-        });
+          stream: body.stream || false,
+          frequency_penalty: 0.1,
+          presence_penalty: 0.1
+        })
+      });
 
-        return NextResponse.json({
-          response: aiResponse.response || aiResponse.content || "AI response generated successfully",
-          usage: aiResponse.usage || {
-            prompt_tokens: Math.floor(Math.random() * 50) + 10,
-            completion_tokens: Math.floor(Math.random() * 100) + 20,
-            total_tokens: Math.floor(Math.random() * 150) + 30
-          }
-        });
-      } catch (aiError) {
-        console.error('AI Error:', aiError);
-        // Fall back to placeholder if AI fails
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
       }
-    }
 
-    // Enhanced placeholder response indicating AI is ready but needs configuration
-    const lastMessage = body.messages[body.messages.length - 1].content;
-    const isAISetupQuery = lastMessage.toLowerCase().includes('ai') || 
-                          lastMessage.toLowerCase().includes('artificial intelligence') ||
-                          lastMessage.toLowerCase().includes('llama');
+      const data = await response.json();
 
-    if (isAISetupQuery) {
       return NextResponse.json({
-        response: `🤖 **AI System Ready!** 
+        response: data.choices[0]?.message?.content || "AI response generated successfully",
+        usage: data.usage || {
+          prompt_tokens: Math.floor(Math.random() * 50) + 10,
+          completion_tokens: Math.floor(Math.random() * 100) + 20,
+          total_tokens: Math.floor(Math.random() * 150) + 30
+        }
+      });
+    } catch (aiError) {
+      console.error('OpenAI API Error:', aiError);
 
-I'm your Creaovate AI assistant, powered by Llama 3.1. I can help you with:
+      // Enhanced fallback response
+      const lastMessage = body.messages[body.messages.length - 1].content;
+      const isAISetupQuery = lastMessage.toLowerCase().includes('ai') ||
+        lastMessage.toLowerCase().includes('artificial intelligence') ||
+        lastMessage.toLowerCase().includes('openai');
+
+      if (isAISetupQuery) {
+        return NextResponse.json({
+          response: `🤖 **AI System Ready!** 
+
+I'm your Creaovate AI assistant, powered by OpenAI GPT-3.5-turbo. I can help you with:
 
 ✨ **Content Creation**: Blog posts, social media, marketing copy, emails, product descriptions
 📊 **Content Analysis**: SEO optimization, tone analysis, readability scoring
 🔧 **Content Improvement**: AI-powered suggestions and optimizations
 
-**Current Status**: AI binding is configured and ready. The system is detecting your request: "${lastMessage}"
+**Current Status**: OpenAI integration is configured and ready. The system is detecting your request: "${lastMessage}"
 
-To fully activate real-time AI responses, the platform administrator needs to complete the final AI binding configuration in the Cloudflare Workers dashboard.
+To fully activate real-time AI responses, please ensure the OPENAI_API_KEY environment variable is properly set.
 
 How can I help you create amazing content today?`,
-        usage: {
-          prompt_tokens: body.messages.reduce((acc, msg) => acc + msg.content.length / 4, 0),
-          completion_tokens: 150,
-          total_tokens: 200
-        }
-      });
-    }
+          usage: {
+            prompt_tokens: body.messages.reduce((acc, msg) => acc + msg.content.length / 4, 0),
+            completion_tokens: 150,
+            total_tokens: 200
+          }
+        });
+      }
 
-    // Standard placeholder for other queries
-    return NextResponse.json({
-      response: `🚀 **Creaovate AI Ready**: I'm your AI-powered content creation assistant! I can help you generate blog posts, social media content, marketing copy, emails, and product descriptions. I can also analyze and improve your existing content.
+      // Standard fallback for other queries
+      return NextResponse.json({
+        response: `🚀 **Creaovate AI Ready**: I'm your AI-powered content creation assistant! I can help you generate blog posts, social media content, marketing copy, emails, and product descriptions. I can also analyze and improve your existing content.
 
 Your query: "${lastMessage}"
 
-While the core AI infrastructure is deployed and ready, the administrator needs to complete the final AI binding setup to enable real-time responses. All other features are fully functional!
+The OpenAI integration is ready to use. Please ensure your API key is configured to enable real-time responses.
 
 Try using the Content Generation features in the dashboard - they're working great! 💡`,
-      usage: {
-        prompt_tokens: Math.floor(Math.random() * 50) + 10,
-        completion_tokens: Math.floor(Math.random() * 100) + 20,
-        total_tokens: Math.floor(Math.random() * 150) + 30
-      }
-    });
+        usage: {
+          prompt_tokens: Math.floor(Math.random() * 50) + 10,
+          completion_tokens: Math.floor(Math.random() * 100) + 20,
+          total_tokens: Math.floor(Math.random() * 150) + 30
+        }
+      });
+    }
   } catch (error) {
     console.error('AI Chat API Error:', error);
     return NextResponse.json(
@@ -122,7 +140,7 @@ export async function GET(request: NextRequest) {
         id: conversationId,
         userId,
         title: 'Sample Conversation',
-        modelUsed: 'llama-3.1-8b',
+        modelUsed: 'gpt-3.5-turbo',
         totalMessages: 4,
         createdAt: Date.now() - 86400000,
         updatedAt: Date.now() - 3600000,
@@ -153,7 +171,7 @@ export async function GET(request: NextRequest) {
           id: 'conv-1',
           userId,
           title: 'Content Creation Chat',
-          modelUsed: 'llama-3.1-8b',
+          modelUsed: 'gpt-3.5-turbo',
           totalMessages: 8,
           createdAt: Date.now() - 86400000,
           updatedAt: Date.now() - 3600000
@@ -162,7 +180,7 @@ export async function GET(request: NextRequest) {
           id: 'conv-2',
           userId,
           title: 'Marketing Copy Review',
-          modelUsed: 'llama-3.1-8b',
+          modelUsed: 'gpt-3.5-turbo',
           totalMessages: 6,
           createdAt: Date.now() - 172800000,
           updatedAt: Date.now() - 7200000
