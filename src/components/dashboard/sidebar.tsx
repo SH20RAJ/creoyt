@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboard/navigation";
 import { useUser, UserButton } from '@stackframe/stack';
 import { useSidebar } from "@/contexts/sidebar-context";
+import { UsageQuota } from "./usage-quota";
+import { YouTubeChannelSetup } from "./youtube-channel-setup";
 import { 
   LayoutDashboard, 
   Lightbulb, 
@@ -88,7 +90,7 @@ export function DashboardSidebar() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             {DASHBOARD_NAV_ITEMS.map((item) => {
               const IconComponent = iconMap[item.icon];
               const isActive = pathname === item.href;
@@ -114,6 +116,15 @@ export function DashboardSidebar() {
               );
             })}
           </nav>
+
+          {/* Usage Quota and YouTube Channel Setup */}
+          <div className="border-t border-border/50">
+            {user ? (
+              <UsageQuota isCollapsed={isCollapsed && !isMobileOpen} />
+            ) : (
+              <YouTubeChannelSetup isCollapsed={isCollapsed && !isMobileOpen} />
+            )}
+          </div>
 
           {/* User section */}
           <div className="p-4 border-t border-border/50">

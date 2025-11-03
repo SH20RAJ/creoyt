@@ -1,6 +1,6 @@
-# 🚀 Creaovate - AI-Powered Content Creation Platform
+# 🚀 YT Copilot - AI-Powered YouTube Content Creation Platform
 
-A comprehensive, production-ready Next.js 15 application featuring AI-powered content generation, analysis, and optimization with Cloudflare Workers AI integration.
+A comprehensive, production-ready Next.js 15 application featuring AI-powered YouTube content generation, analysis, and optimization with OpenAI integration.
 
 ## ✨ Features
 
@@ -43,9 +43,9 @@ A comprehensive, production-ready Next.js 15 application featuring AI-powered co
 - **Lucide Icons** - Beautiful iconography
 
 ### Backend
-- **Cloudflare Workers** - Edge computing platform
+- **Next.js API Routes** - Server-side API endpoints
 - **Drizzle ORM** - Type-safe database toolkit
-- **Cloudflare D1** - Serverless SQLite database
+- **Turso Database** - Edge SQLite database
 - **OpenAI API** - GPT-3.5-turbo and GPT-4 model access
 
 ### Development
@@ -72,14 +72,14 @@ A comprehensive, production-ready Next.js 15 application featuring AI-powered co
 
 2. **Environment Configuration**
    ```bash
-   cp .env.example .dev.vars
-   # Edit .dev.vars with your configuration
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
    ```
 
 3. **Database Setup**
    ```bash
    npm run db:generate
-   npm run db:migrate
+   npm run db:push
    ```
 
 4. **Start Development Server**
@@ -88,8 +88,8 @@ A comprehensive, production-ready Next.js 15 application featuring AI-powered co
    ```
 
 5. **Access the Application**
-   - Main site: http://localhost:3003
-   - Dashboard: http://localhost:3003/dashboard
+   - Main site: http://localhost:3000
+   - Dashboard: http://localhost:3000/dashboard
 
 ### Production Deployment
 
@@ -133,8 +133,8 @@ src/
 
 ### Database
 - `npm run db:generate` - Generate migrations
-- `npm run db:migrate` - Apply migrations (local)
-- `npm run db:migrate:prod` - Apply migrations (production)
+- `npm run db:push` - Push schema to database
+- `npm run db:migrate` - Apply migrations
 - `npm run db:studio` - Open database studio
 
 ### Deployment
@@ -226,7 +226,7 @@ For questions and support:
 
 ---
 
-**Built with ❤️ using Next.js 15, Cloudflare Workers, and modern web technologies.**
+**Built with ❤️ using Next.js 15, Turso Database, and modern web technologies.**
 
 ## Deploy on Vercel
 

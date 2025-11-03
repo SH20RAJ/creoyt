@@ -1,3 +1,7 @@
+import { getDB } from '@/lib/db';
+import * as schema from '@/lib/db/schema';
+import { sql } from 'drizzle-orm';
+
 interface AIMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -24,15 +28,11 @@ export class AIService {
   private apiKey: string;
   private baseURL: string = 'https://api.openai.com/v1';
 
-  constructor(private _env: { OPENAI_API_KEY: string; DB?: D1Database }) {
-    this.apiKey = _env.OPENAI_API_KEY;
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.OPENAI_API_KEY || '';
     if (!this.apiKey) {
       throw new Error('OPENAI_API_KEY is required');
     }
-  }
-
-  private get env() {
-    return this._env;
   }
 
   /**
@@ -63,7 +63,7 @@ export class AIService {
         throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as any;
       const responseTime = Date.now() - startTime;
 
       const aiResponse: AIResponse = {
@@ -72,7 +72,7 @@ export class AIService {
       };
 
       // Track usage if database is available
-      if (params.userId && this.env.DB) {
+      if (params.userId) {
         await this.trackUsage({
           userId: params.userId,
           model: 'gpt-3.5-turbo',
@@ -202,29 +202,28 @@ export class AIService {
     tokensOutput: number;
     responseTime: number;
   }) {
-    if (!this.env.DB) return;
-
     try {
+      const db = getDB();
       const today = new Date().toISOString().split('T')[0];
       const cost = this.calculateCost(params.tokensInput, params.tokensOutput);
 
-      // Insert usage record
-      await this.env.DB.prepare(`
-        INSERT INTO ai_usage (id, user_id, model, tokens_input, tokens_output, cost, date)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(user_id, model, date) DO UPDATE SET
-          tokens_input = tokens_input + excluded.tokens_input,
-          tokens_output = tokens_output + excluded.tokens_output,
-          cost = cost + excluded.cost
-      `).bind(
-        crypto.randomUUID(),
-        params.userId,
-        params.model,
-        params.tokensInput,
-        params.tokensOutput,
+      // Insert usage record using Drizzle ORM
+      await db.insert(schema.aiUsage).values({
+        id: crypto.randomUUID(),
+        userId: params.userId,
+        model: params.model,
+        tokensInput: params.tokensInput,
+        tokensOutput: params.tokensOutput,
         cost,
-        today
-      ).run();
+        date: today
+      }).onConflictDoUpdate({
+        target: [schema.aiUsage.userId, schema.aiUsage.model, schema.aiUsage.date],
+        set: {
+          tokensInput: sql`${schema.aiUsage.tokensInput} + ${params.tokensInput}`,
+          tokensOutput: sql`${schema.aiUsage.tokensOutput} + ${params.tokensOutput}`,
+          cost: sql`${schema.aiUsage.cost} + ${cost}`
+        }
+      });
 
     } catch (error) {
       console.error('Failed to track AI usage:', error);
@@ -251,22 +250,23 @@ export class AIService {
     tokensLimit: number;
     tokensRemaining: number;
   }> {
-    if (!this.env.DB) {
-      return { hasQuota: true, tokensUsed: 0, tokensLimit: 10000, tokensRemaining: 10000 };
-    }
-
     try {
+      const db = getDB();
       const today = new Date().toISOString().split('T')[0];
       const currentMonth = today.substring(0, 7); // YYYY-MM
 
-      // Get monthly usage
-      const result = await this.env.DB.prepare(`
-        SELECT SUM(tokens_input + tokens_output) as total_tokens
-        FROM ai_usage
-        WHERE user_id = ? AND date LIKE ?
-      `).bind(userId, `${currentMonth}%`).first();
+      // Get monthly usage using Drizzle ORM
+      const result = await db
+        .select({
+          totalTokens: sql<number>`SUM(${schema.aiUsage.tokensInput} + ${schema.aiUsage.tokensOutput})`
+        })
+        .from(schema.aiUsage)
+        .where(
+          sql`${schema.aiUsage.userId} = ${userId} AND ${schema.aiUsage.date} LIKE ${currentMonth + '%'}`
+        )
+        .get();
 
-      const tokensUsed = Number(result?.total_tokens || 0);
+      const tokensUsed = Number(result?.totalTokens || 0);
 
       // Define limits based on subscription tier
       const limits = {

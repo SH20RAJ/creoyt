@@ -4,9 +4,9 @@ export default defineConfig({
   dialect: "sqlite",
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle",
-  driver: "d1-http",
+  driver: "turso",
   dbCredentials: {
-    wranglerConfigPath: "./wrangler.jsonc",
-    dbName: "creaovate-db",
+    url: process.env.TURSO_DB_URL,
+    authToken: process.env.TURSO_DB_TOKEN,
   },
 });

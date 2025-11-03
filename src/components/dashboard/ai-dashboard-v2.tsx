@@ -168,32 +168,6 @@ const AIDashboard: React.FC = () => {
           <h1 className="text-3xl font-bold">AI Content Dashboard</h1>
           <p className="text-muted-foreground">Create, analyze, and optimize content with Llama 3.1</p>
         </div>
-        
-        {/* Quota Display */}
-        {quotaInfo && (
-          <Card className="w-80">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                Usage Quota
-                <Badge variant={quotaInfo.hasQuota ? "default" : "destructive"}>
-                  {quotaInfo.subscriptionTier}
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Progress value={quotaPercentage} className="h-2" />
-                <div className="text-xs text-muted-foreground">
-                  {quotaInfo.tokensUsed.toLocaleString()} / {quotaInfo.tokensLimit.toLocaleString()} tokens used
-                </div>
-                <div className="text-xs">
-                  {quotaInfo.tokensRemaining.toLocaleString()} tokens remaining
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
       {/* Main Dashboard Tabs */}

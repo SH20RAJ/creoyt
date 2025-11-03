@@ -1,15 +1,15 @@
-// Test OpenAI integration
+// Test OpenAI integration for YT Copilot
 const { config } = require('dotenv');
 
 // Load environment variables
-config({ path: '.dev.vars' });
+config({ path: '.env.local' });
 
 async function testOpenAIIntegration() {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
         console.error('❌ OPENAI_API_KEY not found in environment variables');
-        console.log('Please add your OpenAI API key to .dev.vars file:');
+        console.log('Please add your OpenAI API key to .env.local file:');
         console.log('OPENAI_API_KEY="your-openai-api-key-here"');
         return;
     }
@@ -29,7 +29,7 @@ async function testOpenAIIntegration() {
                 messages: [
                     {
                         role: 'user',
-                        content: 'Say "Hello from Creaovate!" if you can hear me.'
+                        content: 'Say "Hello from YT Copilot!" if you can hear me.'
                     }
                 ],
                 max_tokens: 50,
@@ -62,11 +62,42 @@ async function testOpenAIIntegration() {
     }
 }
 
+// Test Turso database connection
+async function testTursoConnection() {
+    console.log('\n🗄️ Testing Turso database connection...');
+
+    const dbUrl = process.env.TURSO_DB_URL;
+    const dbToken = process.env.TURSO_DB_TOKEN;
+
+    if (!dbUrl || !dbToken) {
+        console.log('⚠️  Turso credentials not found in environment variables');
+        console.log('Please add to .env.local:');
+        console.log('TURSO_DB_URL="libsql://your-database.turso.io"');
+        console.log('TURSO_DB_TOKEN="your-turso-token"');
+        return;
+    }
+
+    console.log('🔑 Turso credentials found');
+    console.log('📍 Database URL:', dbUrl.replace(/\/\/.*@/, '//***@'));
+
+    try {
+        // Simple test - we'll just check if credentials are valid format
+        if (dbUrl.startsWith('libsql://') && dbToken.length > 50) {
+            console.log('✅ Turso configuration appears valid');
+            console.log('💡 Run "npm run db:studio" to open database management');
+        } else {
+            console.log('⚠️  Turso configuration format may be incorrect');
+        }
+    } catch (error) {
+        console.error('❌ Turso connection test failed:', error.message);
+    }
+}
+
 // Test API endpoints
 async function testAPIEndpoints() {
     console.log('\n🌐 Testing local API endpoints...');
 
-    const baseURL = 'http://localhost:3003';
+    const baseURL = 'http://localhost:3000';
 
     // Test chat endpoint
     try {
@@ -79,7 +110,7 @@ async function testAPIEndpoints() {
                 messages: [
                     {
                         role: 'user',
-                        content: 'Hello, can you help me create content?'
+                        content: 'Hello, can you help me create YouTube content?'
                     }
                 ]
             })
@@ -105,7 +136,7 @@ async function testAPIEndpoints() {
             },
             body: JSON.stringify({
                 contentType: 'blog_post',
-                topic: 'AI-powered content creation',
+                topic: 'YouTube content creation with AI',
                 tone: 'professional'
             })
         });
@@ -123,16 +154,19 @@ async function testAPIEndpoints() {
 }
 
 async function main() {
-    console.log('🚀 Creaovate OpenAI Integration Test\n');
+    console.log('🚀 YT Copilot Integration Test\n');
 
     await testOpenAIIntegration();
+    await testTursoConnection();
     await testAPIEndpoints();
 
     console.log('\n✨ Test completed!');
     console.log('\nNext steps:');
-    console.log('1. Make sure your .dev.vars file has OPENAI_API_KEY set');
-    console.log('2. Run "npm run dev" to start the development server');
-    console.log('3. Visit http://localhost:3003/dashboard to test the AI features');
+    console.log('1. Make sure your .env.local file has all required variables');
+    console.log('2. Run "npm run db:push" to sync database schema');
+    console.log('3. Run "npm run dev" to start the development server');
+    console.log('4. Visit http://localhost:3000/dashboard to test YT Copilot features');
+    console.log('5. Visit https://yt-copilot.strivio.world for production');
 }
 
 main().catch(console.error);
