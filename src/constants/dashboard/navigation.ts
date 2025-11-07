@@ -7,6 +7,13 @@ export const DASHBOARD_NAV_ITEMS = [
     description: "Dashboard overview and AI-powered insights"
   },
   {
+    id: "videos",
+    label: "Videos", 
+    href: "/dashboard/videos",
+    icon: "Video",
+    description: "Manage your YouTube videos"
+  },
+  {
     id: "content-studio",
     label: "Content Studio",
     href: "/dashboard/studio", 

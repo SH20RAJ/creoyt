@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
-import { users } from "@/lib/schema";
+import { db, users } from "@/lib/db";
 import { desc, eq } from "drizzle-orm";
 
 // GET all users
 export async function GET() {
   try {
-    const db = getDB();
     const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
     return NextResponse.json(allUsers);
   } catch (error) {

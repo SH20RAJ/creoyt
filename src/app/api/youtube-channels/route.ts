@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from '@stackframe/stack';
+import { stackServerApp } from '@/stack';
 import { eq, and } from 'drizzle-orm';
 import { db, youtubeChannels, users } from '@/lib/db';
 
@@ -10,7 +10,7 @@ import { db, youtubeChannels, users } from '@/lib/db';
 export async function GET(request: NextRequest) {
   try {
     // Verify user authentication
-    const user = await getUser();
+    const user = await stackServerApp.getUser({ tokenStore: 'nextjs-cookie' });
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Verify user authentication
-    const user = await getUser();
+    const user = await stackServerApp.getUser({ tokenStore: 'nextjs-cookie' });
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

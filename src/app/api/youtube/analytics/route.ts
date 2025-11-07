@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from '@stackframe/stack';
+import { stackServerApp } from '@/stack';
 import { eq, and, gte, lte } from 'drizzle-orm';
 import { db, youtubeChannels, youtubeAnalytics } from '@/lib/db';
 import { youTubeAPI } from '@/lib/youtube';
@@ -12,7 +12,7 @@ import { nanoid } from 'nanoid';
 export async function GET(request: NextRequest) {
   try {
     // Verify user authentication
-    const user = await getUser();
+    const user = await stackServerApp.getUser({ tokenStore: 'nextjs-cookie' });
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

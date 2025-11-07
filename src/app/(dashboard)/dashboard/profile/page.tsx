@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from '@stackframe/stack';
 import { 
   User, 
   Camera, 
@@ -25,22 +26,24 @@ import {
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
+  const user = useUser();
+  
   const [profile, setProfile] = useState({
-    displayName: "John Doe",
-    username: "johndoe",
-    email: "john@example.com",
+    displayName: user?.displayName || "User",
+    username: "user123",
+    email: user?.primaryEmail || "user@example.com",
     bio: "Content creator and digital marketer passionate about AI-powered tools. Always exploring new ways to leverage technology for creative storytelling.",
     location: "San Francisco, CA",
-    website: "https://johndoe.com",
+    website: "https://example.com",
     company: "Creative Studio Inc.",
     title: "Senior Content Strategist",
     joinDate: "March 2024",
-    avatar: "",
+    avatar: user?.profileImageUrl || "",
     // Social Links
-    twitter: "johndoe",
-    linkedin: "johndoe",
-    github: "johndoe",
-    instagram: "johndoe"
+    twitter: "username",
+    linkedin: "username",
+    github: "username",
+    instagram: "username"
   });
 
   const stats = [
@@ -112,298 +115,295 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <User className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Profile</h1>
-          </div>
-          <p className="text-gray-600 dark:text-gray-400">
+    <div className="container mx-auto py-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
+          <p className="text-muted-foreground">
             Manage your public profile and personal information
           </p>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Card */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <div className="relative inline-block">
-                    <Avatar className="w-24 h-24">
-                      <AvatarImage src={profile.avatar} />
-                      <AvatarFallback className="text-2xl">
-                        {profile.displayName.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                    >
-                      <Camera className="w-4 h-4" />
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="text-xl font-bold">{profile.displayName}</h2>
-                    <p className="text-gray-600 dark:text-gray-400">@{profile.username}</p>
-                    <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                      <Calendar className="w-4 h-4" />
-                      Joined {profile.joinDate}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    {profile.title && (
-                      <p className="font-medium text-blue-600">{profile.title}</p>
-                    )}
-                    {profile.company && (
-                      <p className="text-sm text-gray-600">{profile.company}</p>
-                    )}
-                    {profile.location && (
-                      <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                        <MapPin className="w-4 h-4" />
-                        {profile.location}
-                      </div>
-                    )}
-                  </div>
-
-                  {profile.bio && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 text-left">
-                      {profile.bio}
-                    </p>
-                  )}
-
-                  {/* Social Links */}
-                  <div className="flex justify-center gap-2">
-                    {profile.website && (
-                      <Button variant="outline" size="sm">
-                        <Globe className="w-4 h-4" />
-                      </Button>
-                    )}
-                    {profile.twitter && (
-                      <Button variant="outline" size="sm">
-                        <Twitter className="w-4 h-4" />
-                      </Button>
-                    )}
-                    {profile.linkedin && (
-                      <Button variant="outline" size="sm">
-                        <Linkedin className="w-4 h-4" />
-                      </Button>
-                    )}
-                    {profile.github && (
-                      <Button variant="outline" size="sm">
-                        <Github className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  <Button 
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="w-full"
-                    variant={isEditing ? "outline" : "default"}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Card */}
+        <div className="lg:col-span-1 space-y-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-center space-y-4">
+                <div className="relative inline-block">
+                  <Avatar className="w-24 h-24">
+                    <AvatarImage src={profile.avatar} />
+                    <AvatarFallback className="text-2xl">
+                      {profile.displayName.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
                   >
-                    {isEditing ? "Cancel Edit" : "Edit Profile"}
+                    <Camera className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <h2 className="text-xl font-bold">{profile.displayName}</h2>
+                  <p className="text-muted-foreground">@{profile.username}</p>
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    Joined {profile.joinDate}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {profile.title && (
+                    <p className="font-medium text-primary">{profile.title}</p>
+                  )}
+                  {profile.company && (
+                    <p className="text-sm text-muted-foreground">{profile.company}</p>
+                  )}
+                  {profile.location && (
+                    <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="w-4 h-4" />
+                      {profile.location}
+                    </div>
+                  )}
+                </div>
+
+                {profile.bio && (
+                  <p className="text-sm text-muted-foreground text-left">
+                    {profile.bio}
+                  </p>
+                )}
+
+                {/* Social Links */}
+                <div className="flex justify-center gap-2">
+                  {profile.website && (
+                    <Button variant="outline" size="sm">
+                      <Globe className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {profile.twitter && (
+                    <Button variant="outline" size="sm">
+                      <Twitter className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {profile.linkedin && (
+                    <Button variant="outline" size="sm">
+                      <Linkedin className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {profile.github && (
+                    <Button variant="outline" size="sm">
+                      <Github className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+
+                <Button 
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="w-full"
+                  variant={isEditing ? "outline" : "default"}
+                >
+                  {isEditing ? "Cancel Edit" : "Edit Profile"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Stats */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Stats</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {stats.map((stat) => {
+                const IconComponent = stat.icon;
+                return (
+                  <div key={stat.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <IconComponent className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="text-sm text-muted-foreground">{stat.label}</span>
+                    </div>
+                    <span className="font-bold text-lg">{stat.value}</span>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Edit Profile Form */}
+          {isEditing && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Edit Profile</CardTitle>
+                <CardDescription>
+                  Update your profile information
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName">Display Name</Label>
+                    <Input
+                      id="displayName"
+                      value={profile.displayName}
+                      onChange={(e) => updateProfile("displayName", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                      id="username"
+                      value={profile.username}
+                      onChange={(e) => updateProfile("username", e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bio</Label>
+                  <Textarea
+                    id="bio"
+                    value={profile.bio}
+                    onChange={(e) => updateProfile("bio", e.target.value)}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Job Title</Label>
+                    <Input
+                      id="title"
+                      value={profile.title}
+                      onChange={(e) => updateProfile("title", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="company">Company</Label>
+                    <Input
+                      id="company"
+                      value={profile.company}
+                      onChange={(e) => updateProfile("company", e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Location</Label>
+                    <Input
+                      id="location"
+                      value={profile.location}
+                      onChange={(e) => updateProfile("location", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="website">Website</Label>
+                    <Input
+                      id="website"
+                      value={profile.website}
+                      onChange={(e) => updateProfile("website", e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="twitter">Twitter</Label>
+                    <Input
+                      id="twitter"
+                      value={profile.twitter}
+                      onChange={(e) => updateProfile("twitter", e.target.value)}
+                      placeholder="username"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin">LinkedIn</Label>
+                    <Input
+                      id="linkedin"
+                      value={profile.linkedin}
+                      onChange={(e) => updateProfile("linkedin", e.target.value)}
+                      placeholder="username"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsEditing(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave}>
+                    Save Changes
                   </Button>
                 </div>
               </CardContent>
             </Card>
+          )}
 
-            {/* Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Stats</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {stats.map((stat) => {
-                  const IconComponent = stat.icon;
+          {/* Achievements */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Achievements</CardTitle>
+              <CardDescription>
+                Your milestones and accomplishments
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {achievements.map((achievement) => {
+                  const IconComponent = achievement.icon;
                   return (
-                    <div key={stat.id} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                          <IconComponent className="w-4 h-4 text-blue-600" />
-                        </div>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</span>
+                    <div key={achievement.id} className="flex items-start gap-3 p-4 border rounded-lg">
+                      <div className="p-2 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg">
+                        <IconComponent className="w-5 h-5 text-yellow-600" />
                       </div>
-                      <span className="font-bold text-lg">{stat.value}</span>
+                      <div className="space-y-1">
+                        <h3 className="font-semibold">{achievement.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {achievement.description}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{achievement.date}</p>
+                      </div>
                     </div>
                   );
                 })}
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Edit Profile Form */}
-            {isEditing && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Edit Profile</CardTitle>
-                  <CardDescription>
-                    Update your profile information
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="displayName">Display Name</Label>
-                      <Input
-                        id="displayName"
-                        value={profile.displayName}
-                        onChange={(e) => updateProfile("displayName", e.target.value)}
-                      />
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Your latest actions and updates
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-start gap-3 pb-4 border-b last:border-b-0">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <User className="w-4 h-4 text-primary" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="username">Username</Label>
-                      <Input
-                        id="username"
-                        value={profile.username}
-                        onChange={(e) => updateProfile("username", e.target.value)}
-                      />
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">{activity.title}</p>
+                      <p className="text-xs text-muted-foreground">{activity.date}</p>
                     </div>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="bio">Bio</Label>
-                    <Textarea
-                      id="bio"
-                      value={profile.bio}
-                      onChange={(e) => updateProfile("bio", e.target.value)}
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="title">Job Title</Label>
-                      <Input
-                        id="title"
-                        value={profile.title}
-                        onChange={(e) => updateProfile("title", e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Company</Label>
-                      <Input
-                        id="company"
-                        value={profile.company}
-                        onChange={(e) => updateProfile("company", e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Location</Label>
-                      <Input
-                        id="location"
-                        value={profile.location}
-                        onChange={(e) => updateProfile("location", e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="website">Website</Label>
-                      <Input
-                        id="website"
-                        value={profile.website}
-                        onChange={(e) => updateProfile("website", e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="twitter">Twitter</Label>
-                      <Input
-                        id="twitter"
-                        value={profile.twitter}
-                        onChange={(e) => updateProfile("twitter", e.target.value)}
-                        placeholder="username"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="linkedin">LinkedIn</Label>
-                      <Input
-                        id="linkedin"
-                        value={profile.linkedin}
-                        onChange={(e) => updateProfile("linkedin", e.target.value)}
-                        placeholder="username"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSave}>
-                      Save Changes
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Achievements */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Achievements</CardTitle>
-                <CardDescription>
-                  Your milestones and accomplishments
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {achievements.map((achievement) => {
-                    const IconComponent = achievement.icon;
-                    return (
-                      <div key={achievement.id} className="flex items-start gap-3 p-4 border rounded-lg">
-                        <div className="p-2 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg">
-                          <IconComponent className="w-5 h-5 text-yellow-600" />
-                        </div>
-                        <div className="space-y-1">
-                          <h3 className="font-semibold">{achievement.title}</h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {achievement.description}
-                          </p>
-                          <p className="text-xs text-gray-500">{achievement.date}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>
-                  Your latest actions and updates
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-start gap-3 pb-4 border-b last:border-b-0">
-                      <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                        <User className="w-4 h-4 text-blue-600" />
-                      </div>
-                      <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">{activity.title}</p>
-                        <p className="text-xs text-gray-500">{activity.date}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

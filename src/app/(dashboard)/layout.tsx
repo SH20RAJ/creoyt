@@ -1,7 +1,10 @@
 "use client";
 
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
-import { SidebarProvider, useSidebar } from "@/contexts/sidebar-context";
+import { DashboardHeader } from "@/components/dashboard/header";
+import { SidebarProvider } from "@/contexts/sidebar-context";
+import { YouTubeProvider } from "@/contexts/youtube-context";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebar();
@@ -9,13 +12,14 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <DashboardSidebar />
-      <main className={`transition-all duration-300 ${
+      <div className={`transition-all duration-300 ${
         isCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        <div className="p-4 lg:p-8 pt-16 lg:pt-8">
+        <DashboardHeader />
+        <main className="p-4 lg:p-8">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
@@ -27,9 +31,11 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <DashboardContent>
-        {children}
-      </DashboardContent>
+      <YouTubeProvider>
+        <DashboardContent>
+          {children}
+        </DashboardContent>
+      </YouTubeProvider>
     </SidebarProvider>
   );
 }

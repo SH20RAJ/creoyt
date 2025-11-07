@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from '@stackframe/stack';
+import { stackServerApp } from '@/stack';
 import { youTubeAPI } from '@/lib/youtube';
 
 /**
@@ -9,7 +9,7 @@ import { youTubeAPI } from '@/lib/youtube';
 export async function GET(request: NextRequest) {
   try {
     // Verify user is authenticated with Stack Auth
-    const user = await getUser();
+    const user = await stackServerApp.getUser({ tokenStore: 'nextjs-cookie' });
     if (!user) {
       return NextResponse.json(
         { error: 'Unauthorized - please log in first' },
