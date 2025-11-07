@@ -1,55 +1,34 @@
 export const DASHBOARD_NAV_ITEMS = [
   {
     id: "overview",
-    label: "Overview",
+    label: "Overview", 
     href: "/dashboard",
     icon: "LayoutDashboard",
-    description: "Dashboard overview and recent activity"
-  },
-  {
-    id: "idea-generation",
-    label: "AI Ideas",
-    href: "/dashboard/ideas",
-    icon: "Lightbulb",
-    description: "Generate content ideas with AI"
-  },
-  {
-    id: "research",
-    label: "Research",
-    href: "/dashboard/research",
-    icon: "Search",
-    description: "Advanced research and analytics"
+    description: "Dashboard overview and AI-powered insights"
   },
   {
     id: "content-studio",
     label: "Content Studio",
-    href: "/dashboard/studio",
+    href: "/dashboard/studio", 
     icon: "PenTool",
-    description: "Create and edit content"
-  },
-  {
-    id: "scout",
-    label: "Scout & Discovery",
-    href: "/dashboard/scout",
-    icon: "Radar",
-    description: "Discover trending content"
+    description: "Create and edit content with AI"
   },
   {
     id: "projects",
     label: "Projects",
     href: "/dashboard/projects",
-    icon: "FolderOpen",
-    description: "Manage your projects"
+    icon: "FolderOpen", 
+    description: "Manage your content projects"
   },
   {
     id: "analytics",
     label: "Analytics",
     href: "/dashboard/analytics",
     icon: "BarChart",
-    description: "Performance insights"
+    description: "Performance insights and metrics"
   },
   {
-    id: "settings",
+    id: "settings", 
     label: "Settings",
     href: "/dashboard/settings",
     icon: "Settings",

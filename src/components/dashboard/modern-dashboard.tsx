@@ -44,7 +44,7 @@ interface GeneratedContent {
   title: string;
   content: string;
   type: string;
-  createdAt: Date;
+  createdAt: Date | string;
   stats?: {
     words: number;
     readTime: number;
@@ -196,12 +196,12 @@ const ModernDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-6 py-8 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold text-foreground">
               Welcome back, {user?.displayName || 'Creator'}! 👋
             </h1>
             <p className="text-lg text-muted-foreground mt-2">
@@ -221,7 +221,7 @@ const ModernDashboard: React.FC = () => {
             </Button>
             <Avatar className="w-12 h-12">
               <AvatarImage src={user?.profileImageUrl} />
-              <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+              <AvatarFallback className="bg-primary text-primary-foreground">
                 {user?.displayName?.charAt(0) || 'U'}
               </AvatarFallback>
             </Avatar>
@@ -230,50 +230,50 @@ const ModernDashboard: React.FC = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+          <Card className="border-0 shadow-lg bg-primary text-primary-foreground">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium">Total Projects</p>
+                  <p className="text-primary-foreground/80 text-sm font-medium">Total Projects</p>
                   <p className="text-3xl font-bold">{projectStats.totalProjects}</p>
                 </div>
-                <FileText className="w-8 h-8 text-blue-200" />
+                <FileText className="w-8 h-8 text-primary-foreground/80" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className="border-0 shadow-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+          <Card className="border-0 shadow-lg bg-secondary text-secondary-foreground">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-emerald-100 text-sm font-medium">Active Projects</p>
+                  <p className="text-secondary-foreground/80 text-sm font-medium">Active Projects</p>
                   <p className="text-3xl font-bold">{projectStats.activeProjects}</p>
                 </div>
-                <Zap className="w-8 h-8 text-emerald-200" />
+                <Zap className="w-8 h-8 text-secondary-foreground/80" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className="border-0 shadow-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <Card className="border-0 shadow-lg bg-accent text-accent-foreground">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100 text-sm font-medium">Words Written</p>
+                  <p className="text-accent-foreground/80 text-sm font-medium">Words Written</p>
                   <p className="text-3xl font-bold">{projectStats.totalWords.toLocaleString()}</p>
                 </div>
-                <PenTool className="w-8 h-8 text-purple-200" />
+                <PenTool className="w-8 h-8 text-accent-foreground/80" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className="border-0 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+          <Card className="border-0 shadow-lg bg-muted text-muted-foreground">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-100 text-sm font-medium">Avg Engagement</p>
+                  <p className="text-muted-foreground/80 text-sm font-medium">Avg Engagement</p>
                   <p className="text-3xl font-bold">{projectStats.avgEngagement}%</p>
                 </div>
-                <TrendingUp className="w-8 h-8 text-orange-200" />
+                <TrendingUp className="w-8 h-8 text-muted-foreground/80" />
               </div>
             </CardContent>
           </Card>
@@ -281,7 +281,7 @@ const ModernDashboard: React.FC = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:grid-cols-3 bg-white dark:bg-slate-800 shadow-lg">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:grid-cols-3 bg-background shadow-lg">
             <TabsTrigger value="overview" className="gap-2">
               <BarChart3 className="w-4 h-4" />
               Overview
@@ -300,10 +300,10 @@ const ModernDashboard: React.FC = () => {
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* AI-Powered Suggestions */}
-              <Card className="border-0 shadow-lg bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
+              <Card className="border-0 shadow-lg bg-card/70 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-yellow-500" />
+                    <Sparkles className="w-5 h-5 text-primary" />
                     AI Content Suggestions
                   </CardTitle>
                   <CardDescription>
@@ -312,9 +312,9 @@ const ModernDashboard: React.FC = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {suggestions.slice(0, 3).map((suggestion) => (
-                    <div 
+                    <div
                       key={suggestion.id}
-                      className="p-4 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors cursor-pointer group"
+                      className="p-4 rounded-lg border-2 border-dashed border-border hover:border-primary transition-colors cursor-pointer group"
                       onClick={() => generateContent(suggestion.title, suggestion.type)}
                     >
                       <div className="flex items-start justify-between">
@@ -330,12 +330,12 @@ const ModernDashboard: React.FC = () => {
                               </Badge>
                             )}
                             {suggestion.engagement && (
-                              <span className="text-xs text-green-600 font-medium">
+                              <span className="text-xs text-primary font-medium">
                                 {suggestion.engagement}% engagement
                               </span>
                             )}
                           </div>
-                          <h4 className="font-medium group-hover:text-blue-600 transition-colors">
+                          <h4 className="font-medium group-hover:text-primary transition-colors">
                             {suggestion.title}
                           </h4>
                           <p className="text-sm text-muted-foreground mt-1">
@@ -360,10 +360,10 @@ const ModernDashboard: React.FC = () => {
               </Card>
 
               {/* Recent Content */}
-              <Card className="border-0 shadow-lg bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
+              <Card className="border-0 shadow-lg bg-card/70 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-blue-500" />
+                    <Clock className="w-5 h-5 text-primary" />
                     Recent Creations
                   </CardTitle>
                   <CardDescription>
@@ -372,14 +372,14 @@ const ModernDashboard: React.FC = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {recentContent.length > 0 ? recentContent.slice(0, 3).map((content) => (
-                    <div key={content.id} className="p-4 bg-gray-50 dark:bg-slate-700 rounded-lg">
+                    <div key={content.id} className="p-4 bg-muted rounded-lg">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="text-xs">
                             {content.type}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
-                            {content.createdAt.toLocaleDateString()}
+                            {new Date(content.createdAt).toLocaleDateString()}
                           </span>
                         </div>
                         <Button 
@@ -421,10 +421,10 @@ const ModernDashboard: React.FC = () => {
             </div>
 
             {/* Quick Actions */}
-            <Card className="border-0 shadow-lg bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-200 dark:border-indigo-800">
+            <Card className="border-0 shadow-lg bg-muted border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-indigo-500" />
+                  <Zap className="w-5 h-5 text-primary" />
                   Quick Actions
                 </CardTitle>
                 <CardDescription>
@@ -435,37 +435,37 @@ const ModernDashboard: React.FC = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <Button 
                     variant="outline" 
-                    className="h-auto p-6 flex-col gap-2 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    className="h-auto p-6 flex-col gap-2 hover:bg-accent"
                     onClick={() => setActiveTab('create')}
                   >
-                    <MessageSquare className="w-8 h-8 text-blue-500" />
+                    <MessageSquare className="w-8 h-8 text-primary" />
                     <span className="font-medium">AI Chat</span>
                     <span className="text-xs text-muted-foreground">Interactive assistant</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-auto p-6 flex-col gap-2 hover:bg-green-50 dark:hover:bg-green-900/20"
+                    className="h-auto p-6 flex-col gap-2 hover:bg-accent"
                   >
-                    <FileText className="w-8 h-8 text-green-500" />
+                    <FileText className="w-8 h-8 text-primary" />
                     <span className="font-medium">Blog Post</span>
                     <span className="text-xs text-muted-foreground">Long-form content</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-auto p-6 flex-col gap-2 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                    className="h-auto p-6 flex-col gap-2 hover:bg-accent"
                   >
-                    <Share2 className="w-8 h-8 text-purple-500" />
+                    <Share2 className="w-8 h-8 text-primary" />
                     <span className="font-medium">Social Posts</span>
                     <span className="text-xs text-muted-foreground">Engaging snippets</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-auto p-6 flex-col gap-2 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                    className="h-auto p-6 flex-col gap-2 hover:bg-accent"
                   >
-                    <Heart className="w-8 h-8 text-orange-500" />
+                    <Heart className="w-8 h-8 text-primary" />
                     <span className="font-medium">Email Copy</span>
                     <span className="text-xs text-muted-foreground">Marketing emails</span>
                   </Button>
@@ -476,10 +476,10 @@ const ModernDashboard: React.FC = () => {
 
           {/* AI Create Tab */}
           <TabsContent value="create" className="space-y-6">
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50 dark:from-slate-800 dark:to-slate-700">
+            <Card className="border-0 shadow-lg bg-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Wand2 className="w-5 h-5 text-purple-500" />
+                  <Wand2 className="w-5 h-5 text-primary" />
                   AI Content Generator
                 </CardTitle>
                 <CardDescription>
@@ -514,10 +514,10 @@ const ModernDashboard: React.FC = () => {
                       />
                     </div>
                     
-                    <Button 
+                    <Button
                       onClick={() => generateContent()}
                       disabled={!contentPrompt.trim() || isGenerating}
-                      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                      className="w-full bg-primary hover:bg-primary/90"
                       size="lg"
                     >
                       {isGenerating ? (
@@ -559,7 +559,7 @@ const ModernDashboard: React.FC = () => {
               {suggestions.map((suggestion) => (
                 <Card 
                   key={suggestion.id} 
-                  className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-105 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm"
+                  className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-105 bg-card/80 backdrop-blur-sm"
                   onClick={() => generateContent(suggestion.title, suggestion.type)}
                 >
                   <CardContent className="p-6">
@@ -580,7 +580,7 @@ const ModernDashboard: React.FC = () => {
                       )}
                     </div>
                     
-                    <h3 className="font-semibold mb-2 group-hover:text-blue-600 transition-colors">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
                       {suggestion.title}
                     </h3>
                     
@@ -592,7 +592,7 @@ const ModernDashboard: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-xs">
                           <Eye className="w-3 h-3" />
-                          <span className="text-green-600 font-medium">
+                          <span className="text-primary font-medium">
                             {suggestion.engagement}% engagement
                           </span>
                         </div>

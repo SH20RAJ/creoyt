@@ -44,7 +44,7 @@ export function CtaSection() {
             </div>
             
             <p className="text-sm text-muted-foreground mt-6">
-              No credit card required • 14-day free trial • Cancel anytime
+              No credit card required • Free • Currently
             </p>
           </div>
         </div>

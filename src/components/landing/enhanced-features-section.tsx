@@ -1,7 +1,6 @@
 "use client";
 
 import { BentoGrid, BentoItem } from "@/components/ui/bento-grid";
-import { BENTO_FEATURES_DATA } from "@/constants/landing/bento-features";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import {
@@ -11,8 +10,33 @@ import {
   Search,
   FolderOpen,
   Zap,
+  Users,
   LucideIcon
 } from "lucide-react";
+
+const BENTO_FEATURES_DATA = [
+  {
+    title: "AI-Powered Content Generation",
+    description: "Generate high-quality content with advanced AI algorithms. Create blog posts, social media content, and marketing copy in seconds.",
+    iconName: "Brain",
+    iconColor: "text-purple-500",
+    colSpan: 2,
+  },
+  {
+    title: "Smart Analytics",
+    description: "Track performance with intelligent insights and recommendations for better engagement.",
+    iconName: "BarChart3", 
+    iconColor: "text-blue-500",
+    colSpan: 1,
+  },
+  {
+    title: "Real-time Collaboration",
+    description: "Work together seamlessly with your team on content projects.",
+    iconName: "Users",
+    iconColor: "text-green-500", 
+    colSpan: 1,
+  }
+];
 
 const iconMap: Record<string, LucideIcon> = {
   Brain,
@@ -21,6 +45,7 @@ const iconMap: Record<string, LucideIcon> = {
   Search,
   FolderOpen,
   Zap,
+  Users
 };
 
 export function EnhancedFeaturesSection() {

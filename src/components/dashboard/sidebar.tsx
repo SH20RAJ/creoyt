@@ -7,7 +7,6 @@ import { ThemeToggleSimple } from "@/components/ui/theme-toggle";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboard/navigation";
 import { useUser, UserButton } from '@stackframe/stack';
 import { useSidebar } from "@/contexts/sidebar-context";
-import { YouTubeChannelSetup } from "./youtube-channel-setup";
 import { 
   LayoutDashboard, 
   Lightbulb, 
@@ -119,11 +118,6 @@ export function DashboardSidebar() {
               );
             })}
           </nav>
-
-          {/* YouTube Channel Setup */}
-          <div className="border-t border-border/50">
-            <YouTubeChannelSetup isCollapsed={isCollapsed && !isMobileOpen} />
-          </div>
 
           {/* User section */}
           <div className="p-4 border-t border-border/50">

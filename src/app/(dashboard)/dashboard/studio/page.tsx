@@ -1,305 +1,813 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import { 
+  Sparkles, 
+  Wand2, 
   PenTool, 
+  MessageSquare, 
   FileText, 
-  Video, 
-  Mic, 
+  Share2, 
   Mail, 
-  Share2,
-  Save,
-  Wand2,
-  Copy,
-  Download,
-  Eye,
-  MoreHorizontal
-} from "lucide-react";
+  TrendingUp,
+  Save, 
+  Download, 
+  Copy, 
+  Eye, 
+  BarChart3, 
+  Clock, 
+  Lightbulb,
+  RefreshCw,
+  CheckCircle,
+  AlertCircle,
+  Zap,
+  Target,
+  Users,
+  Globe,
+  Mic,
+  Video,
+  Image as ImageIcon,
+  Calendar,
+  Hash,
+  AtSign
+} from 'lucide-react';
+import { useUser } from '@stackframe/stack';
 
-export default function StudioPage() {
-  const [selectedTemplate, setSelectedTemplate] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+export default function ContentStudioPage() {
+  const user = useUser();
+  const [activeTab, setActiveTab] = useState('create');
+  const [selectedContentType, setSelectedContentType] = useState('');
+  const [currentProject, setCurrentProject] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  const [contentPrompt, setContentPrompt] = useState('');
+  const [generatedContent, setGeneratedContent] = useState('');
+  const [contentStats, setContentStats] = useState({
+    words: 0,
+    characters: 0,
+    readTime: 0,
+    sentiment: 'neutral'
+  });
+  const [recentProjects, setRecentProjects] = useState([]);
+  const [aiSuggestions, setAiSuggestions] = useState([]);
 
-  const contentTemplates = [
+  // Content type configurations with AI prompts and settings
+  const contentTypes = [
     {
-      id: "blog-post",
-      title: "Blog Post",
-      description: "Long-form article with AI assistance",
+      id: 'blog',
+      title: 'Blog Post',
+      description: 'Long-form articles and thought leadership pieces',
       icon: FileText,
-      color: "bg-blue-500"
+      gradient: 'from-blue-500 to-blue-600',
+      estimatedTime: '15-30 min',
+      features: ['SEO optimization', 'Structured headings', 'Research integration'],
+      aiPrompt: 'Create a comprehensive, engaging blog post',
+      maxLength: 2500,
+      targetAudience: ['professionals', 'enthusiasts', 'general readers']
     },
     {
-      id: "social-post",
-      title: "Social Media Post",
-      description: "Engaging social media content",
+      id: 'social',
+      title: 'Social Media',
+      description: 'Engaging posts for all social platforms',
       icon: Share2,
-      color: "bg-pink-500"
+      gradient: 'from-pink-500 to-rose-500',
+      estimatedTime: '5-10 min',
+      features: ['Platform optimization', 'Hashtag suggestions', 'Engagement hooks'],
+      aiPrompt: 'Create viral-worthy social media content',
+      maxLength: 280,
+      targetAudience: ['millennials', 'gen-z', 'professionals']
     },
     {
-      id: "video-script",
-      title: "Video Script",
-      description: "Script for YouTube, TikTok, or other videos",
-      icon: Video,
-      color: "bg-red-500"
-    },
-    {
-      id: "podcast-outline",
-      title: "Podcast Outline",
-      description: "Structured podcast episode outline",
-      icon: Mic,
-      color: "bg-purple-500"
-    },
-    {
-      id: "newsletter",
-      title: "Newsletter",
-      description: "Email newsletter content",
+      id: 'email',
+      title: 'Email Campaign',
+      description: 'Newsletters and marketing emails',
       icon: Mail,
-      color: "bg-green-500"
+      gradient: 'from-green-500 to-emerald-500',
+      estimatedTime: '10-20 min',
+      features: ['Subject line optimization', 'Personalization', 'CTA placement'],
+      aiPrompt: 'Write compelling email marketing content',
+      maxLength: 1500,
+      targetAudience: ['subscribers', 'customers', 'prospects']
     },
     {
-      id: "product-description",
-      title: "Product Description",
-      description: "Compelling product descriptions",
-      icon: PenTool,
-      color: "bg-orange-500"
+      id: 'marketing',
+      title: 'Marketing Copy',
+      description: 'Sales pages, ads, and promotional content',
+      icon: TrendingUp,
+      gradient: 'from-purple-500 to-violet-500',
+      estimatedTime: '20-45 min',
+      features: ['Conversion optimization', 'Persuasive language', 'A/B test variants'],
+      aiPrompt: 'Create high-converting marketing copy',
+      maxLength: 2000,
+      targetAudience: ['potential customers', 'leads', 'decision makers']
+    },
+    {
+      id: 'script',
+      title: 'Video Script',
+      description: 'YouTube, TikTok, and presentation scripts',
+      icon: Video,
+      gradient: 'from-red-500 to-orange-500',
+      estimatedTime: '15-25 min',
+      features: ['Scene directions', 'Engagement hooks', 'Call-to-actions'],
+      aiPrompt: 'Write an engaging video script',
+      maxLength: 1200,
+      targetAudience: ['viewers', 'subscribers', 'audience']
+    },
+    {
+      id: 'podcast',
+      title: 'Podcast Content',
+      description: 'Episode outlines, show notes, and scripts',
+      icon: Mic,
+      gradient: 'from-indigo-500 to-blue-500',
+      estimatedTime: '20-40 min',
+      features: ['Episode structure', 'Talking points', 'Guest questions'],
+      aiPrompt: 'Create comprehensive podcast content',
+      maxLength: 2000,
+      targetAudience: ['listeners', 'podcast audience', 'audio learners']
     }
   ];
 
-  const recentDrafts = [
-    {
-      id: 1,
-      title: "The Future of AI in Content Creation",
-      type: "Blog Post",
-      lastEdited: "2 hours ago",
-      wordCount: 1250,
-      status: "draft"
-    },
-    {
-      id: 2, 
-      title: "5 Tips for Better Social Media Engagement",
-      type: "Social Post",
-      lastEdited: "1 day ago",
-      wordCount: 150,
-      status: "published"
-    },
-    {
-      id: 3,
-      title: "How to Create Viral TikTok Content",
-      type: "Video Script",
-      lastEdited: "3 days ago",
-      wordCount: 800,
-      status: "draft"
-    }
-  ];
+  // Load initial data
+  useEffect(() => {
+    loadRecentProjects();
+    loadAiSuggestions();
+  }, []);
 
-  const aiFeatures = [
-    {
-      name: "Smart Rewrite",
-      description: "Improve clarity and flow",
-      icon: Wand2
-    },
-    {
-      name: "Tone Adjustment",
-      description: "Change writing tone",
-      icon: PenTool
-    },
-    {
-      name: "SEO Optimize",
-      description: "Optimize for search",
-      icon: Eye
-    },
-    {
-      name: "Expand Ideas",
-      description: "Add more detail",
-      icon: FileText
+  // Update content stats when content changes
+  useEffect(() => {
+    calculateContentStats();
+  }, [content, generatedContent]);
+
+  const loadRecentProjects = async () => {
+    // Mock data - in production, fetch from API
+    const projects = [
+      {
+        id: '1',
+        title: 'AI Revolution in Marketing',
+        type: 'blog',
+        lastEdited: new Date(Date.now() - 2 * 60 * 60 * 1000),
+        wordCount: 1247,
+        status: 'draft',
+        engagement: 85
+      },
+      {
+        id: '2', 
+        title: 'Social Media Strategy 2024',
+        type: 'social',
+        lastEdited: new Date(Date.now() - 5 * 60 * 60 * 1000),
+        wordCount: 156,
+        status: 'published',
+        engagement: 92
+      },
+      {
+        id: '3',
+        title: 'Product Launch Email Series',
+        type: 'email',
+        lastEdited: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        wordCount: 892,
+        status: 'scheduled',
+        engagement: 78
+      }
+    ];
+    setRecentProjects(projects);
+  };
+
+  const loadAiSuggestions = async () => {
+    // Mock AI suggestions based on trends and user behavior
+    const suggestions = [
+      {
+        id: '1',
+        title: 'Write about emerging AI trends in 2024',
+        type: 'blog',
+        trending: true,
+        difficulty: 'medium',
+        estimatedEngagement: 88
+      },
+      {
+        id: '2',
+        title: 'Create a carousel post about productivity tips',
+        type: 'social',
+        trending: true,
+        difficulty: 'easy',
+        estimatedEngagement: 94
+      },
+      {
+        id: '3',
+        title: 'Email sequence for new product onboarding',
+        type: 'email',
+        trending: false,
+        difficulty: 'hard',
+        estimatedEngagement: 82
+      }
+    ];
+    setAiSuggestions(suggestions);
+  };
+
+  const calculateContentStats = () => {
+    const activeContent = generatedContent || content;
+    if (!activeContent) {
+      setContentStats({ words: 0, characters: 0, readTime: 0, sentiment: 'neutral' });
+      return;
     }
-  ];
+
+    const words = activeContent.trim().split(/\s+/).length;
+    const characters = activeContent.length;
+    const readTime = Math.ceil(words / 200);
+
+    // Simple sentiment analysis
+    const positiveWords = ['great', 'excellent', 'amazing', 'love', 'perfect', 'outstanding'];
+    const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'horrible', 'worst'];
+    const lowerContent = activeContent.toLowerCase();
+    
+    const positiveCount = positiveWords.filter(word => lowerContent.includes(word)).length;
+    const negativeCount = negativeWords.filter(word => lowerContent.includes(word)).length;
+    
+    let sentiment = 'neutral';
+    if (positiveCount > negativeCount) sentiment = 'positive';
+    else if (negativeCount > positiveCount) sentiment = 'negative';
+
+    setContentStats({ words, characters, readTime, sentiment });
+  };
+
+  const generateContent = async (prompt?: string, type?: string) => {
+    const finalPrompt = prompt || contentPrompt;
+    const finalType = type || selectedContentType;
+    
+    if (!finalPrompt.trim() || !finalType) return;
+
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: finalPrompt,
+          type: finalType,
+          userId: user?.id,
+          tone: 'professional',
+          audience: 'general'
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setGeneratedContent(data.content);
+        if (!title) {
+          setTitle(finalPrompt.length > 50 ? finalPrompt.substring(0, 50) + '...' : finalPrompt);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to generate content:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const useGeneratedContent = () => {
+    setContent(generatedContent);
+    setGeneratedContent('');
+  };
+
+  const saveProject = async () => {
+    // Mock save functionality
+    const projectData = {
+      title,
+      content: content || generatedContent,
+      type: selectedContentType,
+      stats: contentStats
+    };
+    
+    console.log('Saving project:', projectData);
+    // In production: await API call to save project
+  };
+
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment) {
+      case 'positive': return 'text-green-600';
+      case 'negative': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  const getTypeIcon = (type: string) => {
+    const typeConfig = contentTypes.find(t => t.id === type);
+    return typeConfig ? typeConfig.icon : FileText;
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center space-x-3">
-        <div className="p-2 bg-primary/10 rounded-lg">
-          <PenTool className="h-6 w-6 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold">Content Studio</h1>
-          <p className="text-muted-foreground">Create, edit, and optimize your content with AI assistance</p>
-        </div>
-      </div>
-
-  <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        {/* Template Selection */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Content Templates</CardTitle>
-            <CardDescription>Choose a template to get started</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3 max-h-[60vh] overflow-y-auto">
-            {contentTemplates.map((template) => {
-              const IconComponent = template.icon;
-              return (
-                <Button
-                  key={template.id}
-                  variant={selectedTemplate === template.id ? "default" : "ghost"}
-                  className="w-full justify-start h-auto p-3"
-                  onClick={() => setSelectedTemplate(template.id)}
-                >
-                  <div className={`w-8 h-8 rounded-lg ${template.color} flex items-center justify-center mr-3 flex-shrink-0`}>
-                    <IconComponent className="h-4 w-4 text-white" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-medium text-sm">{template.title}</div>
-                    <div className="text-xs text-muted-foreground">{template.description}</div>
-                  </div>
-                </Button>
-              );
-            })}
-          </CardContent>
-        </Card>
-
-        {/* Main Editor */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Content Editor</CardTitle>
-                <CardDescription>Write and edit your content</CardDescription>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Draft
-                </Button>
-                <Button size="sm">
-                  Publish
-                </Button>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="container mx-auto px-6 py-8 max-w-7xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
+              <PenTool className="w-8 h-8 text-white" />
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                placeholder="Enter your content title..."
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="text-lg font-medium"
-              />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Content Studio
+              </h1>
+              <p className="text-lg text-muted-foreground mt-1">
+                AI-powered content creation workspace
+              </p>
             </div>
-            
-            <div>
-              <Label htmlFor="content">Content</Label>
-              <textarea
-                id="content"
-                placeholder="Start writing your content here..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="w-full h-96 p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <Badge variant="secondary" className="px-3 py-1">
+              <Sparkles className="w-4 h-4 mr-1" />
+              AI Enhanced
+            </Badge>
+            <Avatar className="w-10 h-10">
+              <AvatarImage src={user?.profileImageUrl} />
+              <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                {user?.displayName?.charAt(0) || 'U'}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+        </div>
 
-            {/* AI Tools */}
-            <div className="border-t pt-4">
-              <h3 className="font-semibold mb-3">AI Tools</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {aiFeatures.map((feature, index) => {
-                  const IconComponent = feature.icon;
-                  return (
-                    <Button key={index} variant="outline" size="sm" className="justify-start">
-                      <IconComponent className="h-4 w-4 mr-2" />
-                      {feature.name}
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4 bg-white dark:bg-slate-800 shadow-lg">
+            <TabsTrigger value="create" className="gap-2">
+              <Wand2 className="w-4 h-4" />
+              Create
+            </TabsTrigger>
+            <TabsTrigger value="edit" className="gap-2">
+              <PenTool className="w-4 h-4" />
+              Edit
+            </TabsTrigger>
+            <TabsTrigger value="projects" className="gap-2">
+              <FileText className="w-4 h-4" />
+              Projects
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* AI Assistant */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">AI Assistant</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <Wand2 className="h-4 w-4 mr-2" />
-                Generate Outline
-              </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                Continue Writing
-              </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <Eye className="h-4 w-4 mr-2" />
-                SEO Analysis
-              </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <Copy className="h-4 w-4 mr-2" />
-                Grammar Check
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Recent Drafts */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Recent Drafts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {recentDrafts.map((draft) => (
-                  <div key={draft.id} className="p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{draft.title}</h4>
-                        <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
-                          <span>{draft.type}</span>
-                          <span>•</span>
-                          <span>{draft.wordCount} words</span>
+          {/* Create Tab */}
+          <TabsContent value="create" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Content Type Selection */}
+              <div className="lg:col-span-1 space-y-6">
+                <Card className="border-0 shadow-lg bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="w-5 h-5 text-purple-500" />
+                      Content Types
+                    </CardTitle>
+                    <CardDescription>
+                      Choose what you want to create
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {contentTypes.map((type) => {
+                      const IconComponent = type.icon;
+                      return (
+                        <div
+                          key={type.id}
+                          className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                            selectedContentType === type.id
+                              ? 'border-purple-300 bg-purple-50 dark:bg-purple-900/20 shadow-md'
+                              : 'border-gray-200 hover:border-purple-200 hover:bg-purple-50/50 dark:hover:bg-purple-900/10'
+                          }`}
+                          onClick={() => setSelectedContentType(type.id)}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`p-2 rounded-lg bg-gradient-to-r ${type.gradient}`}>
+                              <IconComponent className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-sm">{type.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">{type.description}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="outline" className="text-xs">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {type.estimatedTime}
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {selectedContentType === type.id && (
+                            <div className="mt-3 pt-3 border-t border-purple-200">
+                              <div className="space-y-2">
+                                <p className="text-xs font-medium text-purple-700 dark:text-purple-300">Features:</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {type.features.map((feature, idx) => (
+                                    <Badge key={idx} variant="secondary" className="text-xs">
+                                      {feature}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">{draft.lastEdited}</p>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+
+                {/* AI Suggestions */}
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+                      <Lightbulb className="w-5 h-5" />
+                      AI Suggestions
+                    </CardTitle>
+                    <CardDescription className="text-yellow-700 dark:text-yellow-300">
+                      Trending content ideas for you
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {aiSuggestions.map((suggestion) => (
+                      <div 
+                        key={suggestion.id}
+                        className="p-3 bg-white/60 dark:bg-slate-800/60 rounded-lg border border-yellow-200 dark:border-yellow-700 cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80 transition-colors"
+                        onClick={() => {
+                          setSelectedContentType(suggestion.type);
+                          setContentPrompt(suggestion.title);
+                        }}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant={suggestion.trending ? "destructive" : "secondary"} className="text-xs">
+                                {suggestion.trending ? (
+                                  <>
+                                    <TrendingUp className="w-3 h-3 mr-1" />
+                                    Trending
+                                  </>
+                                ) : (
+                                  suggestion.type
+                                )}
+                              </Badge>
+                              <span className="text-xs text-green-600 font-medium">
+                                {suggestion.estimatedEngagement}% engagement
+                              </span>
+                            </div>
+                            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                              {suggestion.title}
+                            </p>
+                            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                              Difficulty: {suggestion.difficulty}
+                            </p>
+                          </div>
+                          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Wand2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* AI Generation Interface */}
+              <div className="lg:col-span-2 space-y-6">
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-purple-50 dark:from-slate-800 dark:to-purple-900/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-purple-500" />
+                      AI Content Generator
+                    </CardTitle>
+                    <CardDescription>
+                      Describe your content idea and let AI create it for you
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Content Title/Topic</label>
+                        <Input
+                          placeholder="What do you want to create? Be specific about your topic, audience, and goals..."
+                          value={contentPrompt}
+                          onChange={(e) => setContentPrompt(e.target.value)}
+                          className="text-base"
+                        />
+                      </div>
+                      
+                      {selectedContentType && (
+                        <div className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <div className={`p-2 rounded-lg bg-gradient-to-r ${contentTypes.find(t => t.id === selectedContentType)?.gradient}`}>
+                              {React.createElement(getTypeIcon(selectedContentType), { className: "w-4 h-4 text-white" })}
+                            </div>
+                            <span className="font-medium">{contentTypes.find(t => t.id === selectedContentType)?.title}</span>
+                          </div>
+                          <Badge variant="outline">
+                            Max {contentTypes.find(t => t.id === selectedContentType)?.maxLength} words
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      <Button 
+                        onClick={() => generateContent()}
+                        disabled={!contentPrompt.trim() || !selectedContentType || isGenerating}
+                        className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white"
+                        size="lg"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                            AI is creating your content...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-5 h-5 mr-2" />
+                            Generate with AI
+                          </>
+                        )}
                       </Button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Export Options */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Export</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Download as PDF
-              </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export to WordPress
-              </Button>
-              <Button variant="outline" className="w-full justify-start" size="sm">
-                <Copy className="h-4 w-4 mr-2" />
-                Copy to Clipboard
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+                    {generatedContent && (
+                      <div className="space-y-4 pt-6 border-t">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            Generated Content
+                          </h3>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => setGeneratedContent('')}>
+                              <RefreshCw className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={useGeneratedContent}>
+                              <Copy className="w-4 h-4 mr-2" />
+                              Use Content
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-4 max-h-96 overflow-y-auto">
+                          <pre className="whitespace-pre-wrap text-sm font-sans text-gray-800 dark:text-gray-200">
+                            {generatedContent}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Content Stats */}
+                {(content || generatedContent) && (
+                  <Card className="border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5" />
+                        Content Analytics
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-4 gap-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-blue-600">{contentStats.words}</div>
+                          <div className="text-xs text-muted-foreground">Words</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-600">{contentStats.readTime}</div>
+                          <div className="text-xs text-muted-foreground">Min Read</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-purple-600">{contentStats.characters}</div>
+                          <div className="text-xs text-muted-foreground">Characters</div>
+                        </div>
+                        <div className="text-center">
+                          <div className={`text-lg font-medium ${getSentimentColor(contentStats.sentiment)}`}>
+                            {contentStats.sentiment.charAt(0).toUpperCase() + contentStats.sentiment.slice(1)}
+                          </div>
+                          <div className="text-xs text-muted-foreground">Sentiment</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Edit Tab */}
+          <TabsContent value="edit" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <Card className="border-0 shadow-lg h-[600px] flex flex-col">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle>Content Editor</CardTitle>
+                        <CardDescription>Edit and refine your content</CardDescription>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={saveProject}>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save
+                        </Button>
+                        <Button size="sm">
+                          <Download className="w-4 h-4 mr-2" />
+                          Export
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col space-y-4">
+                    <Input
+                      placeholder="Enter content title..."
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="text-lg font-medium"
+                    />
+                    <Textarea
+                      placeholder="Start writing or paste your content here..."
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      className="flex-1 resize-none text-base leading-relaxed"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="space-y-6">
+                {/* AI Writing Tools */}
+                <Card className="border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Wand2 className="w-5 h-5" />
+                      AI Tools
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      Improve Writing
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Target className="w-4 h-4" />
+                      Change Tone
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      SEO Optimize
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Globe className="w-4 h-4" />
+                      Translate
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Hash className="w-4 h-4" />
+                      Add Hashtags
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions */}
+                <Card className="border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Zap className="w-5 h-5" />
+                      Quick Actions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Copy className="w-4 h-4" />
+                      Copy to Clipboard
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Share2 className="w-4 h-4" />
+                      Share Preview
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Schedule Post
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Projects Tab */}
+          <TabsContent value="projects" className="space-y-6">
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Recent Projects
+                </CardTitle>
+                <CardDescription>
+                  Your content creation history
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {recentProjects.map((project) => {
+                    const IconComponent = getTypeIcon(project.type);
+                    return (
+                      <div key={project.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                              <IconComponent className="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold">{project.title}</h3>
+                              <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                                <span>{contentTypes.find(t => t.id === project.type)?.title}</span>
+                                <span>{project.wordCount} words</span>
+                                <span>{project.lastEdited.toRelativeTimeString ? project.lastEdited.toRelativeTimeString() : 'Recently'}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={
+                              project.status === 'published' ? 'default' :
+                              project.status === 'scheduled' ? 'secondary' : 'outline'
+                            }>
+                              {project.status}
+                            </Badge>
+                            <div className="text-right text-sm">
+                              <div className="text-green-600 font-medium">{project.engagement}%</div>
+                              <div className="text-xs text-muted-foreground">engagement</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100 text-sm font-medium">Total Content</p>
+                      <p className="text-3xl font-bold">247</p>
+                    </div>
+                    <FileText className="w-8 h-8 text-blue-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-lg bg-gradient-to-r from-green-500 to-green-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100 text-sm font-medium">Avg Engagement</p>
+                      <p className="text-3xl font-bold">87%</p>
+                    </div>
+                    <TrendingUp className="w-8 h-8 text-green-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-100 text-sm font-medium">Words Written</p>
+                      <p className="text-3xl font-bold">125K</p>
+                    </div>
+                    <PenTool className="w-8 h-8 text-purple-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-orange-100 text-sm font-medium">Time Saved</p>
+                      <p className="text-3xl font-bold">342h</p>
+                    </div>
+                    <Clock className="w-8 h-8 text-orange-200" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
