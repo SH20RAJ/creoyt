@@ -59,7 +59,7 @@ export const USER_MENU_ITEMS = [
   {
     id: "logout",
     label: "Sign Out",
-    href: "/auth/signout",
+    href: "/api/auth/signout",
     icon: "LogOut"
   }
 ] as const;
