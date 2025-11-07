@@ -1,136 +1,174 @@
 import { sql } from 'drizzle-orm';
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, blob, index, unique } from 'drizzle-orm/sqlite-core';
 
-// Users & Authentication Tables
+// Users table - integrates with Stack Auth
 export const users = sqliteTable('users', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey(), // Stack Auth user ID
   email: text('email').notNull().unique(),
-  username: text('username').unique(),
-  fullName: text('full_name'),
-  avatarUrl: text('avatar_url'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-  lastLogin: integer('last_login', { mode: 'timestamp' }),
-  isActive: integer('is_active', { mode: 'boolean' }).default(true),
-});
+  displayName: text('display_name'),
+  profileImageUrl: text('profile_image_url'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+}, (table) => ({
+  emailIdx: index('email_idx').on(table.email),
+}));
 
-export const userProfiles = sqliteTable('user_profiles', {
-  userId: text('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
-  bio: text('bio'),
-  company: text('company'),
-  website: text('website'),
-  socialLinks: text('social_links', { mode: 'json' }), // JSON object
-  preferences: text('preferences', { mode: 'json' }), // JSON object
-  onboardingCompleted: integer('onboarding_completed', { mode: 'boolean' }).default(false),
-});
-
-// Content Management Tables
-export const projects = sqliteTable('projects', {
+// YouTube channels table - users can have multiple channels
+export const youtubeChannels = sqliteTable('youtube_channels', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  channelId: text('channel_id').notNull().unique(), // YouTube channel ID
+  channelName: text('channel_name').notNull(),
+  channelDescription: text('channel_description'),
+  channelThumbnail: text('channel_thumbnail'),
+  subscriberCount: integer('subscriber_count').default(0),
+  videoCount: integer('video_count').default(0),
+  viewCount: integer('view_count').default(0),
+  uploadsPlaylistId: text('uploads_playlist_id'), // For fetching videos
+  accessToken: text('access_token').notNull(),
+  refreshToken: text('refresh_token').notNull(),
+  tokenExpiresAt: integer('token_expires_at', { mode: 'timestamp' }).notNull(),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+}, (table) => ({
+  userIdIdx: index('user_id_idx').on(table.userId),
+  channelIdIdx: index('channel_id_idx').on(table.channelId),
+  userChannelUnique: unique('user_channel_unique').on(table.userId, table.channelId),
+}));
+
+// YouTube videos table - cache video data for performance
+export const youtubeVideos = sqliteTable('youtube_videos', {
+  id: text('id').primaryKey(),
+  channelId: text('channel_id').notNull().references(() => youtubeChannels.id, { onDelete: 'cascade' }),
+  videoId: text('video_id').notNull().unique(), // YouTube video ID
   title: text('title').notNull(),
   description: text('description'),
-  category: text('category'), // blog, social, marketing, etc.
-  status: text('status').default('draft'), // draft, active, archived
-  settings: text('settings', { mode: 'json' }), // JSON object
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
+  thumbnail: text('thumbnail'),
+  publishedAt: integer('published_at', { mode: 'timestamp' }).notNull(),
+  duration: text('duration'), // ISO 8601 duration format
+  tags: text('tags'), // JSON array of tags
+  categoryId: text('category_id'),
+  viewCount: integer('view_count').default(0),
+  likeCount: integer('like_count').default(0),
+  dislikeCount: integer('dislike_count').default(0),
+  commentCount: integer('comment_count').default(0),
+  engagementRate: integer('engagement_rate').default(0), // Calculated percentage
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+}, (table) => ({
+  channelIdIdx: index('channel_id_idx').on(table.channelId),
+  videoIdIdx: index('video_id_idx').on(table.videoId),
+  publishedAtIdx: index('published_at_idx').on(table.publishedAt),
+}));
 
-export const content = sqliteTable('content', {
+// YouTube analytics data - time-series data for insights
+export const youtubeAnalytics = sqliteTable('youtube_analytics', {
   id: text('id').primaryKey(),
-  projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  title: text('title').notNull(),
-  contentType: text('content_type'), // article, post, script, copy
-  contentData: text('content_data', { mode: 'json' }), // JSON with content structure
-  aiModelUsed: text('ai_model_used'),
-  promptUsed: text('prompt_used'),
-  status: text('status').default('draft'),
-  wordCount: integer('word_count').default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-// AI Interaction Tables
-export const aiConversations = sqliteTable('ai_conversations', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  title: text('title'),
-  modelUsed: text('model_used').default('llama-3.1-8b'),
-  totalMessages: integer('total_messages').default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-export const aiMessages = sqliteTable('ai_messages', {
-  id: text('id').primaryKey(),
-  conversationId: text('conversation_id').notNull().references(() => aiConversations.id, { onDelete: 'cascade' }),
-  role: text('role').notNull(), // user, assistant, system
-  content: text('content').notNull(),
-  responseTime: integer('response_time'), // milliseconds
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-// Templates & Assets Tables
-export const templates = sqliteTable('templates', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  description: text('description'),
-  category: text('category'),
-  templateData: text('template_data', { mode: 'json' }), // JSON object
-  isPublic: integer('is_public', { mode: 'boolean' }).default(false),
-  usageCount: integer('usage_count').default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-export const files = sqliteTable('files', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  filename: text('filename').notNull(),
-  fileType: text('file_type'),
-  fileSize: integer('file_size'),
-  storagePath: text('storage_path'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-// Analytics & Insights Tables
-export const userAnalytics = sqliteTable('user_analytics', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  eventType: text('event_type'), // login, content_created, ai_query, etc.
-  eventData: text('event_data', { mode: 'json' }), // JSON object
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-export const contentAnalytics = sqliteTable('content_analytics', {
-  id: text('id').primaryKey(),
-  contentId: text('content_id').notNull().references(() => content.id, { onDelete: 'cascade' }),
+  channelId: text('channel_id').notNull().references(() => youtubeChannels.id, { onDelete: 'cascade' }),
+  videoId: text('video_id').references(() => youtubeVideos.id, { onDelete: 'cascade' }), // NULL for channel-level analytics
+  date: text('date').notNull(), // YYYY-MM-DD format
   views: integer('views').default(0),
+  watchTimeMinutes: integer('watch_time_minutes').default(0),
+  subscribersGained: integer('subscribers_gained').default(0),
+  subscribersLost: integer('subscribers_lost').default(0),
+  likes: integer('likes').default(0),
+  dislikes: integer('dislikes').default(0),
+  comments: integer('comments').default(0),
   shares: integer('shares').default(0),
-  engagementScore: real('engagement_score').default(0),
-  lastViewed: integer('last_viewed', { mode: 'timestamp' }),
+  estimatedRevenue: integer('estimated_revenue').default(0), // In cents
+  impressions: integer('impressions').default(0),
+  clickThroughRate: integer('click_through_rate').default(0), // Percentage * 100
+  averageViewDuration: integer('average_view_duration').default(0), // Seconds
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+}, (table) => ({
+  channelDateIdx: index('channel_date_idx').on(table.channelId, table.date),
+  videoDateIdx: index('video_date_idx').on(table.videoId, table.date),
+  dateIdx: index('date_idx').on(table.date),
+}));
+
+// Content projects - user's content creation projects
+export const contentProjects = sqliteTable('content_projects', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  content: text('content'),
+  contentType: text('content_type').notNull(), // 'blog', 'social', 'email', 'marketing', 'video', 'podcast'
+  status: text('status').default('draft').notNull(), // 'draft', 'published', 'scheduled'
+  tags: text('tags'), // JSON array
+  wordCount: integer('word_count').default(0),
+  estimatedReadTime: integer('estimated_read_time').default(0), // Minutes
+  sentiment: text('sentiment').default('neutral'), // 'positive', 'negative', 'neutral'
+  aiGenerated: integer('ai_generated', { mode: 'boolean' }).default(false),
+  templateUsed: text('template_used'),
+  scheduledAt: integer('scheduled_at', { mode: 'timestamp' }),
+  publishedAt: integer('published_at', { mode: 'timestamp' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+}, (table) => ({
+  userIdIdx: index('user_id_idx').on(table.userId),
+  statusIdx: index('status_idx').on(table.status),
+  contentTypeIdx: index('content_type_idx').on(table.contentType),
+  createdAtIdx: index('created_at_idx').on(table.createdAt),
+}));
+
+// AI suggestions - personalized content suggestions for users
+export const aiSuggestions = sqliteTable('ai_suggestions', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  contentType: text('content_type').notNull(),
+  prompt: text('prompt'),
+  trending: integer('trending', { mode: 'boolean' }).default(false),
+  difficulty: text('difficulty').default('medium'), // 'easy', 'medium', 'hard'
+  estimatedEngagement: integer('estimated_engagement').default(75), // Percentage
+  source: text('source').default('ai'), // 'ai', 'trending', 'user_behavior'
+  isUsed: integer('is_used', { mode: 'boolean' }).default(false),
+  usedAt: integer('used_at', { mode: 'timestamp' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  expiresAt: integer('expires_at', { mode: 'timestamp' }),
+}, (table) => ({
+  userIdIdx: index('user_id_idx').on(table.userId),
+  contentTypeIdx: index('content_type_idx').on(table.contentType),
+  trendingIdx: index('trending_idx').on(table.trending),
+  expiresAtIdx: index('expires_at_idx').on(table.expiresAt),
+}));
+
+// User settings and preferences
+export const userSettings = sqliteTable('user_settings', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }).unique(),
+  defaultContentType: text('default_content_type').default('blog'),
+  defaultTone: text('default_tone').default('professional'),
+  timezone: text('timezone').default('UTC'),
+  language: text('language').default('en'),
+  aiAssistanceLevel: text('ai_assistance_level').default('medium'), // 'low', 'medium', 'high'
+  autoSuggestions: integer('auto_suggestions', { mode: 'boolean' }).default(true),
+  emailNotifications: integer('email_notifications', { mode: 'boolean' }).default(true),
+  analyticsTracking: integer('analytics_tracking', { mode: 'boolean' }).default(true),
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
 });
 
-// Type exports for TypeScript
+// Export types for TypeScript
 export type User = typeof users.$inferSelect;
-export type InsertUser = typeof users.$inferInsert;
-export type UserProfile = typeof userProfiles.$inferSelect;
-export type InsertUserProfile = typeof userProfiles.$inferInsert;
-export type Project = typeof projects.$inferSelect;
-export type InsertProject = typeof projects.$inferInsert;
-export type Content = typeof content.$inferSelect;
-export type InsertContent = typeof content.$inferInsert;
-export type AIConversation = typeof aiConversations.$inferSelect;
-export type InsertAIConversation = typeof aiConversations.$inferInsert;
-export type AIMessage = typeof aiMessages.$inferSelect;
-export type InsertAIMessage = typeof aiMessages.$inferInsert;
-export type Template = typeof templates.$inferSelect;
-export type InsertTemplate = typeof templates.$inferInsert;
-export type File = typeof files.$inferSelect;
-export type InsertFile = typeof files.$inferInsert;
-export type UserAnalytics = typeof userAnalytics.$inferSelect;
-export type InsertUserAnalytics = typeof userAnalytics.$inferInsert;
-export type ContentAnalytics = typeof contentAnalytics.$inferSelect;
-export type InsertContentAnalytics = typeof contentAnalytics.$inferInsert;
+export type NewUser = typeof users.$inferInsert;
+
+export type YouTubeChannel = typeof youtubeChannels.$inferSelect;
+export type NewYouTubeChannel = typeof youtubeChannels.$inferInsert;
+
+export type YouTubeVideo = typeof youtubeVideos.$inferSelect;
+export type NewYouTubeVideo = typeof youtubeVideos.$inferInsert;
+
+export type YouTubeAnalytics = typeof youtubeAnalytics.$inferSelect;
+export type NewYouTubeAnalytics = typeof youtubeAnalytics.$inferInsert;
+
+export type ContentProject = typeof contentProjects.$inferSelect;
+export type NewContentProject = typeof contentProjects.$inferInsert;
+
+export type AISuggestion = typeof aiSuggestions.$inferSelect;
+export type NewAISuggestion = typeof aiSuggestions.$inferInsert;
+
+export type UserSettings = typeof userSettings.$inferSelect;
+export type NewUserSettings = typeof userSettings.$inferInsert;

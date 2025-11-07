@@ -425,21 +425,21 @@ export default function ContentStudioPage() {
                 </Card>
 
                 {/* AI Suggestions */}
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700">
+                <Card className="border-0 shadow-lg bg-muted border-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+                    <CardTitle className="flex items-center gap-2 text-foreground">
                       <Lightbulb className="w-5 h-5" />
                       AI Suggestions
                     </CardTitle>
-                    <CardDescription className="text-yellow-700 dark:text-yellow-300">
+                    <CardDescription className="text-muted-foreground">
                       Trending content ideas for you
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {aiSuggestions.map((suggestion) => (
-                      <div 
+                      <div
                         key={suggestion.id}
-                        className="p-3 bg-white/60 dark:bg-slate-800/60 rounded-lg border border-yellow-200 dark:border-yellow-700 cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80 transition-colors"
+                        className="p-3 bg-muted rounded-lg border border-border cursor-pointer hover:bg-accent transition-colors"
                         onClick={() => {
                           setSelectedContentType(suggestion.type);
                           setContentPrompt(suggestion.title);
@@ -448,7 +448,7 @@ export default function ContentStudioPage() {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge variant={suggestion.trending ? "destructive" : "secondary"} className="text-xs">
+                              <Badge variant={suggestion.trending ? "secondary" : "outline"} className="text-xs">
                                 {suggestion.trending ? (
                                   <>
                                     <TrendingUp className="w-3 h-3 mr-1" />
@@ -458,14 +458,14 @@ export default function ContentStudioPage() {
                                   suggestion.type
                                 )}
                               </Badge>
-                              <span className="text-xs text-green-600 font-medium">
+                              <span className="text-xs text-primary font-medium">
                                 {suggestion.estimatedEngagement}% engagement
                               </span>
                             </div>
-                            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                            <p className="text-sm font-medium text-foreground">
                               {suggestion.title}
                             </p>
-                            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                            <p className="text-xs text-muted-foreground mt-1">
                               Difficulty: {suggestion.difficulty}
                             </p>
                           </div>

@@ -1,16 +1,17 @@
-import { drizzle } from 'drizzle-orm/d1';
+import { drizzle } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client';
 import * as schema from './schema';
 
-export function createDB(d1: D1Database) {
-  return drizzle(d1, { schema });
-}
+// Create Turso client
+const client = createClient({
+  url: process.env.TURSO_DB_URL!,
+  authToken: process.env.TURSO_DB_TOKEN!,
+});
 
-export type Database = ReturnType<typeof createDB>;
+// Create database instance
+export const db = drizzle(client, { schema });
 
-// Helper function to get database instance in app
-export function getDB(env: { DB: D1Database }) {
-  return createDB(env.DB);
-}
+export type Database = typeof db;
 
-// Re-export schema for convenience
+// Re-export schema and types for convenience
 export * from './schema';
