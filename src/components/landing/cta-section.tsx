@@ -16,7 +16,7 @@ export function CTASection() {
           </h2>
           
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Join thousands of creators who are already using Creovate to scale their content and grow their audience with AI-powered tools.
+            Join thousands of creators who are already using YT Copilot to scale their content and grow their audience with AI-powered tools.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">

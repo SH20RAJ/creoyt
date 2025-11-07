@@ -1,64 +1,64 @@
 export const BENTO_FEATURES_DATA = [
   {
-    title: "AI Video Optimization",
-    meta: "Advanced AI",
-    description: "Optimize your YouTube videos with our proprietary AI algorithms. Get title suggestions, thumbnail analysis, and SEO recommendations.",
+    title: "AI-Powered Idea Generation",
+    meta: "Llama 3 Powered",
+    description: "Generate unlimited content ideas with advanced AI. Never run out of creative inspiration for your next project.",
     iconName: "Brain",
-    iconColor: "text-red-500",
+    iconColor: "text-purple-500",
     status: "Live",
-    tags: ["AI", "Optimization", "YouTube"],
+    tags: ["AI", "Ideas", "Creativity"],
     colSpan: 2,
     hasPersistentHover: true,
-    cta: "Optimize Videos →"
+    cta: "Generate Ideas →"
   },
   {
-    title: "Advanced Analytics",
+    title: "Smart Research Dashboard",
     meta: "Real-time",
-    description: "Deep insights into your channel performance with predictive analytics using Turso database technology.",
+    description: "Comprehensive research with trend analysis, competitor intelligence, and audience insights.",
     iconName: "BarChart3",
     iconColor: "text-blue-500",
     status: "Updated",
-    tags: ["Analytics", "Insights"],
-    cta: "View Analytics →"
+    tags: ["Research", "Analytics"],
+    cta: "View Dashboard →"
   },
   {
-    title: "Content Strategy AI",
-    meta: "Strategic",
-    description: "AI-powered content planning with trending topic discovery and audience engagement predictions.",
+    title: "Content Creation Studio",
+    meta: "Multi-format",
+    description: "Create blogs, social media posts, scripts, and marketing materials with AI assistance.",
     iconName: "PenTool",
     iconColor: "text-green-500",
-    tags: ["Strategy", "Planning"],
+    tags: ["Writing", "Studio"],
     colSpan: 2,
-    cta: "Plan Content →"
+    cta: "Start Creating →"
   },
   {
-    title: "Competitor Intelligence",
-    meta: "Market Insights",
-    description: "Track competitor performance and discover successful strategies in your niche.",
+    title: "Scout & Discovery",
+    meta: "Viral Content",
+    description: "Discover trending topics and untapped opportunities across all major platforms.",
     iconName: "Search",
     iconColor: "text-orange-500",
     status: "Beta",
-    tags: ["Research", "Competition"],
-    cta: "Analyze Competitors →"
+    tags: ["Discovery", "Trends"],
+    cta: "Scout Now →"
   },
   {
-    title: "Thumbnail Optimizer",
-    meta: "CTR Boost",
-    description: "AI-powered thumbnail analysis and suggestions to maximize click-through rates.",
+    title: "Project Management",
+    meta: "Team Ready",
+    description: "Organize projects, collaborate with teams, and track progress from idea to publication.",
     iconName: "FolderOpen",
     iconColor: "text-indigo-500",
-    tags: ["Thumbnails", "CTR"],
-    cta: "Optimize Thumbnails →"
+    tags: ["Management", "Teams"],
+    cta: "Manage Projects →"
   },
   {
-    title: "Real-time Monitoring",
-    meta: "Instant Alerts",
-    description: "Monitor your videos in real-time with instant notifications about performance changes.",
+    title: "Global Performance",
+    meta: "200+ locations",
+    description: "Lightning-fast performance with sub-100ms response times powered by Cloudflare Workers.",
     iconName: "Zap",
     iconColor: "text-yellow-500",
     status: "Optimized",
-    tags: ["Monitoring", "Alerts"],
+    tags: ["Speed", "Global"],
     colSpan: 2,
-    cta: "Start Monitoring →"
+    cta: "Learn More →"
   }
 ];

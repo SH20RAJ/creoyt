@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import type { CloudflareAI } from '@/types/cloudflare';
 
 interface GenerateContentRequest {
-  contentType: 'blog_post' | 'social_media' | 'marketing_copy' | 'email_campaign' | 'product_description' | 'youtube_title' | 'youtube_description' | 'youtube_script';
+  contentType: 'blog_post' | 'social_media' | 'marketing_copy' | 'email_campaign' | 'product_description';
   topic: string;
   tone?: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'conversational';
   length?: 'short' | 'medium' | 'long';
@@ -21,21 +22,6 @@ interface ImproveContentRequest {
   userId?: string;
 }
 
-interface OpenAIResponse {
-  choices: Array<{
-    message: {
-      content: string;
-      role: string;
-    };
-    finish_reason: string;
-  }>;
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
 // Generate new content
 export async function POST(request: NextRequest) {
   try {
@@ -52,9 +38,10 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const apiKey = process.env.OPENAI_API_KEY;
-
-      if (apiKey) {
+      // Check if we're running in Cloudflare Workers environment with AI binding
+      const AI = (globalThis as { AI?: CloudflareAI }).AI;
+      
+      if (AI) {
         try {
           // Create a specialized prompt based on content type
           const prompts = {
@@ -62,36 +49,20 @@ export async function POST(request: NextRequest) {
             social_media: `Create an engaging social media post about "${body.topic}". Make it shareable and include relevant hashtags. Tone: ${body.tone || 'friendly'}. Keep it concise and engaging.`,
             marketing_copy: `Write persuasive marketing copy for "${body.topic}". Focus on benefits, include a clear call-to-action, and make it conversion-focused. Tone: ${body.tone || 'professional'}.`,
             email_campaign: `Create an email campaign about "${body.topic}". Include a compelling subject line and body content. Tone: ${body.tone || 'professional'}. Make it personalized and action-oriented.`,
-            product_description: `Write a detailed product description for "${body.topic}". Highlight key features, benefits, and specifications. Tone: ${body.tone || 'professional'}. Focus on conversion and clarity.`,
-            youtube_title: `Create 5 engaging YouTube video titles about "${body.topic}". Make them click-worthy, SEO-optimized, and under 60 characters. Tone: ${body.tone || 'engaging'}. Focus on views and engagement.`,
-            youtube_description: `Write a comprehensive YouTube video description for "${body.topic}". Include timestamps, relevant hashtags, and a call-to-action. Tone: ${body.tone || 'friendly'}. Optimize for YouTube SEO.`,
-            youtube_script: `Write a YouTube video script about "${body.topic}". Include hook, main content, and strong ending. Tone: ${body.tone || 'conversational'}. Length: ${body.length || 'medium'}. Make it engaging and viewer-friendly.`
+            product_description: `Write a detailed product description for "${body.topic}". Highlight key features, benefits, and specifications. Tone: ${body.tone || 'professional'}. Focus on conversion and clarity.`
           };
 
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              model: 'gpt-3.5-turbo',
-              messages: [
-                { role: 'system', content: 'You are a professional content writer. Create high-quality, engaging content based on the user\'s requirements.' },
-                { role: 'user', content: prompts[body.contentType] }
-              ],
-              max_tokens: body.length === 'short' ? 500 : body.length === 'long' ? 2000 : 1000,
-              temperature: 0.7
-            })
+          const aiResponse = await AI.run('@cf/meta/llama-3.1-8b-instruct', {
+            messages: [
+              { role: 'system', content: 'You are a professional content writer. Create high-quality, engaging content based on the user\'s requirements.' },
+              { role: 'user', content: prompts[body.contentType] }
+            ],
+            max_tokens: body.length === 'short' ? 500 : body.length === 'long' ? 2000 : 1000,
+            temperature: 0.7
           });
 
-          if (!response.ok) {
-            throw new Error(`OpenAI API error: ${response.status}`);
-          }
-
-          const data = await response.json() as OpenAIResponse;
-          const content = data.choices[0]?.message?.content || 'AI-generated content';
-
+          const content = aiResponse.response || aiResponse.content || 'AI-generated content';
+          
           return NextResponse.json({
             success: true,
             content,
@@ -104,26 +75,23 @@ export async function POST(request: NextRequest) {
               generatedAt: new Date().toISOString()
             },
             usage: {
-              tokensUsed: data.usage?.total_tokens || 500,
-              cost: ((data.usage?.prompt_tokens || 0) * 0.0015 + (data.usage?.completion_tokens || 0) * 0.002) / 1000
+              tokensUsed: aiResponse.usage?.total_tokens || 500,
+              cost: (aiResponse.usage?.total_tokens || 500) * 0.000001 // Approximate Cloudflare AI pricing
             }
           });
         } catch (aiError) {
-          console.error('OpenAI Content Generation Error:', aiError);
+          console.error('AI Content Generation Error:', aiError);
           // Fall back to template if AI fails
         }
       }
 
       // Fallback templates for development or when AI is not available
       const contentTemplates = {
-        blog_post: `# ${body.topic}\n\nThis is a sample blog post about ${body.topic}. In production, this would be generated by OpenAI GPT-3.5-turbo based on your specific requirements.\n\n## Introduction\n\nWrite an engaging introduction here...\n\n## Main Content\n\nDetailed content about ${body.topic}...\n\n## Conclusion\n\nWrap up with key takeaways...`,
-        social_media: `🚀 Exciting news about ${body.topic}! \n\nThis would be a compelling social media post generated by OpenAI, tailored to your brand voice and optimized for engagement.\n\n#${body.topic.replace(/\s+/g, '')} #Innovation #ContentCreation`,
-        marketing_copy: `Transform Your Business with ${body.topic}\n\nDiscover how ${body.topic} can revolutionize your approach and drive real results. This persuasive copy would be crafted by OpenAI to convert readers into customers.\n\n✅ Benefit 1\n✅ Benefit 2\n✅ Benefit 3\n\nReady to get started? Contact us today!`,
-        email_campaign: `Subject: Don't Miss Out on ${body.topic}\n\nHi [Name],\n\nThis email about ${body.topic} would be personalized and optimized for your audience. OpenAI would craft compelling subject lines, engaging content, and clear calls-to-action.\n\nBest regards,\n[Your Name]`,
-        product_description: `${body.topic} - Premium Quality Product\n\nThis detailed product description would highlight key features, benefits, and specifications of ${body.topic}. OpenAI would focus on conversion-optimized copy that helps customers make purchasing decisions.\n\nKey Features:\n• Feature 1\n• Feature 2\n• Feature 3`,
-        youtube_title: `🎥 Amazing ${body.topic} Tips You Need to Know!\n🔥 The Ultimate ${body.topic} Guide for Beginners\n💡 ${body.topic} Secrets That Actually Work\n⚡ How to Master ${body.topic} in 10 Minutes\n🚀 ${body.topic}: Everything You've Been Doing Wrong`,
-        youtube_description: `🎬 Welcome to this comprehensive guide on ${body.topic}!\n\nIn this video, we'll cover everything you need to know about ${body.topic}, including practical tips, common mistakes to avoid, and actionable strategies you can implement today.\n\n⏰ TIMESTAMPS:\n00:00 Introduction\n02:30 Getting Started with ${body.topic}\n05:45 Advanced Techniques\n08:20 Common Mistakes\n10:15 Conclusion\n\n🔔 Don't forget to SUBSCRIBE for more content like this!\n💬 Let me know in the comments what you'd like to see next!\n\n#${body.topic.replace(/\s+/g, '')} #YouTube #Tutorial`,
-        youtube_script: `[HOOK - First 15 seconds]\nHey everyone! Did you know that ${body.topic} can completely transform your results? In the next 10 minutes, I'm going to show you exactly how to master ${body.topic}, even if you're a complete beginner.\n\n[MAIN CONTENT]\nLet's dive right in. The first thing you need to understand about ${body.topic} is...\n\n[Key Point 1]\n[Key Point 2]\n[Key Point 3]\n\n[CALL TO ACTION]\nIf this video helped you understand ${body.topic} better, smash that like button and subscribe for more content like this. What aspect of ${body.topic} would you like me to cover next? Let me know in the comments below!\n\n[END SCREEN]\nThanks for watching, and I'll see you in the next video!`
+        blog_post: `# ${body.topic}\n\nThis is a sample blog post about ${body.topic}. In production, this would be generated by Llama 3.1 based on your specific requirements.\n\n## Introduction\n\nWrite an engaging introduction here...\n\n## Main Content\n\nDetailed content about ${body.topic}...\n\n## Conclusion\n\nWrap up with key takeaways...`,
+        social_media: `🚀 Exciting news about ${body.topic}! \n\nThis would be a compelling social media post generated by AI, tailored to your brand voice and optimized for engagement.\n\n#${body.topic.replace(/\s+/g, '')} #Innovation #ContentCreation`,
+        marketing_copy: `Transform Your Business with ${body.topic}\n\nDiscover how ${body.topic} can revolutionize your approach and drive real results. This persuasive copy would be crafted by AI to convert readers into customers.\n\n✅ Benefit 1\n✅ Benefit 2\n✅ Benefit 3\n\nReady to get started? Contact us today!`,
+        email_campaign: `Subject: Don't Miss Out on ${body.topic}\n\nHi [Name],\n\nThis email about ${body.topic} would be personalized and optimized for your audience. The AI would craft compelling subject lines, engaging content, and clear calls-to-action.\n\nBest regards,\n[Your Name]`,
+        product_description: `${body.topic} - Premium Quality Product\n\nThis detailed product description would highlight key features, benefits, and specifications of ${body.topic}. The AI would focus on conversion-optimized copy that helps customers make purchasing decisions.\n\nKey Features:\n• Feature 1\n• Feature 2\n• Feature 3`
       };
 
       return NextResponse.json({
@@ -154,56 +122,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const apiKey = process.env.OPENAI_API_KEY;
-
-      if (apiKey) {
-        try {
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              model: 'gpt-3.5-turbo',
-              messages: [
-                {
-                  role: 'system',
-                  content: 'You are a content analysis expert. Analyze the given content and provide structured feedback on tone, readability, SEO, and engagement. Return your analysis in JSON format with scores and specific suggestions.'
-                },
-                {
-                  role: 'user',
-                  content: `Please analyze this content and provide scores (0-100) and suggestions for tone, readability, SEO, and engagement:\n\n${body.content}`
-                }
-              ],
-              max_tokens: 800,
-              temperature: 0.3
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json() as OpenAIResponse;
-            const analysisText = data.choices[0]?.message?.content || '';
-
-            // Try to parse AI response or provide structured fallback
-            try {
-              const analysis = JSON.parse(analysisText);
-              return NextResponse.json({
-                success: true,
-                analysis,
-                wordCount: body.content.split(' ').length,
-                analyzedAt: new Date().toISOString()
-              });
-            } catch {
-              // If AI doesn't return valid JSON, provide structured analysis
-            }
-          }
-        } catch (error) {
-          console.error('OpenAI Analysis Error:', error);
-        }
-      }
-
-      // Fallback analysis response
+      // Placeholder analysis response
       return NextResponse.json({
         success: true,
         analysis: {
@@ -249,59 +168,10 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const apiKey = process.env.OPENAI_API_KEY;
-
-      if (apiKey) {
-        try {
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              model: 'gpt-3.5-turbo',
-              messages: [
-                {
-                  role: 'system',
-                  content: 'You are a content improvement expert. Rewrite the provided content to improve it based on the specific requirements given. Maintain the original intent while enhancing quality.'
-                },
-                {
-                  role: 'user',
-                  content: `Please improve this content focusing on: ${body.improvements.join(', ')}\n\nOriginal content:\n${body.content}`
-                }
-              ],
-              max_tokens: 1200,
-              temperature: 0.6
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json() as OpenAIResponse;
-            const improvedContent = data.choices[0]?.message?.content || body.content;
-
-            return NextResponse.json({
-              success: true,
-              improvedContent,
-              improvements: body.improvements,
-              changes: [
-                'Enhanced clarity and readability',
-                'Improved SEO optimization',
-                'Strengthened call-to-action',
-                'Added engaging elements'
-              ],
-              improvedAt: new Date().toISOString()
-            });
-          }
-        } catch (error) {
-          console.error('OpenAI Improvement Error:', error);
-        }
-      }
-
-      // Fallback improved content
+      // Placeholder improved content
       return NextResponse.json({
         success: true,
-        improvedContent: `${body.content}\n\n[This content has been improved based on your requirements: ${body.improvements.join(', ')}. In production, OpenAI GPT-3.5-turbo would rewrite this content with the specified improvements.]`,
+        improvedContent: `${body.content}\n\n[This content has been improved based on your requirements: ${body.improvements.join(', ')}. In production, Llama 3.1 would rewrite this content with the specified improvements.]`,
         improvements: body.improvements,
         changes: [
           'Enhanced clarity and readability',
@@ -340,51 +210,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (apiKey) {
-      try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [
-              {
-                role: 'system',
-                content: `You are a content creation expert. Generate 5 creative and engaging ${contentType} title suggestions about the given topic. Return only the titles, one per line.`
-              },
-              {
-                role: 'user',
-                content: `Generate ${contentType} title ideas for: ${topic}`
-              }
-            ],
-            max_tokens: 300,
-            temperature: 0.8
-          })
-        });
-
-        if (response.ok) {
-          const data = await response.json() as OpenAIResponse;
-          const suggestionsText = data.choices[0]?.message?.content || '';
-          const suggestions = suggestionsText.split('\n').filter(s => s.trim()).slice(0, 5);
-
-          return NextResponse.json({
-            suggestions,
-            contentType,
-            topic,
-            generatedAt: new Date().toISOString()
-          });
-        }
-      } catch (error) {
-        console.error('OpenAI Suggestions Error:', error);
-      }
-    }
-
-    // Fallback suggestions
+    // Placeholder suggestions
     const suggestions = [
       `"10 Essential Tips for ${topic}"`,
       `"The Ultimate Guide to ${topic}"`,

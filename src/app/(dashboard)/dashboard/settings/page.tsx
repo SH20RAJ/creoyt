@@ -392,7 +392,7 @@ export default function SettingsPage() {
                     Appearance
                   </CardTitle>
                   <CardDescription>
-                    Customize how Creovate looks and feels
+                    Customize how YT Copilot looks and feels
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">

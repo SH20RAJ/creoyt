@@ -58,7 +58,7 @@ export const aiConversations = sqliteTable('ai_conversations', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: text('title'),
-  modelUsed: text('model_used').default('gpt-3.5-turbo'),
+  modelUsed: text('model_used').default('llama-3.1-8b'),
   totalMessages: integer('total_messages').default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),

@@ -4,7 +4,9 @@ export default defineConfig({
   dialect: "sqlite",
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle",
+  driver: "d1-http",
   dbCredentials: {
-    url: "file:./dev.db",
+    wranglerConfigPath: "./wrangler.jsonc",
+    dbName: "creaovate-db",
   },
 });

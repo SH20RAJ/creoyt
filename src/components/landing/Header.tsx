@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ThemeToggleSimple } from '@/components/ui/theme-toggle';
 import { NAVIGATION_ITEMS } from '@/constants/landing';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
@@ -26,7 +25,7 @@ export function Header() {
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm">C</span>
           </div>
-          <span className="font-bold text-xl">Creovate</span>
+          <span className="font-bold text-xl">YT Copilot</span>
         </div>
 
         {/* Desktop Navigation */}
@@ -44,7 +43,6 @@ export function Header() {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center space-x-3">
-          <ThemeToggleSimple />
           <Button variant="ghost" size="sm" asChild>
             <Link href="/handler/sign-in">Sign In</Link>
           </Button>
@@ -78,9 +76,6 @@ export function Header() {
               </button>
             ))}
             <div className="pt-4 space-y-2">
-              <div className="flex justify-center pb-2">
-                <ThemeToggleSimple />
-              </div>
               <Button variant="ghost" size="sm" className="w-full" asChild>
                 <Link href="/handler/sign-in">Sign In</Link>
               </Button>

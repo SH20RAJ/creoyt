@@ -158,7 +158,7 @@ async function generateIcons() {
 <svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
   <rect width="1280" height="720" fill="#f8fafc"/>
   <rect x="0" y="0" width="1280" height="60" fill="#3b82f6"/>
-  <text x="640" y="35" font-family="Arial" font-size="20" fill="white" text-anchor="middle">Creovate Dashboard</text>
+  <text x="640" y="35" font-family="Arial" font-size="20" fill="white" text-anchor="middle">YT Copilot Dashboard</text>
   <rect x="50" y="100" width="300" height="200" rx="8" fill="white" stroke="#e2e8f0"/>
   <rect x="400" y="100" width="300" height="200" rx="8" fill="white" stroke="#e2e8f0"/>
   <rect x="750" y="100" width="300" height="200" rx="8" fill="white" stroke="#e2e8f0"/>
@@ -174,7 +174,7 @@ async function generateIcons() {
 <svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg">
   <rect width="390" height="844" fill="#f8fafc"/>
   <rect x="0" y="0" width="390" height="80" fill="#3b82f6"/>
-  <text x="195" y="45" font-family="Arial" font-size="18" fill="white" text-anchor="middle">Creovate</text>
+  <text x="195" y="45" font-family="Arial" font-size="18" fill="white" text-anchor="middle">YT Copilot</text>
   <rect x="20" y="120" width="350" height="150" rx="8" fill="white" stroke="#e2e8f0"/>
   <rect x="20" y="290" width="350" height="150" rx="8" fill="white" stroke="#e2e8f0"/>
   <rect x="20" y="460" width="350" height="150" rx="8" fill="white" stroke="#e2e8f0"/>

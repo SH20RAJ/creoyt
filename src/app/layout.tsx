@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Creovate | AI-Powered Content Creation",
-    template: "%s | Creovate"
+    default: "YT Copilot | AI-Powered Content Creation",
+    template: "%s | YT Copilot"
   },
   description: "Transform your content creation with AI. Generate ideas, research trends, create content, and analyze performance all in one powerful platform.",
   keywords: [
@@ -33,10 +33,10 @@ export const metadata: Metadata = {
     "content management",
     "AI-powered writing"
   ],
-  authors: [{ name: "Creovate Team" }],
-  creator: "Creovate",
-  publisher: "Creovate",
-  applicationName: "Creovate",
+  authors: [{ name: "YT Copilot Team" }],
+  creator: "YT Copilot",
+  publisher: "YT Copilot",
+  applicationName: "YT Copilot",
   referrer: "origin-when-cross-origin",
   robots: {
     index: true,
@@ -52,31 +52,31 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://creovate.ai',
-    title: 'Creovate | AI-Powered Content Creation',
+    url: 'https://YT Copilot.ai',
+    title: 'YT Copilot | AI-Powered Content Creation',
     description: 'Transform your content creation with AI. Generate ideas, research trends, create content, and analyze performance all in one powerful platform.',
-    siteName: 'Creovate',
+    siteName: 'YT Copilot',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Creovate - AI-Powered Content Creation Platform',
+        alt: 'YT Copilot - AI-Powered Content Creation Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Creovate | AI-Powered Content Creation',
+    title: 'YT Copilot | AI-Powered Content Creation',
     description: 'Transform your content creation with AI. Generate ideas, research trends, create content, and analyze performance all in one powerful platform.',
     images: ['/twitter-image.jpg'],
-    creator: '@creovate',
+    creator: '@YT Copilot',
   },
   verification: {
     google: 'google-site-verification-code',
   },
   alternates: {
-    canonical: 'https://creovate.ai',
+    canonical: 'https://YT Copilot.ai',
   },
   manifest: '/manifest.json',
   icons: {
@@ -116,7 +116,7 @@ export default function RootLayout({
         {/* Apple PWA Configuration */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Creovate" />
+        <meta name="apple-mobile-web-app-title" content="YT Copilot" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-touch-icon-57x57.png" />
         <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-touch-icon-60x60.png" />
