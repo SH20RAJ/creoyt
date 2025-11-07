@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { OpenAIService } from '@/lib/ai/openai-service';
 import type { CloudflareAI } from '@/types/cloudflare';
 
 interface ChatRequest {
@@ -23,6 +24,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Try OpenAI first if configured
+    if (OpenAIService.isConfigured()) {
+      try {
+        const openaiService = new OpenAIService();
+        
+        const response = await openaiService.generateContent(body.messages, {
+          maxTokens: body.maxTokens || 1000,
+          temperature: body.temperature || 0.7,
+          model: 'gpt-3.5-turbo'
+        });
+
+        const content = response.choices[0]?.message?.content || 'AI response generated successfully';
+        
+        return NextResponse.json({
+          response: content,
+          provider: 'openai',
+          model: 'gpt-3.5-turbo'
+        });
+      } catch (openaiError) {
+        console.error('OpenAI Error:', openaiError);
+        // Fall through to Cloudflare AI or fallback
+      }
+    }
+
     // Check if we're running in Cloudflare Workers environment with AI binding
     const AI = (globalThis as { AI?: CloudflareAI }).AI;
     
@@ -36,7 +61,9 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json({
-          response: aiResponse.response || aiResponse.content || "AI response generated successfully"
+          response: aiResponse.response || aiResponse.content || "AI response generated successfully",
+          provider: 'cloudflare',
+          model: 'llama-3.1-8b'
         });
       } catch (aiError) {
         console.error('AI Error:', aiError);

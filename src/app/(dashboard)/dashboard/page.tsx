@@ -1,5 +1,5 @@
-import AIDashboard from '@/components/dashboard/ai-dashboard-v2';
+import ModernDashboard from '@/components/dashboard/modern-dashboard';
 
 export default function DashboardPage() {
-  return <AIDashboard />;
+  return <ModernDashboard />;
 }
