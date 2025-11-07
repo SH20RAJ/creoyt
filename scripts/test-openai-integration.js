@@ -65,7 +65,7 @@ async function testDatabaseConnection() {
 
     try {
         // Import the database connection
-        const { getDB } = await import('./src/lib/db/index.js');
+        const { getDB } = await import('../src/lib/db/index.js');
         const db = getDB();
 
         console.log('✅ Database connection successful!');

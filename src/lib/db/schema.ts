@@ -8,7 +8,6 @@ export const users = sqliteTable('users', {
   username: text('username').unique(),
   fullName: text('full_name'),
   avatarUrl: text('avatar_url'),
-  subscriptionTier: text('subscription_tier').default('free'), // free, pro, enterprise
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   lastLogin: integer('last_login', { mode: 'timestamp' }),
@@ -69,19 +68,7 @@ export const aiMessages = sqliteTable('ai_messages', {
   conversationId: text('conversation_id').notNull().references(() => aiConversations.id, { onDelete: 'cascade' }),
   role: text('role').notNull(), // user, assistant, system
   content: text('content').notNull(),
-  tokensUsed: integer('tokens_used'),
   responseTime: integer('response_time'), // milliseconds
-  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
-});
-
-export const aiUsage = sqliteTable('ai_usage', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  model: text('model').notNull(),
-  tokensInput: integer('tokens_input').default(0),
-  tokensOutput: integer('tokens_output').default(0),
-  cost: real('cost').default(0),
-  date: text('date'), // YYYY-MM-DD for daily aggregation
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
 });
 
@@ -139,8 +126,6 @@ export type AIConversation = typeof aiConversations.$inferSelect;
 export type InsertAIConversation = typeof aiConversations.$inferInsert;
 export type AIMessage = typeof aiMessages.$inferSelect;
 export type InsertAIMessage = typeof aiMessages.$inferInsert;
-export type AIUsage = typeof aiUsage.$inferSelect;
-export type InsertAIUsage = typeof aiUsage.$inferInsert;
 export type Template = typeof templates.$inferSelect;
 export type InsertTemplate = typeof templates.$inferInsert;
 export type File = typeof files.$inferSelect;

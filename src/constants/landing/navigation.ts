@@ -5,18 +5,12 @@ export const NAVIGATION_ITEMS: NavItem[] = [
     id: 'features',
     label: 'Features',
     href: '#features'
-  },
-  {
-    id: 'pricing',
-    label: 'Pricing',
-    href: '#pricing'
   }
 ];
 
 export const FOOTER_LINKS = {
   product: [
-    { label: 'Features', href: '#features' },
-    { label: 'Pricing', href: '#pricing' }
+    { label: 'Features', href: '#features' }
   ],
   legal: [
     { label: 'Privacy Policy', href: '/privacy' },

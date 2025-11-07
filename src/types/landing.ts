@@ -16,16 +16,6 @@ export interface Testimonial {
   rating: number;
 }
 
-export interface PricingTier {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  features: string[];
-  popular?: boolean;
-  cta: string;
-}
-
 export interface NavItem {
   id: string;
   label: string;
@@ -43,6 +33,5 @@ export interface LandingPageData {
   };
   features: Feature[];
   testimonials: Testimonial[];
-  pricing: PricingTier[];
   navigation: NavItem[];
 }
