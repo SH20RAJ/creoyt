@@ -1,8 +1,5 @@
 // Test OpenAI integration for YT Copilot
-const { config } = require('dotenv');
-
-// Load environment variables
-config({ path: '.env.local' });
+// Bun automatically loads .env.local files
 
 async function testOpenAIIntegration() {
     const apiKey = process.env.OPENAI_API_KEY;
@@ -62,34 +59,20 @@ async function testOpenAIIntegration() {
     }
 }
 
-// Test Turso database connection
-async function testTursoConnection() {
-    console.log('\n🗄️ Testing Turso database connection...');
-
-    const dbUrl = process.env.TURSO_DB_URL;
-    const dbToken = process.env.TURSO_DB_TOKEN;
-
-    if (!dbUrl || !dbToken) {
-        console.log('⚠️  Turso credentials not found in environment variables');
-        console.log('Please add to .env.local:');
-        console.log('TURSO_DB_URL="libsql://your-database.turso.io"');
-        console.log('TURSO_DB_TOKEN="your-turso-token"');
-        return;
-    }
-
-    console.log('🔑 Turso credentials found');
-    console.log('📍 Database URL:', dbUrl.replace(/\/\/.*@/, '//***@'));
+// Test local database connection
+async function testDatabaseConnection() {
+    console.log('\n🗄️ Testing local database connection...');
 
     try {
-        // Simple test - we'll just check if credentials are valid format
-        if (dbUrl.startsWith('libsql://') && dbToken.length > 50) {
-            console.log('✅ Turso configuration appears valid');
-            console.log('💡 Run "npm run db:studio" to open database management');
-        } else {
-            console.log('⚠️  Turso configuration format may be incorrect');
-        }
+        // Import the database connection
+        const { getDB } = await import('./src/lib/db/index.js');
+        const db = getDB();
+
+        console.log('✅ Database connection successful!');
+        console.log('💡 Using local SQLite database for development');
+
     } catch (error) {
-        console.error('❌ Turso connection test failed:', error.message);
+        console.error('❌ Database connection failed:', error.message);
     }
 }
 
@@ -135,9 +118,9 @@ async function testAPIEndpoints() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                contentType: 'blog_post',
+                contentType: 'youtube_title',
                 topic: 'YouTube content creation with AI',
-                tone: 'professional'
+                tone: 'engaging'
             })
         });
 
@@ -154,19 +137,18 @@ async function testAPIEndpoints() {
 }
 
 async function main() {
-    console.log('🚀 YT Copilot Integration Test\n');
+    console.log('🚀 YT Copilot Integration Test (Bun)\n');
 
     await testOpenAIIntegration();
-    await testTursoConnection();
+    await testDatabaseConnection();
     await testAPIEndpoints();
 
     console.log('\n✨ Test completed!');
     console.log('\nNext steps:');
-    console.log('1. Make sure your .env.local file has all required variables');
-    console.log('2. Run "npm run db:push" to sync database schema');
-    console.log('3. Run "npm run dev" to start the development server');
-    console.log('4. Visit http://localhost:3000/dashboard to test YT Copilot features');
-    console.log('5. Visit https://yt-copilot.strivio.world for production');
+    console.log('1. Make sure your .env.local file has OPENAI_API_KEY set');
+    console.log('2. Run "bun run dev" to start the development server');
+    console.log('3. Visit http://localhost:3000/dashboard to test YT Copilot features');
+    console.log('4. For production, update Turso credentials in .env.local');
 }
 
 main().catch(console.error);

@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="80" fill="url(#grad)"/>
+  <g fill="white">
+    <!-- Creative spark icon -->
+    <path d="M256 80 L180 200 L256 160 L332 200 Z" opacity="0.9"/>
+    <circle cx="256" cy="200" r="8" fill="white"/>
+    
+    <!-- Brain/AI representation -->
+    <ellipse cx="256" cy="280" rx="80" ry="60" fill="none" stroke="white" stroke-width="8" opacity="0.8"/>
+    <ellipse cx="256" cy="280" rx="50" ry="35" fill="none" stroke="white" stroke-width="4" opacity="0.6"/>
+    
+    <!-- Content creation elements -->
+    <rect x="200" y="360" width="112" height="8" rx="4" fill="white" opacity="0.7"/>
+    <rect x="200" y="380" width="80" height="8" rx="4" fill="white" opacity="0.5"/>
+    <rect x="200" y="400" width="96" height="8" rx="4" fill="white" opacity="0.6"/>
+    
+    <!-- Modern accent -->
+    <circle cx="400" cy="120" r="20" fill="white" opacity="0.3"/>
+    <circle cx="112" cy="400" r="16" fill="white" opacity="0.3"/>
+  </g>
+</svg>

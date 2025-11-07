@@ -28,6 +28,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://creovate.com/sitemap.xml',
+    sitemap: 'https://yt-copilot.strivio.world/sitemap.xml',
   }
 }

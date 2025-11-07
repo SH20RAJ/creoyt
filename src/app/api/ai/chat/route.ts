@@ -11,6 +11,21 @@ interface ChatRequest {
   userId?: string;
 }
 
+interface OpenAIResponse {
+  choices: Array<{
+    message: {
+      content: string;
+      role: string;
+    };
+    finish_reason: string;
+  }>;
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json();
@@ -53,7 +68,7 @@ export async function POST(request: NextRequest) {
         throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as OpenAIResponse;
 
       return NextResponse.json({
         response: data.choices[0]?.message?.content || "AI response generated successfully",
@@ -74,19 +89,19 @@ export async function POST(request: NextRequest) {
 
       if (isAISetupQuery) {
         return NextResponse.json({
-          response: `🤖 **AI System Ready!** 
+          response: `🤖 **YT Copilot AI Ready!** 
 
-I'm your Creaovate AI assistant, powered by OpenAI GPT-3.5-turbo. I can help you with:
+I'm your YT Copilot AI assistant, powered by OpenAI GPT-3.5-turbo. I can help you with:
 
-✨ **Content Creation**: Blog posts, social media, marketing copy, emails, product descriptions
-📊 **Content Analysis**: SEO optimization, tone analysis, readability scoring
-🔧 **Content Improvement**: AI-powered suggestions and optimizations
+✨ **YouTube Content Creation**: Video titles, descriptions, scripts, thumbnails
+📊 **Content Analysis**: SEO optimization, engagement analysis, trending topics
+🔧 **Content Improvement**: AI-powered suggestions and optimizations for YouTube
 
 **Current Status**: OpenAI integration is configured and ready. The system is detecting your request: "${lastMessage}"
 
 To fully activate real-time AI responses, please ensure the OPENAI_API_KEY environment variable is properly set.
 
-How can I help you create amazing content today?`,
+How can I help you create amazing YouTube content today?`,
           usage: {
             prompt_tokens: body.messages.reduce((acc, msg) => acc + msg.content.length / 4, 0),
             completion_tokens: 150,
@@ -97,13 +112,13 @@ How can I help you create amazing content today?`,
 
       // Standard fallback for other queries
       return NextResponse.json({
-        response: `🚀 **Creaovate AI Ready**: I'm your AI-powered content creation assistant! I can help you generate blog posts, social media content, marketing copy, emails, and product descriptions. I can also analyze and improve your existing content.
+        response: `🚀 **YT Copilot AI Ready**: I'm your AI-powered YouTube content creation assistant! I can help you generate video titles, descriptions, scripts, thumbnails, and optimize your content for maximum engagement. I can also analyze and improve your existing YouTube content.
 
 Your query: "${lastMessage}"
 
 The OpenAI integration is ready to use. Please ensure your API key is configured to enable real-time responses.
 
-Try using the Content Generation features in the dashboard - they're working great! 💡`,
+Try using the YouTube Content Generation features in the dashboard - they're working great! 💡`,
         usage: {
           prompt_tokens: Math.floor(Math.random() * 50) + 10,
           completion_tokens: Math.floor(Math.random() * 100) + 20,

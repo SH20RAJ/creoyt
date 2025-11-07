@@ -2,28 +2,29 @@ import { drizzle } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client';
 import * as schema from './schema';
 
-// Create Turso client
-function createTursoClient() {
+// Create database client (Turso for production, local SQLite for development)
+function createDatabaseClient() {
   const url = process.env.TURSO_DB_URL;
   const authToken = process.env.TURSO_DB_TOKEN;
 
-  if (!url) {
-    throw new Error('TURSO_DB_URL environment variable is required');
+  // Use Turso if credentials are available, otherwise use local SQLite
+  if (url && authToken) {
+    console.log('Using Turso database');
+    return createClient({
+      url,
+      authToken,
+    });
+  } else {
+    console.log('Using local SQLite database');
+    return createClient({
+      url: 'file:./dev.db',
+    });
   }
-
-  if (!authToken) {
-    throw new Error('TURSO_DB_TOKEN environment variable is required');
-  }
-
-  return createClient({
-    url,
-    authToken,
-  });
 }
 
 // Create database instance
 export function createDB() {
-  const client = createTursoClient();
+  const client = createDatabaseClient();
   return drizzle(client, { schema });
 }
 

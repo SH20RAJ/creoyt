@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ThemeToggleSimple } from "@/components/ui/theme-toggle";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboard/navigation";
 import { useUser, UserButton } from '@stackframe/stack';
 import { useSidebar } from "@/contexts/sidebar-context";
@@ -73,20 +74,23 @@ export function DashboardSidebar() {
           <div className="flex items-center justify-between p-4 border-b border-border/50">
             {(!isCollapsed || isMobileOpen) && (
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">C</span>
+                <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">YT</span>
                 </div>
-                <span className="font-bold text-xl">Creovate</span>
+                <span className="font-bold text-xl">YT Copilot</span>
               </div>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleCollapsed}
-              className="hidden lg:flex"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center space-x-1">
+              <ThemeToggleSimple />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleCollapsed}
+                className="hidden lg:flex"
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Navigation */}

@@ -166,7 +166,7 @@ const AIDashboard: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">AI Content Dashboard</h1>
-          <p className="text-muted-foreground">Create, analyze, and optimize content with Llama 3.1</p>
+          <p className="text-muted-foreground">Create, analyze, and optimize content with our advanced AI technology</p>
         </div>
       </div>
 
@@ -195,9 +195,9 @@ const AIDashboard: React.FC = () => {
         <TabsContent value="chat">
           <Card>
             <CardHeader>
-              <CardTitle>AI Chat Assistant</CardTitle>
+              <CardTitle>AI Assistant</CardTitle>
               <CardDescription>
-                Chat with Llama 3.1 for content creation assistance
+                Chat with our advanced AI for YouTube content assistance
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

@@ -1,4 +1,4 @@
-import { Header, HeroSection, EnhancedFeaturesSection, CtaSection, Footer } from "@/components/landing";
+import { Header, HeroSection, EnhancedFeaturesSection, PricingSection, CtaSection, Footer } from "@/components/landing";
 import { JsonLd, organizationData, softwareApplicationData, websiteData } from "@/components/seo/json-ld";
 
 export default function Home() {
@@ -11,6 +11,7 @@ export default function Home() {
       <main>
         <HeroSection />
         <EnhancedFeaturesSection />
+        <PricingSection />
         <CtaSection />
       </main>
       <Footer />

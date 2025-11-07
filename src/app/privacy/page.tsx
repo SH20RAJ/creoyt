@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Privacy Policy for Creovate - Learn how we protect and handle your personal information.',
+  description: 'Privacy Policy for YT Copilot - Learn how we protect and handle your personal information.',
   robots: {
     index: true,
     follow: true,
@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="mb-8">
-            <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
+            <Link href="/" className="text-red-600 dark:text-red-400 hover:underline">
               ← Back to Home
             </Link>
           </div>
@@ -32,32 +32,34 @@ export default function PrivacyPage() {
             
             <h2>1. Information We Collect</h2>
             <p>
-              We collect information you provide directly to us, such as when you create an account, use our services, or contact us.
+              At YT Copilot, we collect information to provide better YouTube optimization services. We collect information you provide directly to us and data from your connected YouTube channels.
             </p>
             
             <h3>Personal Information</h3>
             <ul>
               <li>Name and email address</li>
-              <li>Profile information you choose to provide</li>
+              <li>YouTube channel information when connected</li>
               <li>Payment information (processed securely by our payment providers)</li>
-              <li>Content you create using our platform</li>
+              <li>Content optimization preferences</li>
             </ul>
             
-            <h3>Usage Information</h3>
+            <h3>YouTube Data</h3>
             <ul>
-              <li>How you interact with our service</li>
-              <li>Features you use and actions you take</li>
-              <li>Time, frequency, and duration of your activities</li>
+              <li>Channel analytics and performance metrics</li>
+              <li>Video metadata and optimization data</li>
+              <li>Audience engagement information</li>
+              <li>Trending and competitive analysis data</li>
             </ul>
             
             <h2>2. How We Use Your Information</h2>
             <p>We use the information we collect to:</p>
             <ul>
-              <li>Provide, maintain, and improve our services</li>
-              <li>Process transactions and send related information</li>
-              <li>Send technical notices and support messages</li>
-              <li>Respond to your comments and questions</li>
-              <li>Develop new features and services</li>
+              <li>Provide AI-powered YouTube optimization services</li>
+              <li>Analyze channel performance and provide insights</li>
+              <li>Store data securely in our Turso database</li>
+              <li>Generate personalized content recommendations</li>
+              <li>Process AI-powered optimizations using OpenAI technology</li>
+              <li>Improve our proprietary algorithms and features</li>
             </ul>
             
             <h2>3. Information Sharing</h2>
@@ -68,22 +70,22 @@ export default function PrivacyPage() {
               <li>With your consent</li>
               <li>To comply with legal obligations</li>
               <li>To protect our rights and safety</li>
-              <li>With service providers who assist us (under strict confidentiality)</li>
+              <li>With service providers (OpenAI for AI processing, Turso for data storage) under strict confidentiality</li>
             </ul>
             
             <h2>4. AI and Data Processing</h2>
             <p>
-              When you use our AI features, your content may be processed by AI models to provide the service. We implement appropriate safeguards to protect your data during this processing.
+              When you use our AI features, your content may be processed by OpenAI models and our proprietary algorithms to provide YouTube optimization services. We implement appropriate safeguards to protect your data during this processing.
             </p>
             
-            <h2>5. Data Security</h2>
+            <h2>5. Data Security with Turso</h2>
             <p>
-              We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
+              We store your data securely using Turso database technology with enterprise-grade encryption and security measures to protect against unauthorized access, alteration, disclosure, or destruction.
             </p>
             
             <h2>6. Data Retention</h2>
             <p>
-              We retain your information for as long as your account is active or as needed to provide services. You may request deletion of your account and data at any time.
+              We retain your information for as long as your account is active or as needed to provide YouTube optimization services. You may request deletion of your account and data at any time.
             </p>
             
             <h2>7. Your Rights</h2>
@@ -93,41 +95,22 @@ export default function PrivacyPage() {
               <li>Correct inaccurate information</li>
               <li>Delete your account and data</li>
               <li>Export your data</li>
+              <li>Disconnect your YouTube channel</li>
               <li>Opt out of marketing communications</li>
             </ul>
             
-            <h2>8. Cookies and Tracking</h2>
+            <h2>8. YouTube API Services</h2>
             <p>
-              We use cookies and similar technologies to enhance your experience, analyze usage, and provide personalized content.
+              YT Copilot uses YouTube API Services. By using our service, you agree to be bound by the YouTube Terms of Service. You can revoke YT Copilot's access to your data via the Google security settings page.
             </p>
             
-            <h2>9. Third-Party Services</h2>
-            <p>
-              Our service may contain links to third-party websites or services. This privacy policy does not apply to those third-party services.
-            </p>
-            
-            <h2>10. Children's Privacy</h2>
-            <p>
-              Our service is not intended for children under 13. We do not knowingly collect personal information from children under 13.
-            </p>
-            
-            <h2>11. International Data Transfers</h2>
-            <p>
-              Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place.
-            </p>
-            
-            <h2>12. Changes to This Policy</h2>
-            <p>
-              We may update this privacy policy from time to time. We will notify you of any material changes via email or through our service.
-            </p>
-            
-            <h2>13. Contact Us</h2>
+            <h2>9. Contact Us</h2>
             <p>
               If you have any questions about this privacy policy, please contact us at:
             </p>
             <p>
-              Email: privacy@creovate.com<br />
-              Address: [Your Company Address]
+              Email: privacy@yt-copilot.strivio.world<br />
+              Website: https://yt-copilot.strivio.world
             </p>
           </div>
         </div>

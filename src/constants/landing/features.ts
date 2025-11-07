@@ -2,54 +2,54 @@ import { Feature } from '@/types/landing';
 
 export const FEATURES: Feature[] = [
   {
-    id: 'ai-idea-generation',
-    title: 'AI-Powered Idea Generation',
-    description: 'Generate unlimited content ideas with our advanced AI engine powered by Meta\'s Llama 3. Never run out of creative inspiration.',
-    icon: 'Lightbulb',
+    id: 'ai-optimization',
+    title: 'AI Video Optimization',
+    description: 'Optimize your YouTube videos with our advanced AI algorithms. Get title suggestions, thumbnail analysis, and SEO recommendations.',
+    icon: 'Zap',
     category: 'ai-tools'
   },
   {
-    id: 'research-dashboard',
-    title: 'Smart Research Dashboard',
-    description: 'Comprehensive research tools with real-time trend analysis, competitor intelligence, and audience insights.',
+    id: 'analytics-dashboard',
+    title: 'Advanced Analytics Dashboard',
+    description: 'Deep insights into your channel performance with predictive analytics, trend analysis, and growth projections using Turso database.',
     icon: 'BarChart3',
+    category: 'analytics'
+  },
+  {
+    id: 'content-strategy',
+    title: 'Content Strategy AI',
+    description: 'AI-powered content planning with trending topic discovery, optimal posting times, and audience engagement predictions.',
+    icon: 'PenTool',
+    category: 'strategy'
+  },
+  {
+    id: 'competitor-analysis',
+    title: 'Competitor Intelligence',
+    description: 'Track competitor performance, discover their successful strategies, and find content gaps in your niche.',
+    icon: 'Search',
     category: 'research'
   },
   {
-    id: 'content-creation',
-    title: 'Intelligent Content Creation',
-    description: 'Create high-quality content with AI assistance for blogs, social media, scripts, and marketing materials.',
-    icon: 'PenTool',
-    category: 'creation'
-  },
-  {
-    id: 'scout-discovery',
-    title: 'Scout & Discovery Engine',
-    description: 'Discover viral content, trending topics, and untapped opportunities across all major platforms.',
-    icon: 'Search',
-    category: 'discovery'
-  },
-  {
-    id: 'project-management',
-    title: 'Project Management Suite',
-    description: 'Organize multiple projects, collaborate with teams, and track progress from ideation to publication.',
+    id: 'thumbnail-optimizer',
+    title: 'Thumbnail Optimizer',
+    description: 'AI-powered thumbnail analysis and suggestions to maximize click-through rates and improve video discovery.',
     icon: 'FolderOpen',
-    category: 'productivity'
+    category: 'optimization'
   },
   {
-    id: 'global-performance',
-    title: 'Lightning-Fast Global Performance',
-    description: 'Built on Cloudflare Workers with sub-100ms response times across 200+ worldwide locations.',
-    icon: 'Zap',
-    category: 'performance'
+    id: 'real-time-insights',
+    title: 'Real-time Performance Tracking',
+    description: 'Monitor your videos in real-time with instant notifications about performance changes and optimization opportunities.',
+    icon: 'Lightbulb',
+    category: 'monitoring'
   }
 ];
 
 export const FEATURE_CATEGORIES = {
   'ai-tools': 'AI-Powered Tools',
-  'research': 'Research & Analytics',
-  'creation': 'Content Creation',
-  'discovery': 'Discovery & Trends',
-  'productivity': 'Productivity',
-  'performance': 'Performance'
+  'analytics': 'Analytics & Insights',
+  'strategy': 'Content Strategy',
+  'research': 'Research & Intelligence',
+  'optimization': 'Optimization',
+  'monitoring': 'Performance Monitoring'
 } as const;

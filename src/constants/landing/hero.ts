@@ -1,20 +1,20 @@
 export const HERO_CONTENT = {
-  title: 'Creovate',
-  subtitle: 'The Ultimate AI-Powered Content Creation Ecosystem',
-  description: 'Transform your content creation with AI-powered ideation, research, and intelligent writing tools. Built for creators, marketers, and businesses who want to scale their content without limits.',
-  primaryCta: 'Start Creating for Free',
+  title: 'YT Copilot',
+  subtitle: '🎯 An AI co-pilot for YouTubers — helping them create, grow, and optimize their channels',
+  description: 'Supercharge your YouTube journey with our advanced AI technology and proprietary algorithms. From content ideation to optimization, we help you master the platform.',
+  primaryCta: 'Start Your Free Trial',
   secondaryCta: 'Watch Demo',
   stats: [
-    { label: 'Content Ideas Generated', value: '50K+' },
-    { label: 'Active Creators', value: '10K+' },
-    { label: 'Global Locations', value: '200+' },
-    { label: 'Response Time', value: '<100ms' }
+    { label: 'Videos Optimized', value: '100K+' },
+    { label: 'Active YouTubers', value: '25K+' },
+    { label: 'Countries Served', value: '180+' },
+    { label: 'Avg Growth Rate', value: '300%' }
   ]
 } as const;
 
 export const BRAND_TAGLINES = [
-  'Where Ideas Meet Intelligence',
-  'Create. Research. Scale.',
-  'AI-Powered Content Revolution',
-  'From Concept to Content in Minutes'
+  '🎯 Your YouTube Success Partner',
+  'Create. Optimize. Grow.',
+  'AI-Powered YouTube Mastery',
+  'From Ideas to Viral Content'
 ] as const;

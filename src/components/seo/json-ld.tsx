@@ -15,19 +15,18 @@ export function JsonLd({ data }: JsonLdProps) {
 export const organizationData = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Creovate",
-  "description": "AI-powered content creation platform that helps creators generate ideas, research trends, create content, and analyze performance.",
-  "url": "https://creovate.com",
-  "logo": "https://creovate.com/logo.png",
+  "name": "YT Copilot",
+  "description": "🎯 An AI co-pilot for YouTubers — helping them create, grow, and optimize their channels with advanced AI technology and proprietary algorithms.",
+  "url": "https://yt-copilot.strivio.world",
+  "logo": "https://yt-copilot.strivio.world/logo.png",
   "foundingDate": "2024",
   "sameAs": [
-    "https://twitter.com/creovate",
-    "https://linkedin.com/company/creovate",
-    "https://github.com/creovate"
+    "https://twitter.com/ytcopilot",
+    "https://linkedin.com/company/yt-copilot"
   ],
   "contactPoint": {
     "@type": "ContactPoint",
-    "email": "hello@creovate.com",
+    "email": "hello@yt-copilot.strivio.world",
     "contactType": "customer service"
   }
 }
@@ -36,47 +35,47 @@ export const organizationData = {
 export const softwareApplicationData = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Creovate",
-  "description": "Transform your content creation with AI. Generate ideas, research trends, create content, and analyze performance all in one powerful platform.",
-  "url": "https://creovate.com",
+  "name": "YT Copilot",
+  "description": "🎯 An AI co-pilot for YouTubers — helping them create, grow, and optimize their channels with advanced AI technology and proprietary algorithms.",
+  "url": "https://yt-copilot.strivio.world",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web Browser",
   "offers": [
     {
       "@type": "Offer",
-      "name": "Free Plan",
+      "name": "Starter Plan",
       "price": "0",
       "priceCurrency": "USD",
-      "description": "Perfect for getting started with basic AI content creation tools"
+      "description": "Perfect for beginning YouTubers with essential AI tools"
+    },
+    {
+      "@type": "Offer",
+      "name": "Creator Plan",
+      "price": "29",
+      "priceCurrency": "USD",
+      "description": "For serious YouTubers with advanced optimization and analytics"
     },
     {
       "@type": "Offer",
       "name": "Pro Plan",
-      "price": "29",
-      "priceCurrency": "USD",
-      "description": "For serious content creators with advanced AI tools and analytics"
-    },
-    {
-      "@type": "Offer",
-      "name": "Enterprise Plan",
       "price": "99",
       "priceCurrency": "USD",
-      "description": "For teams and organizations with unlimited features and support"
+      "description": "For YouTube professionals with unlimited features and priority support"
     }
   ],
   "featureList": [
-    "AI Content Generation",
-    "Trend Research",
-    "Content Analytics",
-    "Social Media Management",
-    "Team Collaboration",
-    "Performance Tracking"
+    "AI Content Optimization",
+    "YouTube SEO Analysis",
+    "Trending Topic Research",
+    "Performance Analytics",
+    "Thumbnail Optimization",
+    "Title & Description AI"
   ],
-  "screenshot": "https://creovate.com/screenshot.png",
+  "screenshot": "https://yt-copilot.strivio.world/screenshot.png",
   "softwareVersion": "1.0",
   "author": {
     "@type": "Organization",
-    "name": "Creovate"
+    "name": "YT Copilot"
   }
 }
 
@@ -84,12 +83,12 @@ export const softwareApplicationData = {
 export const websiteData = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Creovate",
-  "url": "https://creovate.com",
-  "description": "AI-powered content creation platform",
+  "name": "YT Copilot",
+  "url": "https://yt-copilot.strivio.world",
+  "description": "AI co-pilot for YouTubers",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://creovate.com/search?q={search_term_string}",
+    "target": "https://yt-copilot.strivio.world/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
