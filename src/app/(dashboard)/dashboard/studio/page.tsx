@@ -307,16 +307,16 @@ export default function ContentStudioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-6 py-8 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
-              <PenTool className="w-8 h-8 text-white" />
+            <div className="p-3 bg-primary rounded-xl">
+              <PenTool className="w-8 h-8 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold text-foreground">
                 Content Studio
               </h1>
               <p className="text-lg text-muted-foreground mt-1">
@@ -332,7 +332,7 @@ export default function ContentStudioPage() {
             </Badge>
             <Avatar className="w-10 h-10">
               <AvatarImage src={user?.profileImageUrl} />
-              <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+              <AvatarFallback className="bg-primary text-primary-foreground">
                 {user?.displayName?.charAt(0) || 'U'}
               </AvatarFallback>
             </Avatar>
@@ -341,7 +341,7 @@ export default function ContentStudioPage() {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4 bg-white dark:bg-slate-800 shadow-lg">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4 bg-background shadow-lg">
             <TabsTrigger value="create" className="gap-2">
               <Wand2 className="w-4 h-4" />
               Create
@@ -365,10 +365,10 @@ export default function ContentStudioPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Content Type Selection */}
               <div className="lg:col-span-1 space-y-6">
-                <Card className="border-0 shadow-lg bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
+                <Card className="border-0 shadow-lg bg-card/70 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Target className="w-5 h-5 text-purple-500" />
+                      <Target className="w-5 h-5 text-primary" />
                       Content Types
                     </CardTitle>
                     <CardDescription>
@@ -383,14 +383,14 @@ export default function ContentStudioPage() {
                           key={type.id}
                           className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                             selectedContentType === type.id
-                              ? 'border-purple-300 bg-purple-50 dark:bg-purple-900/20 shadow-md'
-                              : 'border-gray-200 hover:border-purple-200 hover:bg-purple-50/50 dark:hover:bg-purple-900/10'
+                              ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-md'
+                              : 'border-border hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/5'
                           }`}
                           onClick={() => setSelectedContentType(type.id)}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`p-2 rounded-lg bg-gradient-to-r ${type.gradient}`}>
-                              <IconComponent className="w-5 h-5 text-white" />
+                            <div className="p-2 rounded-lg bg-primary">
+                              <IconComponent className="w-5 h-5 text-primary-foreground" />
                             </div>
                             <div className="flex-1">
                               <h3 className="font-semibold text-sm">{type.title}</h3>
@@ -405,9 +405,9 @@ export default function ContentStudioPage() {
                           </div>
                           
                           {selectedContentType === type.id && (
-                            <div className="mt-3 pt-3 border-t border-purple-200">
+                            <div className="mt-3 pt-3 border-t border-primary/20">
                               <div className="space-y-2">
-                                <p className="text-xs font-medium text-purple-700 dark:text-purple-300">Features:</p>
+                                <p className="text-xs font-medium text-primary/70">Features:</p>
                                 <div className="flex flex-wrap gap-1">
                                   {type.features.map((feature, idx) => (
                                     <Badge key={idx} variant="secondary" className="text-xs">
@@ -481,10 +481,10 @@ export default function ContentStudioPage() {
 
               {/* AI Generation Interface */}
               <div className="lg:col-span-2 space-y-6">
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-purple-50 dark:from-slate-800 dark:to-purple-900/20">
+                <Card className="border-0 shadow-lg bg-card">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-purple-500" />
+                      <Sparkles className="w-5 h-5 text-primary" />
                       AI Content Generator
                     </CardTitle>
                     <CardDescription>
@@ -504,10 +504,10 @@ export default function ContentStudioPage() {
                       </div>
                       
                       {selectedContentType && (
-                        <div className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                        <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
                           <div className="flex items-center gap-2">
-                            <div className={`p-2 rounded-lg bg-gradient-to-r ${contentTypes.find(t => t.id === selectedContentType)?.gradient}`}>
-                              {React.createElement(getTypeIcon(selectedContentType), { className: "w-4 h-4 text-white" })}
+                            <div className="p-2 rounded-lg bg-primary">
+                              {React.createElement(getTypeIcon(selectedContentType), { className: "w-4 h-4 text-primary-foreground" })}
                             </div>
                             <span className="font-medium">{contentTypes.find(t => t.id === selectedContentType)?.title}</span>
                           </div>
@@ -520,7 +520,7 @@ export default function ContentStudioPage() {
                       <Button 
                         onClick={() => generateContent()}
                         disabled={!contentPrompt.trim() || !selectedContentType || isGenerating}
-                        className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                         size="lg"
                       >
                         {isGenerating ? (
@@ -555,7 +555,7 @@ export default function ContentStudioPage() {
                           </div>
                         </div>
                         
-                        <div className="bg-gray-50 dark:bg-slate-800 rounded-lg p-4 max-h-96 overflow-y-auto">
+                        <div className="bg-muted rounded-lg p-4 max-h-96 overflow-y-auto">
                           <pre className="whitespace-pre-wrap text-sm font-sans text-gray-800 dark:text-gray-200">
                             {generatedContent}
                           </pre>
@@ -577,15 +577,15 @@ export default function ContentStudioPage() {
                     <CardContent>
                       <div className="grid grid-cols-4 gap-4">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-blue-600">{contentStats.words}</div>
+                          <div className="text-2xl font-bold text-primary">{contentStats.words}</div>
                           <div className="text-xs text-muted-foreground">Words</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-green-600">{contentStats.readTime}</div>
+                          <div className="text-2xl font-bold text-primary">{contentStats.readTime}</div>
                           <div className="text-xs text-muted-foreground">Min Read</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-600">{contentStats.characters}</div>
+                          <div className="text-2xl font-bold text-primary">{contentStats.characters}</div>
                           <div className="text-xs text-muted-foreground">Characters</div>
                         </div>
                         <div className="text-center">
@@ -722,8 +722,8 @@ export default function ContentStudioPage() {
                       <div key={project.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
                         <div className="flex items-start justify-between">
                           <div className="flex items-start gap-3">
-                            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                              <IconComponent className="w-4 h-4 text-white" />
+                            <div className="p-2 bg-primary rounded-lg">
+                              <IconComponent className="w-4 h-4 text-primary-foreground" />
                             </div>
                             <div>
                               <h3 className="font-semibold">{project.title}</h3>
@@ -742,7 +742,7 @@ export default function ContentStudioPage() {
                               {project.status}
                             </Badge>
                             <div className="text-right text-sm">
-                              <div className="text-green-600 font-medium">{project.engagement}%</div>
+                              <div className="text-primary font-medium">{project.engagement}%</div>
                               <div className="text-xs text-muted-foreground">engagement</div>
                             </div>
                           </div>
@@ -758,50 +758,50 @@ export default function ContentStudioPage() {
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+              <Card className="border-0 shadow-lg bg-primary text-primary-foreground">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-blue-100 text-sm font-medium">Total Content</p>
+                      <p className="text-primary-foreground/80 text-sm font-medium">Total Content</p>
                       <p className="text-3xl font-bold">247</p>
                     </div>
-                    <FileText className="w-8 h-8 text-blue-200" />
+                    <FileText className="w-8 h-8 text-primary-foreground/80" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg bg-gradient-to-r from-green-500 to-green-600 text-white">
+              <Card className="border-0 shadow-lg bg-secondary text-secondary-foreground">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-green-100 text-sm font-medium">Avg Engagement</p>
+                      <p className="text-secondary-foreground/80 text-sm font-medium">Avg Engagement</p>
                       <p className="text-3xl font-bold">87%</p>
                     </div>
-                    <TrendingUp className="w-8 h-8 text-green-200" />
+                    <TrendingUp className="w-8 h-8 text-secondary-foreground/80" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+              <Card className="border-0 shadow-lg bg-accent text-accent-foreground">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-100 text-sm font-medium">Words Written</p>
+                      <p className="text-accent-foreground/80 text-sm font-medium">Words Written</p>
                       <p className="text-3xl font-bold">125K</p>
                     </div>
-                    <PenTool className="w-8 h-8 text-purple-200" />
+                    <PenTool className="w-8 h-8 text-accent-foreground/80" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+              <Card className="border-0 shadow-lg bg-muted text-muted-foreground">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-orange-100 text-sm font-medium">Time Saved</p>
+                      <p className="text-muted-foreground/80 text-sm font-medium">Time Saved</p>
                       <p className="text-3xl font-bold">342h</p>
                     </div>
-                    <Clock className="w-8 h-8 text-orange-200" />
+                    <Clock className="w-8 h-8 text-muted-foreground/80" />
                   </div>
                 </CardContent>
               </Card>
