@@ -14,7 +14,15 @@
 		"db:migrate": "wrangler d1 migrations apply creaovate-db --local",
 		"db:migrate:prod": "wrangler d1 migrations apply creaovate-db --remote",
 		"db:status": "wrangler d1 migrations list creaovate-db",
-		"db:create": "wrangler d1 create creaovate-db"
+		"db:create": "wrangler d1 create creaovate-db",
+		"icons:generate": "node scripts/generate-pwa-icons.js",
+		"icons:simple": "node scripts/generate-pwa-icons-simple.js",
+		"icons:favicon": "node scripts/generate-favicon.js",
+		"icons:all": "node scripts/generate-icons.js",
+		"icons:convert": "bash scripts/convert-svg-to-png.sh",
+		"icons:update-manifest": "node scripts/update-manifest-for-png.js",
+		"pwa:setup": "npm run icons:simple && echo '✅ PWA icons ready! Run npm run icons:convert to generate PNG versions.'",
+		"pwa:full": "npm run icons:simple && npm run icons:convert && npm run icons:update-manifest && echo '🚀 Complete PWA setup with PNG icons finished!'"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.1.1",
@@ -80,6 +88,7 @@
 		"@types/react-dom": "^19",
 		"eslint": "^9",
 		"eslint-config-next": "15.3.3",
+		"sharp": "^0.34.5",
 		"tailwindcss": "^4",
 		"tw-animate-css": "^1.3.4",
 		"typescript": "^5",

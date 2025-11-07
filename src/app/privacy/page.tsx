@@ -39,7 +39,6 @@ export default function PrivacyPage() {
             <ul>
               <li>Name and email address</li>
               <li>YouTube channel information when connected</li>
-              <li>Payment information (processed securely by our payment providers)</li>
               <li>Content optimization preferences</li>
             </ul>
             

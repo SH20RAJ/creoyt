@@ -78,17 +78,12 @@ export default function TermsPage() {
               YT Copilot contains proprietary algorithms and technology. You may not reverse engineer, decompile, or attempt to extract our proprietary methods and algorithms.
             </p>
             
-            <h2>9. Subscription and Billing</h2>
-            <p>
-              Some features of the Service require a paid subscription. Billing terms are outlined in your subscription agreement. Fees are non-refundable except as required by law.
-            </p>
-            
-            <h2>10. Termination</h2>
+            <h2>9. Termination</h2>
             <p>
               We may terminate or suspend your account and access to the Service at our sole discretion, without prior notice, for conduct that we believe violates these Terms or YouTube's policies.
             </p>
             
-            <h2>11. Limitation of Liability</h2>
+            <h2>10. Limitation of Liability</h2>
             <p>
               The Service is provided "as is" without warranties of any kind. We shall not be liable for any damages arising from your use of the Service, including but not limited to YouTube channel performance or monetization issues.
             </p>

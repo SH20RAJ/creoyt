@@ -29,7 +29,6 @@ import {
   Moon,
   Sun,
   Monitor,
-  CreditCard,
   Users,
   Zap
 } from "lucide-react";
@@ -71,7 +70,6 @@ export default function SettingsPage() {
     { id: "privacy", label: "Privacy & Security", icon: Shield },
     { id: "appearance", label: "Appearance", icon: Palette },
     { id: "ai", label: "AI Settings", icon: Zap },
-    { id: "billing", label: "Billing", icon: CreditCard },
     { id: "advanced", label: "Advanced", icon: Settings }
   ];
 
@@ -519,64 +517,6 @@ export default function SettingsPage() {
                   <div className="flex justify-end gap-2">
                     <Button variant="outline">Reset to Default</Button>
                     <Button>Save AI Settings</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Billing Settings */}
-            {activeTab === "billing" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5" />
-                    Billing & Subscription
-                  </CardTitle>
-                  <CardDescription>
-                    Manage your subscription and billing information
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-blue-900 dark:text-blue-100">Pro Plan</h3>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">$29/month • Next billing: Jan 15, 2025</p>
-                      </div>
-                      <Button variant="outline" size="sm">Manage Plan</Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Payment Method</h3>
-                    <div className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <CreditCard className="w-5 h-5 text-gray-500" />
-                          <div>
-                            <p className="font-medium">•••• •••• •••• 4242</p>
-                            <p className="text-sm text-gray-500">Expires 12/27</p>
-                          </div>
-                        </div>
-                        <Button variant="outline" size="sm">Update</Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Separator />
-                  
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Billing Actions</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Button variant="outline" className="flex items-center gap-2">
-                        <Download className="w-4 h-4" />
-                        Download Invoices
-                      </Button>
-                      <Button variant="outline" className="flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        Team Billing
-                      </Button>
-                    </div>
                   </div>
                 </CardContent>
               </Card>

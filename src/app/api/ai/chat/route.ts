@@ -36,12 +36,7 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json({
-          response: aiResponse.response || aiResponse.content || "AI response generated successfully",
-          usage: aiResponse.usage || {
-            prompt_tokens: Math.floor(Math.random() * 50) + 10,
-            completion_tokens: Math.floor(Math.random() * 100) + 20,
-            total_tokens: Math.floor(Math.random() * 150) + 30
-          }
+          response: aiResponse.response || aiResponse.content || "AI response generated successfully"
         });
       } catch (aiError) {
         console.error('AI Error:', aiError);
@@ -59,7 +54,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         response: `🤖 **AI System Ready!** 
 
-I'm your Creaovate AI assistant, powered by Llama 3.1. I can help you with:
+I'm your Creaovate AI assistant, powered by our proprietary AI technology. I can help you with:
 
 ✨ **Content Creation**: Blog posts, social media, marketing copy, emails, product descriptions
 📊 **Content Analysis**: SEO optimization, tone analysis, readability scoring
@@ -69,12 +64,7 @@ I'm your Creaovate AI assistant, powered by Llama 3.1. I can help you with:
 
 To fully activate real-time AI responses, the platform administrator needs to complete the final AI binding configuration in the Cloudflare Workers dashboard.
 
-How can I help you create amazing content today?`,
-        usage: {
-          prompt_tokens: body.messages.reduce((acc, msg) => acc + msg.content.length / 4, 0),
-          completion_tokens: 150,
-          total_tokens: 200
-        }
+How can I help you create amazing content today?`
       });
     }
 
@@ -86,12 +76,7 @@ Your query: "${lastMessage}"
 
 While the core AI infrastructure is deployed and ready, the administrator needs to complete the final AI binding setup to enable real-time responses. All other features are fully functional!
 
-Try using the Content Generation features in the dashboard - they're working great! 💡`,
-      usage: {
-        prompt_tokens: Math.floor(Math.random() * 50) + 10,
-        completion_tokens: Math.floor(Math.random() * 100) + 20,
-        total_tokens: Math.floor(Math.random() * 150) + 30
-      }
+Try using the Content Generation features in the dashboard - they're working great! 💡`
     });
   } catch (error) {
     console.error('AI Chat API Error:', error);
@@ -132,7 +117,6 @@ export async function GET(request: NextRequest) {
             conversationId,
             role: 'user',
             content: 'Hello, can you help me create content?',
-            tokensUsed: 12,
             responseTime: 250,
             createdAt: Date.now() - 3600000
           },
@@ -141,7 +125,6 @@ export async function GET(request: NextRequest) {
             conversationId,
             role: 'assistant',
             content: 'Of course! I can help you create various types of content including blog posts, social media content, marketing copy, and more. What type of content would you like to create?',
-            tokensUsed: 45,
             responseTime: 1200,
             createdAt: Date.now() - 3500000
           }

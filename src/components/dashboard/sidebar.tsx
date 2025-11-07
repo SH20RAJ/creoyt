@@ -7,7 +7,6 @@ import { ThemeToggleSimple } from "@/components/ui/theme-toggle";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboard/navigation";
 import { useUser, UserButton } from '@stackframe/stack';
 import { useSidebar } from "@/contexts/sidebar-context";
-import { UsageQuota } from "./usage-quota";
 import { YouTubeChannelSetup } from "./youtube-channel-setup";
 import { 
   LayoutDashboard, 
@@ -121,13 +120,9 @@ export function DashboardSidebar() {
             })}
           </nav>
 
-          {/* Usage Quota and YouTube Channel Setup */}
+          {/* YouTube Channel Setup */}
           <div className="border-t border-border/50">
-            {user ? (
-              <UsageQuota isCollapsed={isCollapsed && !isMobileOpen} />
-            ) : (
-              <YouTubeChannelSetup isCollapsed={isCollapsed && !isMobileOpen} />
-            )}
+            <YouTubeChannelSetup isCollapsed={isCollapsed && !isMobileOpen} />
           </div>
 
           {/* User section */}

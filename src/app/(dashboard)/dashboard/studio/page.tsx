@@ -133,14 +133,14 @@ export default function StudioPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+  <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         {/* Template Selection */}
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>Content Templates</CardTitle>
             <CardDescription>Choose a template to get started</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 max-h-[60vh] overflow-y-auto">
             {contentTemplates.map((template) => {
               const IconComponent = template.icon;
               return (

@@ -65,12 +65,6 @@ export const USER_MENU_ITEMS = [
     icon: "User"
   },
   {
-    id: "billing",
-    label: "Billing",
-    href: "/dashboard/billing",
-    icon: "CreditCard"
-  },
-  {
     id: "support",
     label: "Support",
     href: "/support",

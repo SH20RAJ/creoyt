@@ -1,8 +1,8 @@
 export const BENTO_FEATURES_DATA = [
   {
     title: "AI-Powered Idea Generation",
-    meta: "Llama 3 Powered",
-    description: "Generate unlimited content ideas with advanced AI. Never run out of creative inspiration for your next project.",
+    meta: "Proprietary AI",
+    description: "Generate unlimited content ideas with our advanced proprietary AI algorithms. Never run out of creative inspiration for your next project.",
     iconName: "Brain",
     iconColor: "text-purple-500",
     status: "Live",

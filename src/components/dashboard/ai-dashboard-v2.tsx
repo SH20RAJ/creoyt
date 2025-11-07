@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MessageSquare, Zap, TrendingUp, FileText, BarChart3 } from 'lucide-react';
+import { MessageSquare, TrendingUp, FileText, BarChart3 } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -18,21 +16,11 @@ interface Message {
   timestamp: number;
 }
 
-interface QuotaInfo {
-  hasQuota: boolean;
-  tokensUsed: number;
-  tokensLimit: number;
-  tokensRemaining: number;
-  subscriptionTier: string;
-  resetDate: string;
-}
-
 const AIDashboard: React.FC = () => {
   // State management
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [quotaInfo, setQuotaInfo] = useState<QuotaInfo | null>(null);
   const [contentType, setContentType] = useState('blog_post');
   const [topic, setTopic] = useState('');
   const [generatedContent, setGeneratedContent] = useState('');
@@ -41,21 +29,6 @@ const AIDashboard: React.FC = () => {
 
   // Demo user ID for testing
   const userId = 'demo-user-123';
-
-  // Load quota information on component mount
-  useEffect(() => {
-    loadQuotaInfo();
-  }, []);
-
-  const loadQuotaInfo = async () => {
-    try {
-      const response = await fetch(`/api/ai/quota?userId=${userId}`);
-      const data = await response.json() as QuotaInfo;
-      setQuotaInfo(data);
-    } catch (error) {
-      console.error('Failed to load quota info:', error);
-    }
-  };
 
   const sendMessage = async () => {
     if (!currentMessage.trim() || isLoading) return;
@@ -91,7 +64,6 @@ const AIDashboard: React.FC = () => {
       };
 
       setMessages(prev => [...prev, aiMessage]);
-      loadQuotaInfo(); // Update quota after usage
     } catch (error) {
       console.error('Failed to send message:', error);
       const errorMessage: Message = {
@@ -123,7 +95,6 @@ const AIDashboard: React.FC = () => {
 
       const data = await response.json() as { content: string };
       setGeneratedContent(data.content || 'Failed to generate content');
-      loadQuotaInfo();
     } catch (error) {
       console.error('Failed to generate content:', error);
       setGeneratedContent('Error generating content');
@@ -149,7 +120,6 @@ const AIDashboard: React.FC = () => {
 
       const data = await response.json() as { analysis: Record<string, unknown> };
       setAnalysisResult(data.analysis);
-      loadQuotaInfo();
     } catch (error) {
       console.error('Failed to analyze content:', error);
       setAnalysisResult(null);
@@ -158,7 +128,6 @@ const AIDashboard: React.FC = () => {
     }
   };
 
-  const quotaPercentage = quotaInfo ? (quotaInfo.tokensUsed / quotaInfo.tokensLimit) * 100 : 0;
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -166,34 +135,10 @@ const AIDashboard: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">AI Content Dashboard</h1>
-          <p className="text-muted-foreground">Create, analyze, and optimize content with Llama 3.1</p>
+          <p className="text-muted-foreground">Create, analyze, and optimize content with our advanced AI</p>
         </div>
         
         {/* Quota Display */}
-        {quotaInfo && (
-          <Card className="w-80">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                Usage Quota
-                <Badge variant={quotaInfo.hasQuota ? "default" : "destructive"}>
-                  {quotaInfo.subscriptionTier}
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Progress value={quotaPercentage} className="h-2" />
-                <div className="text-xs text-muted-foreground">
-                  {quotaInfo.tokensUsed.toLocaleString()} / {quotaInfo.tokensLimit.toLocaleString()} tokens used
-                </div>
-                <div className="text-xs">
-                  {quotaInfo.tokensRemaining.toLocaleString()} tokens remaining
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
       {/* Main Dashboard Tabs */}
@@ -223,7 +168,7 @@ const AIDashboard: React.FC = () => {
             <CardHeader>
               <CardTitle>AI Chat Assistant</CardTitle>
               <CardDescription>
-                Chat with Llama 3.1 for content creation assistance
+                Chat with our AI assistant for content creation assistance
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

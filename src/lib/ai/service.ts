@@ -208,54 +208,6 @@ export class AIService {
     return inputCost + outputCost;
   }
 
-  /**
-   * Check if user has remaining quota
-   */
-  async checkUserQuota(userId: string, subscriptionTier: string = 'free'): Promise<{
-    hasQuota: boolean;
-    tokensUsed: number;
-    tokensLimit: number;
-    tokensRemaining: number;
-  }> {
-    if (!this.env.DB) {
-      return { hasQuota: true, tokensUsed: 0, tokensLimit: 10000, tokensRemaining: 10000 };
-    }
-
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const currentMonth = today.substring(0, 7); // YYYY-MM
-
-      // Get monthly usage
-      const result = await this.env.DB.prepare(`
-        SELECT SUM(tokens_input + tokens_output) as total_tokens
-        FROM ai_usage
-        WHERE user_id = ? AND date LIKE ?
-      `).bind(userId, `${currentMonth}%`).first();
-
-      const tokensUsed = Number(result?.total_tokens || 0);
-      
-      // Define limits based on subscription tier
-      const limits = {
-        free: 10_000,
-        pro: 1_000_000,
-        enterprise: 10_000_000
-      };
-
-      const tokensLimit = limits[subscriptionTier as keyof typeof limits] || limits.free;
-      const tokensRemaining = Math.max(0, tokensLimit - tokensUsed);
-      const hasQuota = tokensRemaining > 0;
-
-      return {
-        hasQuota,
-        tokensUsed,
-        tokensLimit,
-        tokensRemaining
-      };
-    } catch (error) {
-      console.error('Failed to check user quota:', error);
-      return { hasQuota: false, tokensUsed: 0, tokensLimit: 0, tokensRemaining: 0 };
-    }
-  }
 }
 
 // Content generation templates

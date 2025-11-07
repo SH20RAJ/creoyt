@@ -73,10 +73,6 @@ export async function POST(request: NextRequest) {
               length: body.length || 'medium',
               wordCount: content.split(/\s+/).length,
               generatedAt: new Date().toISOString()
-            },
-            usage: {
-              tokensUsed: aiResponse.usage?.total_tokens || 500,
-              cost: (aiResponse.usage?.total_tokens || 500) * 0.000001 // Approximate Cloudflare AI pricing
             }
           });
         } catch (aiError) {
@@ -104,10 +100,6 @@ export async function POST(request: NextRequest) {
           length: body.length || 'medium',
           wordCount: Math.floor(Math.random() * 300) + 200,
           generatedAt: new Date().toISOString()
-        },
-        usage: {
-          tokensUsed: Math.floor(Math.random() * 500) + 200,
-          cost: 0.001 // Placeholder cost
         }
       });
     }

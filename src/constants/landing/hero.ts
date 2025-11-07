@@ -1,7 +1,7 @@
 export const HERO_CONTENT = {
   title: 'YT Copilot',
   subtitle: '🎯 An AI co-pilot for YouTubers — helping them create, grow, and optimize their channels',
-  description: 'Supercharge your YouTube journey with our advanced AI technology and proprietary algorithms. From content ideation to optimization, we help you master the platform.',
+  description: 'Supercharge your YouTube journey with our advanced proprietary AI technology and cutting-edge algorithms. From content ideation to optimization, we help you master the platform with breakthrough AI innovations.',
   primaryCta: 'Start Your Free Trial',
   secondaryCta: 'Watch Demo',
   stats: [
@@ -15,6 +15,6 @@ export const HERO_CONTENT = {
 export const BRAND_TAGLINES = [
   '🎯 Your YouTube Success Partner',
   'Create. Optimize. Grow.',
-  'AI-Powered YouTube Mastery',
+  'Proprietary AI-Powered YouTube Mastery',
   'From Ideas to Viral Content'
 ] as const;
