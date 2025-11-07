@@ -183,7 +183,7 @@
 }
 
 .text-gradient {
-  @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-foreground;
 }
 
 .hero-gradient {
@@ -197,4 +197,4 @@
   box-sizing: border-box;
 }
 
-@import "./clay.css";
+/* @import "./clay.css"; */
