@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";import { stackServerApp } from "./stack";
+import { NextRequest, NextResponse } from "next/server";
+import { stackServerApp } from "./stack";
 
 export async function middleware(request: NextRequest) {
   // Protect dashboard routes

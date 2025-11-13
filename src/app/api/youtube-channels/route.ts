@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stackServerApp } from '@/stack';
 import { eq, and } from 'drizzle-orm';
-import { db, youtubeChannels, users } from '@/lib/db';
+import { youtubeChannels, users } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 /**
  * GET /api/youtube-channels
@@ -15,6 +16,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const db = getDb();
+    
     // Ensure user exists in database
     const existingUser = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
     if (existingUser.length === 0) {
@@ -97,6 +100,8 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const db = getDb();
+    
     const { searchParams } = new URL(request.url);
     const channelId = searchParams.get('channelId');
 

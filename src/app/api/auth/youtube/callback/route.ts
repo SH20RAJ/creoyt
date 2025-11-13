@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { eq, and } from 'drizzle-orm';
-import { db, users, youtubeChannels } from '@/lib/db';
+import { users, youtubeChannels } from '@/lib/db';
 import { youTubeAPI } from '@/lib/youtube';
 import { nanoid } from 'nanoid';
+import { getDb } from '@/lib/db';
 
 /**
  * GET /api/auth/youtube/callback
@@ -49,6 +50,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const db = getDb();
+    
     // Verify user exists in database
     const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     if (existingUser.length === 0) {

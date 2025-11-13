@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { db, users } from "@/lib/db";
+import { users } from "@/lib/db";
 import { desc, eq } from "drizzle-orm";
+import { getDb } from "@/lib/db";
 
 // GET all users
 export async function GET() {
   try {
+    const db = getDb();
     const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
     return NextResponse.json(allUsers);
   } catch (error) {
@@ -21,8 +23,8 @@ export async function POST(request) {
     if (!id || !email) {
       return NextResponse.json({ error: "ID and email are required" }, { status: 400 });
     }
-
-    const db = getDB();
+    
+    const db = getDb();
     
     // Check if user already exists
     const existingUser = await db.select().from(users).where(eq(users.id, id)).limit(1);

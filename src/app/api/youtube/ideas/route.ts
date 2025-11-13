@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stackServerApp } from '@/stack';
 import { eq, and, desc } from 'drizzle-orm';
-import { db, youtubeChannels, youtubeVideos } from '@/lib/db';
+import { getDb, youtubeChannels, youtubeVideos } from '@/lib/db';
 
 /**
  * GET /api/youtube/ideas?channelId=xxx
@@ -9,6 +9,7 @@ import { db, youtubeChannels, youtubeVideos } from '@/lib/db';
  */
 export async function GET(request: NextRequest) {
   try {
+    const db = getDb();
     // Verify user authentication
     const user = await stackServerApp.getUser({ tokenStore: 'nextjs-cookie' });
     if (!user) {
