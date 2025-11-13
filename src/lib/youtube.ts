@@ -220,17 +220,18 @@ export class YouTubeAPI {
     startDate: string, 
     endDate: string
   ): Promise<any> {
+    // Use a conservative set of metrics broadly supported across channels
+    // Note: impressions/CTR and dislikes are excluded to avoid API errors
+    // where those identifiers are not available for the queried report.
     const metrics = [
       'views',
       'likes',
-      'dislikes',
       'comments',
       'shares',
       'subscribersGained',
       'subscribersLost',
       'estimatedMinutesWatched',
-      'impressions',
-      'impressionClickThroughRate'
+      'averageViewDuration'
     ].join(',');
 
     const response = await fetch(

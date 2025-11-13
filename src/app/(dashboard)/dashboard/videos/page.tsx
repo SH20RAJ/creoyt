@@ -44,6 +44,15 @@ import {
   Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
 
 interface YouTubeVideo {
   id: string;
@@ -68,6 +77,8 @@ export default function VideosPage() {
   const [sortBy, setSortBy] = useState("publishedAt");
   const [filterBy, setFilterBy] = useState("all");
   const { toast } = useToast();
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
 
   // Load videos when channel changes
   useEffect(() => {
@@ -181,6 +192,37 @@ export default function VideosPage() {
         return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     }
   });
+
+  // Clamp page when filters/search change
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, sortBy, filterBy, selectedChannel]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredVideos.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedVideos = filteredVideos.slice(startIndex, startIndex + pageSize);
+
+  const goToPage = (p: number) => {
+    const next = Math.max(1, Math.min(totalPages, p));
+    if (next !== page) setPage(next);
+  };
+
+  const pageNumbers = (() => {
+    const pages: (number | "...")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+      return pages;
+    }
+    pages.push(1);
+    if (currentPage > 4) pages.push("...");
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (currentPage < totalPages - 3) pages.push("...");
+    pages.push(totalPages);
+    return pages;
+  })();
 
   if (loadingChannels) {
     return (
@@ -432,8 +474,9 @@ export default function VideosPage() {
           </CardContent>
         </Card>
       ) : (
+        <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVideos.map((video) => (
+          {paginatedVideos.map((video) => (
             <Card key={video.id} className="group hover:shadow-lg transition-shadow">
               <CardContent className="p-0">
                 {/* Thumbnail */}
@@ -513,6 +556,34 @@ export default function VideosPage() {
             </Card>
           ))}
         </div>
+        {totalPages > 1 && (
+          <Pagination className="mt-6">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); goToPage(currentPage - 1); }} />
+              </PaginationItem>
+              {pageNumbers.map((num, idx) => (
+                <PaginationItem key={`${num}-${idx}`}>
+                  {num === "..." ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === num}
+                      onClick={(e) => { e.preventDefault(); goToPage(num as number); }}
+                    >
+                      {num}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext href="#" onClick={(e) => { e.preventDefault(); goToPage(currentPage + 1); }} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+        </>
       )}
     </div>
   );

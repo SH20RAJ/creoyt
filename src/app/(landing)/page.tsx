@@ -1,4 +1,4 @@
-import { EnhancedFeaturesSection, CtaSection, Footer } from "@/components/landing";
+import { EnhancedFeaturesSection, CtaSection, Footer, HowItWorksSection } from "@/components/landing";
 import Hero from "@/components/ui/neural-network-hero";
 import { HERO_CONTENT, BRAND_TAGLINES } from "@/constants/landing/hero";
 import { JsonLd, organizationData, softwareApplicationData, websiteData } from "@/components/seo/json-ld";
@@ -25,6 +25,7 @@ export default function Home() {
             microDetails={["AI-powered insights", "YouTube growth toolkit", "Cloudflare-ready"]}
           />
         </div>
+        <HowItWorksSection />
         <EnhancedFeaturesSection />
         <CtaSection />
       </main>
