@@ -73,7 +73,7 @@ export function EnhancedFeaturesSection() {
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
             Everything You Need for
-            <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="block">
               Content Creation Success
             </span>
           </h2>

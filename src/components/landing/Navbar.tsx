@@ -38,7 +38,7 @@ export function LandingNavbar() {
           {/* Brand */}
           <Link href="/" className="flex items-center gap-2 pl-4">
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-fuchsia-500 to-indigo-500" />
-            <span className="text-sm font-semibold tracking-tight">Creaovate</span>
+            <span className="text-sm font-semibold tracking-tight">YT - Copilot</span>
           </Link>
 
           {/* Desktop nav */}

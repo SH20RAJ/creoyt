@@ -21,14 +21,14 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <a 
-                href="https://twitter.com/ytcopilot" 
+                href="https://twitter.com/sh20raj" 
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Twitter"
               >
                 Twitter
               </a>
               <a 
-                href="https://linkedin.com/company/yt-copilot" 
+                href="https://www.linkedin.com/company/strivio-world/" 
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="LinkedIn"
               >
