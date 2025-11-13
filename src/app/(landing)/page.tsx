@@ -2,7 +2,7 @@ import { EnhancedFeaturesSection, CtaSection, Footer } from "@/components/landin
 import Hero from "@/components/ui/neural-network-hero";
 import { HERO_CONTENT, BRAND_TAGLINES } from "@/constants/landing/hero";
 import { JsonLd, organizationData, softwareApplicationData, websiteData } from "@/components/seo/json-ld";
-import { Navbar1 } from "@/components/ui/navbar-1";
+import LandingNavbar from "@/components/landing/Navbar";
 
 export default function Home() {
   return (
@@ -10,8 +10,7 @@ export default function Home() {
       <JsonLd data={organizationData} />
       <JsonLd data={softwareApplicationData} />
       <JsonLd data={websiteData} />
-      {/* <Header /> */}
-      <Navbar1/>
+      <LandingNavbar />
       <main>
         <div className="w-screen h-screen flex flex-col relative">
           <Hero
