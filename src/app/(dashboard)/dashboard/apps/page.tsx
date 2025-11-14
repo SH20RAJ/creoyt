@@ -21,7 +21,11 @@ async function generate(prompt: string, type: "social" | "marketing" | "blog" | 
   });
   if (!res.ok) throw new Error("Failed to generate");
   const data = await res.json();
-  return (data.content as string) || "";
+  // Fix: assert type of data before accessing content
+  if (typeof data === "object" && data !== null && "content" in data) {
+    return (data as { content?: string }).content || "";
+  }
+  return "";
 }
 
 export default function AppsPage() {

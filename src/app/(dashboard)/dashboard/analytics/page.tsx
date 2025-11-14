@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -134,8 +140,19 @@ export default function AnalyticsPage() {
       const res = await fetch(`/api/youtube/analytics?${qs.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch analytics");
       const data = await res.json();
-      setRows((data.analytics || []) as AnalyticsRow[]);
-      setFromCache(Boolean(data.fromCache));
+
+      // Fix: Type guard for 'data' of type 'unknown'
+      if (
+        typeof data === "object" &&
+        data !== null &&
+        "analytics" in data &&
+        Array.isArray((data as { analytics?: unknown }).analytics)
+      ) {
+        setRows(((data as { analytics: AnalyticsRow[] }).analytics) || []);
+      } else {
+        setRows([]);
+      }
+      setFromCache(Boolean((data as any).fromCache));
     } catch (e) {
       console.error(e);
     } finally {
@@ -176,7 +193,9 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-4">
         <h1 className="text-2xl font-semibold">Analytics</h1>
-        <p className="text-muted-foreground">Connect a YouTube channel to view analytics.</p>
+        <p className="text-muted-foreground">
+          Connect a YouTube channel to view analytics.
+        </p>
       </div>
     );
   }
@@ -192,12 +211,13 @@ export default function AnalyticsPage() {
           <div>
             <h1 className="text-3xl font-bold">Channel Analytics</h1>
             <p className="text-muted-foreground">
-              {selectedChannel.channelName} • {startDate} → {endDate} {fromCache ? "(cached)" : ""}
+              {selectedChannel.channelName} • {startDate} → {endDate}{" "}
+              {fromCache ? "(cached)" : ""}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Select value={range} onValueChange={(v) => setRange(v as any)}>
+          <Select value={range} onValueChange={(v: (typeof TIME_RANGES)[number]["value"]) => setRange(v)}>
             <SelectTrigger className="w-44">
               <SelectValue placeholder="Range" />
             </SelectTrigger>
@@ -226,7 +246,7 @@ export default function AnalyticsPage() {
             size="sm"
             onClick={() => {
               const url = selectedChannel?.channelId
-                ? `https://studio.youtube.com/channel/${selectedChannel.channelId}/analytics` 
+                ? `https://studio.youtube.com/channel/${selectedChannel.channelId}/analytics`
                 : `https://studio.youtube.com/`;
               window.open(url, "_blank");
             }}
@@ -234,12 +254,20 @@ export default function AnalyticsPage() {
             <ExternalLink className="h-4 w-4 mr-2" />
             Open in YouTube Studio
           </Button>
-          <Button variant="outline" size="sm" onClick={() => fetchAnalytics(true)} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchAnalytics(true)}
+            disabled={loading}
+          >
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
           <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />Export
+            <Download className="h-4 w-4 mr-2" />
+            Export
           </Button>
         </div>
       </div>
@@ -259,7 +287,9 @@ export default function AnalyticsPage() {
             <CardTitle className="text-sm">Watch time (min)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{number(totals.watchTimeMinutes)}</div>
+            <div className="text-2xl font-bold">
+              {number(totals.watchTimeMinutes)}
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -267,7 +297,9 @@ export default function AnalyticsPage() {
             <CardTitle className="text-sm">Subscribers (net)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{number(totals.subscribersNet)}</div>
+            <div className="text-2xl font-bold">
+              {number(totals.subscribersNet)}
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -275,7 +307,9 @@ export default function AnalyticsPage() {
             <CardTitle className="text-sm">CTR (avg)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totals.avgCtr.toFixed(2)}%</div>
+            <div className="text-2xl font-bold">
+              {totals.avgCtr.toFixed(2)}%
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -285,12 +319,15 @@ export default function AnalyticsPage() {
         <CardHeader>
           <CardTitle>Trend</CardTitle>
           <CardDescription>
-            Daily {METRICS.find((m) => m.value === metric)?.label.toLowerCase()}
+            Daily{" "}
+            {METRICS.find((m) => m.value === metric)?.label.toLowerCase()}
           </CardDescription>
         </CardHeader>
         <CardContent className="h-80">
           <ResponsiveContainer width="100%" height="100%">
-            {metric === "likes" || metric === "comments" || metric === "subscribersNet" ? (
+            {metric === "likes" ||
+            metric === "comments" ||
+            metric === "subscribersNet" ? (
               <BarChart data={chartData} margin={{ left: 8, right: 16 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
@@ -360,8 +397,18 @@ export default function AnalyticsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Area type="monotone" dataKey="impressions" stroke="#0ea5e9" fill="#0ea5e980" />
-                <Area type="monotone" dataKey="clickThroughRate" stroke="#ef4444" fill="#ef444480" />
+                <Area
+                  type="monotone"
+                  dataKey="impressions"
+                  stroke="#0ea5e9"
+                  fill="#0ea5e980"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="clickThroughRate"
+                  stroke="#ef4444"
+                  fill="#ef444480"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -380,7 +427,12 @@ export default function AnalyticsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Area type="monotone" dataKey="averageViewDuration" stroke="#8b5cf6" fill="#8b5cf680" />
+                <Area
+                  type="monotone"
+                  dataKey="averageViewDuration"
+                  stroke="#8b5cf6"
+                  fill="#8b5cf680"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
