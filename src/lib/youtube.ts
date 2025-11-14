@@ -212,6 +212,25 @@ export class YouTubeAPI {
   }
 
   /**
+   * Search for videos by query (ordered by view count)
+   */
+  async searchVideos(accessToken: string, query: string, maxResults = 10): Promise<string[]> {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&order=viewCount&maxResults=${maxResults}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Failed to search videos: ${error}`);
+    }
+    const data: any = await response.json();
+    const ids = (data.items || []).map((it: any) => it.id?.videoId).filter(Boolean);
+    return ids;
+  }
+
+  /**
    * Get YouTube Analytics data
    */
   async getChannelAnalytics(

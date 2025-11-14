@@ -1,277 +1,259 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  FolderOpen, 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal,
-  Calendar,
-  Users,
-  FileText,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  PlayCircle
-} from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useYouTube } from "@/contexts/youtube-context";
+import { useToast } from "@/hooks/use-toast";
+import { Save, Copy, Download, Sparkles, Search, FolderOpen, MoreHorizontal, Trash2 } from "lucide-react";
+
+type GenResult = {
+  title: string;
+  description: string;
+  thumbnailPrompt: string;
+  tags: string[];
+  playlists: string[];
+  keywords: string[];
+  source: 'ai' | 'scraped';
+};
 
 export default function ProjectsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const { selectedChannel } = useYouTube();
+  const { toast } = useToast();
+  const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<'ai' | 'scraped'>('ai');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<GenResult | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [tab, setTab] = useState<'list' | 'create'>('list');
+  const [filter, setFilter] = useState('');
 
-  const projects = [
-    {
-      id: 1,
-      name: "Q1 2025 Content Strategy",
-      description: "Comprehensive content strategy for the first quarter",
-      status: "active",
-      progress: 65,
-      dueDate: "Jan 31, 2025",
-      team: ["John", "Sarah", "Mike"],
-      contentCount: 24,
-      lastActivity: "2 hours ago",
-      category: "Marketing Campaign"
-    },
-    {
-      id: 2,
-      name: "AI Tools Blog Series",
-      description: "10-part blog series about AI tools for creators",
-      status: "active",
-      progress: 40,
-      dueDate: "Feb 15, 2025",
-      team: ["Emma", "David"],
-      contentCount: 10,
-      lastActivity: "1 day ago",
-      category: "Blog Series"
-    },
-    {
-      id: 3,
-      name: "Social Media Automation",
-      description: "Automated social media content for 3 months",
-      status: "completed",
-      progress: 100,
-      dueDate: "Dec 31, 2024",
-      team: ["Lisa", "Tom", "Alex"],
-      contentCount: 90,
-      lastActivity: "5 days ago",
-      category: "Social Media"
-    },
-    {
-      id: 4,
-      name: "Product Launch Campaign",
-      description: "Launch campaign for new AI writing assistant",
-      status: "planning",
-      progress: 15,
-      dueDate: "Mar 1, 2025",
-      team: ["Sarah", "Mike", "Emma", "John"],
-      contentCount: 5,
-      lastActivity: "3 hours ago",
-      category: "Product Launch"
-    },
-    {
-      id: 5,
-      name: "Video Content Calendar",
-      description: "YouTube content calendar for tech reviews",
-      status: "on-hold",
-      progress: 25,
-      dueDate: "Jan 15, 2025",
-      team: ["David"],
-      contentCount: 12,
-      lastActivity: "1 week ago",
-      category: "Video Content"
-    }
-  ];
+  const channelId = selectedChannel?.id || '';
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "active":
-        return <PlayCircle className="h-4 w-4 text-blue-600" />;
-      case "completed":
-        return <CheckCircle2 className="h-4 w-4 text-green-600" />;
-      case "planning":
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-      case "on-hold":
-        return <AlertCircle className="h-4 w-4 text-gray-600" />;
-      default:
-        return <Clock className="h-4 w-4" />;
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch('/api/projects');
+      if (res.ok) {
+        const data: any = await res.json();
+        setProjects(data.projects || []);
+      }
+    } catch {}
+  };
+
+  useEffect(() => { fetchProjects(); }, []);
+
+  const generate = async () => {
+    if (!query.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/projects/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, mode, channelId }),
+      });
+      const data: any = await res.json();
+      if (res.ok) {
+        setResult({
+          title: data.title || query,
+          description: data.description || '',
+          thumbnailPrompt: data.thumbnailPrompt || `Thumbnail for: ${query}`,
+          tags: data.tags || [],
+          playlists: data.playlists || [],
+          keywords: data.keywords || [],
+          source: data.source || mode,
+        });
+      } else {
+        toast({ title: 'Generation failed', description: data?.error || 'Try again', variant: 'destructive' });
+      }
+    } catch (e) {
+      toast({ title: 'Generation failed', description: 'Network error', variant: 'destructive' });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-blue-100 text-blue-800";
-      case "completed":
-        return "bg-green-100 text-green-800";
-      case "planning":
-        return "bg-yellow-100 text-yellow-800";
-      case "on-hold":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const copyAll = () => {
+    if (!result) return;
+    const text = `Title: ${result.title}\n\nDescription:\n${result.description}\n\nThumbnail Prompt:\n${result.thumbnailPrompt}\n\nTags: ${result.tags.join(', ')}\nPlaylists: ${result.playlists.join(', ')}\nKeywords: ${result.keywords.join(', ')}`;
+    navigator.clipboard.writeText(text);
+    toast({ title: 'Copied', description: 'All fields copied to clipboard' });
   };
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = selectedFilter === "all" || project.status === selectedFilter;
-    return matchesSearch && matchesFilter;
-  });
+  const exportJson = () => {
+    if (!result) return;
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `yt-project-${Date.now()}.json`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const saveProject = async () => {
+    if (!result) return;
+    const body = {
+      title: result.title,
+      content: JSON.stringify(result),
+      contentType: 'video',
+    };
+    const res = await fetch('/api/projects', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (res.ok) { toast({ title: 'Saved', description: 'Project saved' }); fetchProjects(); }
+    else { toast({ title: 'Save failed', description: 'Try again', variant: 'destructive' }); }
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <FolderOpen className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold">Projects</h1>
-            <p className="text-muted-foreground">Manage your content creation projects</p>
-          </div>
-        </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          New Project
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
+        <TabsList>
+          <TabsTrigger value="list">Projects</TabsTrigger>
+          <TabsTrigger value="create">Create</TabsTrigger>
+        </TabsList>
 
-      {/* Search and Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search projects..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <Button
-                variant={selectedFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedFilter("all")}
-              >
-                All
-              </Button>
-              <Button
-                variant={selectedFilter === "active" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedFilter("active")}
-              >
-                Active
-              </Button>
-              <Button
-                variant={selectedFilter === "completed" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedFilter("completed")}
-              >
-                Completed
-              </Button>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProjects.map((project) => (
-          <Card key={project.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    {getStatusIcon(project.status)}
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
-                      {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                    </span>
-                  </div>
-                  <CardTitle className="text-lg leading-tight">{project.name}</CardTitle>
-                  <CardDescription className="mt-2">{project.description}</CardDescription>
-                </div>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
+        {/* LIST TAB — YouTube Studio style */}
+        <TabsContent value="list" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Channel content</CardTitle>
+              <CardDescription>Projects generated or saved from YT Copilot</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Progress Bar */}
-                <div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium">{project.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-primary h-2 rounded-full transition-all"
-                      style={{ width: `${project.progress}%` }}
-                    />
-                  </div>
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Search across your projects" className="pl-9" />
                 </div>
-
-                {/* Project Stats */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span>{project.contentCount} content pieces</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{project.team.length} team members</span>
-                  </div>
-                </div>
-
-                {/* Due Date and Activity */}
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>Due {project.dueDate}</span>
-                  </div>
-                  <span>{project.lastActivity}</span>
-                </div>
-
-                {/* Category */}
-                <div className="pt-2 border-t">
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
-                    {project.category}
-                  </span>
-                </div>
+                <Button variant="outline" onClick={fetchProjects}>Refresh</Button>
+                <Button onClick={() => setTab('create')}><Sparkles className="h-4 w-4 mr-2" />New</Button>
               </div>
+
+              {projects.length === 0 ? (
+                <div className="text-sm text-muted-foreground py-12 text-center">
+                  <FolderOpen className="h-7 w-7 mx-auto mb-2" />No projects yet
+                </div>
+              ) : (
+                <div className="overflow-auto rounded-md border">
+                  <table className="w-full text-sm">
+                    <thead className="text-muted-foreground">
+                      <tr className="bg-muted/50">
+                        <th className="w-10 p-3 text-left"><input type="checkbox" aria-label="select-all" /></th>
+                        <th className="p-3 text-left">Project</th>
+                        <th className="p-3 text-left">Visibility</th>
+                        <th className="p-3 text-left">Status</th>
+                        <th className="p-3 text-left">Date</th>
+                        <th className="w-10 p-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projects
+                        .filter((p) => !filter || p.title.toLowerCase().includes(filter.toLowerCase()))
+                        .map((p) => {
+                          let meta: any = {};
+                          try { meta = JSON.parse(p.content || '{}'); } catch {}
+                          const desc = meta.description || '';
+                          return (
+                            <tr key={p.id} className="border-t hover:bg-accent/40">
+                              <td className="p-3 align-top"><input type="checkbox" aria-label="select-row" /></td>
+                              <td className="p-3">
+                                <div className="flex gap-3">
+                                  <div className="h-12 w-20 rounded bg-gradient-to-br from-primary/20 to-primary/5 border flex items-center justify-center text-xs text-muted-foreground">
+                                    {meta.thumbnailPrompt ? 'IMG' : '—'}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="font-medium leading-tight truncate">{p.title}</div>
+                                    <div className="text-muted-foreground line-clamp-2 text-xs">{desc}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-3 align-top">Private</td>
+                              <td className="p-3 align-top capitalize">{p.status || 'draft'}</td>
+                              <td className="p-3 align-top">{new Date(p.createdAt).toLocaleDateString()}</td>
+                              <td className="p-3 align-top">
+                                <div className="flex items-center gap-1">
+                                  <Button variant="ghost" size="icon" onClick={async () => {
+                                    const ok = confirm('Delete this project?');
+                                    if (!ok) return;
+                                    const res = await fetch(`/api/projects?id=${p.id}`, { method: 'DELETE' });
+                                    if (res.ok) { fetchProjects(); }
+                                  }}>
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </CardContent>
           </Card>
-        ))}
-      </div>
+        </TabsContent>
 
-      {filteredProjects.length === 0 && (
+        {/* CREATE TAB — generator */}
+        <TabsContent value="create" className="space-y-6">
         <Card>
-          <CardContent className="text-center py-12">
-            <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No projects found</h3>
-            <p className="text-muted-foreground mb-4">
-              {searchQuery ? "Try adjusting your search terms" : "Create your first project to get started"}
-            </p>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create New Project
-            </Button>
+          <CardHeader className="pb-3">
+            <CardTitle>New Project</CardTitle>
+            <CardDescription>Turn an idea into a complete YouTube package</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Input placeholder="Idea or topic (e.g., How to learn Python in 7 days)" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <Tabs value={mode} onValueChange={(v) => setMode(v as 'ai' | 'scraped')}>
+              <TabsList>
+                <TabsTrigger value="ai">AI Generated</TabsTrigger>
+                <TabsTrigger value="scraped">Scraped (SEO)</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <div className="flex gap-2">
+              <Button onClick={generate} disabled={loading}>
+                <Sparkles className={`h-4 w-4 mr-2 ${loading ? 'animate-pulse' : ''}`} />
+                {loading ? 'Generating...' : 'Generate'}
+              </Button>
+              {result && (
+                <>
+                  <Button variant="outline" onClick={copyAll}><Copy className="h-4 w-4 mr-2" />Copy all</Button>
+                  <Button variant="outline" onClick={exportJson}><Download className="h-4 w-4 mr-2" />Export JSON</Button>
+                  <Button onClick={saveProject}><Save className="h-4 w-4 mr-2" />Save project</Button>
+                </>
+              )}
+            </div>
           </CardContent>
         </Card>
-      )}
+
+        {result && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Title</CardTitle></CardHeader>
+              <CardContent><Textarea className="min-h-20" defaultValue={result.title} readOnly /></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Thumbnail Prompt</CardTitle></CardHeader>
+              <CardContent><Textarea className="min-h-20" defaultValue={result.thumbnailPrompt} readOnly /></CardContent>
+            </Card>
+            <Card className="md:col-span-2">
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Description</CardTitle></CardHeader>
+              <CardContent><Textarea className="min-h-40" defaultValue={result.description} readOnly /></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Tags</CardTitle></CardHeader>
+              <CardContent><Textarea className="min-h-24" defaultValue={result.tags.join(', ')} readOnly /></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Playlists</CardTitle></CardHeader>
+              <CardContent><Textarea className="min-h-24" defaultValue={result.playlists.join(', ')} readOnly /></CardContent>
+            </Card>
+            <Card className="md:col-span-2">
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Keywords</CardTitle></CardHeader>
+              <CardContent><Textarea className="min-h-24" defaultValue={result.keywords.join(', ')} readOnly /></CardContent>
+            </Card>
+          </div>
+        )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
