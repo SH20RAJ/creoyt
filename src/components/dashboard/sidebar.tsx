@@ -17,6 +17,7 @@ import {
   FolderOpen, 
   BarChart, 
   Settings,
+  Grid2x2,
   Menu,
   X,
   LucideIcon,
@@ -51,6 +52,7 @@ const iconMap: Record<string, LucideIcon> = {
   FolderOpen,
   BarChart,
   Settings,
+  Grid2x2,
 };
 
 export function DashboardSidebar() {

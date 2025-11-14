@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BarChart3, Download, RefreshCw } from "lucide-react";
+import { BarChart3, Download, RefreshCw, ExternalLink } from "lucide-react";
 import { useYouTube } from "@/contexts/youtube-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -221,6 +221,19 @@ export default function AnalyticsPage() {
               ))}
             </SelectContent>
           </Select>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => {
+              const url = selectedChannel?.channelId
+                ? `https://studio.youtube.com/channel/${selectedChannel.channelId}/analytics` 
+                : `https://studio.youtube.com/`;
+              window.open(url, "_blank");
+            }}
+          >
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Open in YouTube Studio
+          </Button>
           <Button variant="outline" size="sm" onClick={() => fetchAnalytics(true)} disabled={loading}>
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
             Refresh
@@ -376,4 +389,3 @@ export default function AnalyticsPage() {
     </div>
   );
 }
-

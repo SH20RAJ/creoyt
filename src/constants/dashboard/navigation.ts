@@ -14,11 +14,11 @@ export const DASHBOARD_NAV_ITEMS = [
     description: "Manage your YouTube videos"
   },
   {
-    id: "content-studio",
-    label: "Content Studio",
-    href: "/dashboard/studio", 
-    icon: "PenTool",
-    description: "Create and edit content with AI"
+    id: "apps",
+    label: "Apps",
+    href: "/dashboard/apps", 
+    icon: "Grid2x2",
+    description: "Mini apps for content creation"
   },
   {
     id: "projects",
