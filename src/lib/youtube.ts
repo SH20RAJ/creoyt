@@ -161,7 +161,7 @@ export class YouTubeAPI {
       throw new Error(`Failed to fetch channels: ${error}`);
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
     return data.items || [];
   }
 
@@ -183,7 +183,7 @@ export class YouTubeAPI {
       throw new Error(`Failed to fetch playlist videos: ${error}`);
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
     return data.items || [];
   }
 
@@ -207,7 +207,7 @@ export class YouTubeAPI {
       throw new Error(`Failed to fetch video details: ${error}`);
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
     return data.items || [];
   }
 

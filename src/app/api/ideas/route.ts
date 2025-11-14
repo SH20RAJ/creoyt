@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const user = await stackServerApp.getUser({ tokenStore: 'nextjs-cookie' });
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await request.json();
+    const body: any = await request.json();
     const { title, description = '', contentType = 'video', prompt = '' } = body || {};
     if (!title) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
 
@@ -36,4 +36,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to save idea' }, { status: 500 });
   }
 }
-

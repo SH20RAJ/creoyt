@@ -114,7 +114,7 @@ Guidelines:
         })
       });
 
-      const data = await response.json();
+      const data: any = await response.json();
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -276,7 +276,7 @@ Guidelines:
             
             {message.role === 'user' && (
               <Avatar className="w-8 h-8 mt-1">
-                <AvatarImage src={user?.profileImageUrl} />
+                <AvatarImage src={user?.profileImageUrl || ''} />
                 <AvatarFallback className="bg-gradient-to-r from-green-500 to-blue-500 text-white text-xs">
                   {user?.displayName?.charAt(0) || 'U'}
                 </AvatarFallback>

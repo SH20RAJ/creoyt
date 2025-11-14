@@ -123,7 +123,7 @@ Return only the JSON array, no additional text.`;
         throw new Error(`OpenAI API error: ${openaiResponse.statusText}`);
       }
 
-      const openaiData = await openaiResponse.json();
+      const openaiData: any = await openaiResponse.json();
       const aiResponse = openaiData.choices[0]?.message?.content;
 
       if (!aiResponse) {
@@ -177,11 +177,12 @@ Return only the JSON array, no additional text.`;
     }
 
   } catch (error) {
-    console.error('Error generating video ideas:', error);
+    const err = error as Error;
+    console.error('Error generating video ideas:', err);
     return NextResponse.json(
       {
         error: 'Failed to generate video ideas',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     );

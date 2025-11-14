@@ -108,7 +108,7 @@ export default function SettingsPage() {
     try {
       const response = await fetch('/api/youtube-channels');
       if (response.ok) {
-        const data = await response.json();
+        const data: any = await response.json();
         setSettings(prev => ({
           ...prev,
           youtubeChannels: data.channels || [],

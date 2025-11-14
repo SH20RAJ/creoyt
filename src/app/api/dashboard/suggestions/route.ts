@@ -3,7 +3,7 @@ import { OpenAIService } from '@/lib/ai/openai-service';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await request.json();
+    const { userId } = (await request.json()) as any;
     
     if (!OpenAIService.isConfigured()) {
       // Return fallback suggestions if OpenAI is not configured

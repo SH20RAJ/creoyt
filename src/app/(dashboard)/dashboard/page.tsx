@@ -36,8 +36,8 @@ export default function DashboardPage() {
   const fetchStats = async () => {
     try {
       const res = await fetch(`/api/dashboard/stats?userId=${encodeURIComponent(user?.id || "anon")}`);
-      const data = await res.json();
-      setStats(data.stats);
+      const data: any = await res.json();
+      setStats((data as any).stats);
     } catch (e) {
       // non-blocking
     }
@@ -53,8 +53,8 @@ export default function DashboardPage() {
       const qs = new URLSearchParams({ channelId: selectedChannel.id });
       if (refresh) qs.set("refresh", "true");
       const res = await fetch(`/api/youtube/ideas?${qs.toString()}`);
-      const data = await res.json();
-      if (data?.ideas?.length) setIdeas(data.ideas);
+      const data: any = await res.json();
+      if (data?.ideas?.length) setIdeas((data as any).ideas);
       else setIdeas([]);
     } catch (e) {
       setIdeas([]);

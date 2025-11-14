@@ -152,11 +152,12 @@ export async function GET(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('YouTube OAuth callback error:', error);
+    const err = error as Error;
+    console.error('YouTube OAuth callback error:', err);
     
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard?error=callback_failed&message=${encodeURIComponent(
-        process.env.NODE_ENV === 'development' ? error.message : 'Authentication failed'
+        process.env.NODE_ENV === 'development' ? err.message : 'Authentication failed'
       )}`
     );
   }

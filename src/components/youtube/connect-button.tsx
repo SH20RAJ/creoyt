@@ -52,8 +52,8 @@ export default function YouTubeConnectButton() {
       const response = await fetch('/api/youtube-channels');
       
       if (response.ok) {
-        const data = await response.json();
-        setChannels(data.channels || []);
+        const data: any = await response.json();
+        setChannels((data as any).channels || []);
       } else {
         console.error('Failed to fetch channels');
       }

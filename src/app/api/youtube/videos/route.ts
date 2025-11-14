@@ -201,11 +201,12 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching YouTube videos:', error);
+    const err = error as Error;
+    console.error('Error fetching YouTube videos:', err);
     return NextResponse.json(
       {
         error: 'Failed to fetch videos',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     );

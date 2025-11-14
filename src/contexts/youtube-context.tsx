@@ -35,7 +35,7 @@ export function YouTubeProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch('/api/youtube-channels');
       if (response.ok) {
-        const data = await response.json();
+        const data: any = await response.json();
         const channelsList = data.channels || [];
         setChannels(channelsList);
         

@@ -29,11 +29,12 @@ export async function GET(request: NextRequest) {
     // Redirect user to Google OAuth
     return NextResponse.redirect(authUrl);
   } catch (error) {
-    console.error('YouTube OAuth initiation error:', error);
+    const err = error as Error;
+    console.error('YouTube OAuth initiation error:', err);
     return NextResponse.json(
       { 
         error: 'Failed to initiate YouTube authentication',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     );

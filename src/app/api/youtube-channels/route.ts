@@ -77,11 +77,12 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching YouTube channels:', error);
+    const err = error as Error;
+    console.error('Error fetching YouTube channels:', err);
     return NextResponse.json(
       {
         error: 'Failed to fetch YouTube channels',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     );
@@ -141,11 +142,12 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error disconnecting YouTube channel:', error);
+    const err = error as Error;
+    console.error('Error disconnecting YouTube channel:', err);
     return NextResponse.json(
       {
         error: 'Failed to disconnect channel',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     );

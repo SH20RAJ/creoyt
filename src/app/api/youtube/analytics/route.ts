@@ -127,7 +127,7 @@ export async function GET(request: NextRequest) {
     const processedAnalytics = [];
     
     // Map column headers to data
-    const headers = analyticsResponse.columnHeaders?.map(h => h.name) || [];
+    const headers = (analyticsResponse.columnHeaders as any[] | undefined)?.map((h: any) => h.name) || [];
     
     for (const row of analyticsResponse.rows) {
       const analyticsData = {
@@ -151,8 +151,8 @@ export async function GET(request: NextRequest) {
       };
 
       // Map row data to analytics object based on headers
-      headers.forEach((header, index) => {
-        const value = row[index] || 0;
+      headers.forEach((header: string, index: number) => {
+        const value: any = row[index] || 0;
         
         switch (header) {
           case 'views':
@@ -243,11 +243,12 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching YouTube analytics:', error);
+    const err = error as Error;
+    console.error('Error fetching YouTube analytics:', err);
     return NextResponse.json(
       {
         error: 'Failed to fetch analytics',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     );

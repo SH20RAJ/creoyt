@@ -101,7 +101,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         })
       });
       
-      const data = await response.json();
+      const data: any = await response.json();
       if (data.success && data.analysis) {
         const allSuggestions = [
           ...(data.analysis.tone?.suggestions || []),
@@ -132,7 +132,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         })
       });
       
-      const data = await response.json();
+      const data: any = await response.json();
       if (data.success) {
         setContent(data.improvedContent);
         setImprovements([]); // Clear improvements after applying

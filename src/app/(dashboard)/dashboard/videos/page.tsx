@@ -98,8 +98,8 @@ export default function VideosPage() {
 
       const response = await fetch(`/api/youtube/videos?${params}`);
       if (response.ok) {
-        const data = await response.json();
-        setVideos(data.videos || []);
+        const data: any = await response.json();
+        setVideos((data as any).videos || []);
         
         if (refresh) {
           toast({
