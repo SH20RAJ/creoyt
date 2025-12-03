@@ -171,7 +171,7 @@ Guidelines:
     ));
   };
 
-  const useQuickPrompt = (prompt: string) => {
+  const handleQuickPrompt = (prompt: string) => {
     setCurrentMessage(prompt);
     inputRef.current?.focus();
   };
@@ -210,7 +210,7 @@ Guidelines:
               variant="outline"
               size="sm"
               className="text-xs"
-              onClick={() => useQuickPrompt(prompt)}
+              onClick={() => handleQuickPrompt(prompt)}
             >
               <Wand2 className="w-3 h-3 mr-1" />
               {prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt}

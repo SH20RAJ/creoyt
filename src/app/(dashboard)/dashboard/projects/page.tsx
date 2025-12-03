@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useYouTube } from "@/contexts/youtube-context";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Copy, Download, Sparkles, Search, FolderOpen, MoreHorizontal, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type GenResult = {
   title: string;
@@ -32,6 +33,7 @@ export default function ProjectsPage() {
   const [filter, setFilter] = useState('');
 
   const channelId = selectedChannel?.id || '';
+  const router = useRouter();
 
   const fetchProjects = async () => {
     try {
@@ -153,7 +155,7 @@ export default function ProjectsPage() {
                           try { meta = JSON.parse(p.content || '{}'); } catch {}
                           const desc = meta.description || '';
                           return (
-                            <tr key={p.id} className="border-t hover:bg-accent/40">
+                            <tr key={p.id} className="border-t hover:bg-accent/40 cursor-pointer" onClick={() => router.push(`/dashboard/projects/${p.id}`)}>
                               <td className="p-3 align-top"><input type="checkbox" aria-label="select-row" /></td>
                               <td className="p-3">
                                 <div className="flex gap-3">

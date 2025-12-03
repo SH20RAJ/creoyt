@@ -50,6 +50,28 @@ export class OpenAIService {
         return response.json();
     }
 
+    async generateImage(prompt: string, options: { size?: '512x512' | '1024x1024'; model?: string } = {}) {
+        const response = await fetch(`${this.baseURL}/images/generations`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${this.apiKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                model: options.model || 'gpt-image-1',
+                prompt,
+                size: options.size || '1024x1024',
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`OpenAI image error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+
     async generateContentStream(
         messages: OpenAIMessage[],
         options: {

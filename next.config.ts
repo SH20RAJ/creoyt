@@ -64,4 +64,12 @@ export default nextConfig;
 
 // Enable Cloudflare development support
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
-initOpenNextCloudflareForDev();
+
+// Cloudflare local dev helpers can only run when `next dev` starts a server.
+const isNextDevCommand =
+  process.env.NODE_ENV === 'development' &&
+  process.argv.some((arg) => arg.includes('dev'));
+
+if (isNextDevCommand) {
+  initOpenNextCloudflareForDev();
+}
