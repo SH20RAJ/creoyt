@@ -8,6 +8,13 @@
       "when": 1762546798010,
       "tag": "0000_fluffy_the_hood",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1764759762373,
+      "tag": "0001_colossal_bloodstrike",
+      "breakpoints": true
     }
   ]
 }
