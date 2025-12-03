@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -24,7 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useYouTube } from "@/contexts/youtube-context";
-import { 
+import {
   Video,
   Youtube,
   Play,
@@ -53,6 +53,7 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
+import { YOUTUBE_API } from "@/lib/constants";
 
 interface YouTubeVideo {
   id: string;
@@ -100,7 +101,7 @@ export default function VideosPage() {
       if (response.ok) {
         const data: any = await response.json();
         setVideos((data as any).videos || []);
-        
+
         if (refresh) {
           toast({
             title: "Videos Updated",
@@ -134,15 +135,15 @@ export default function VideosPage() {
 
   const formatDuration = (duration: string) => {
     if (!duration) return "N/A";
-    
+
     // Parse ISO 8601 duration (PT4M13S)
     const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     if (!match) return duration;
-    
+
     const hours = parseInt(match[1] || '0');
     const minutes = parseInt(match[2] || '0');
     const seconds = parseInt(match[3] || '0');
-    
+
     if (hours > 0) {
       return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
@@ -169,8 +170,8 @@ export default function VideosPage() {
 
   const filteredVideos = videos.filter(video => {
     const matchesSearch = video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         video.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      video.description.toLowerCase().includes(searchTerm.toLowerCase());
+
     switch (filterBy) {
       case 'popular':
         return matchesSearch && video.viewCount > 1000;
@@ -323,7 +324,7 @@ export default function VideosPage() {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Total Videos</span>
@@ -343,9 +344,9 @@ export default function VideosPage() {
                   </div>
                 </div>
 
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
+                <Button
+                  variant="outline"
+                  className="w-full"
                   onClick={handleChannelConnect}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -461,8 +462,8 @@ export default function VideosPage() {
             <Video className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No videos found</h3>
             <p className="text-muted-foreground mb-4">
-              {searchTerm || filterBy !== 'all' 
-                ? "Try adjusting your search or filters" 
+              {searchTerm || filterBy !== 'all'
+                ? "Try adjusting your search or filters"
                 : "This channel doesn't have any videos yet"}
             </p>
             {selectedChannel && !searchTerm && filterBy === 'all' && (
@@ -475,114 +476,128 @@ export default function VideosPage() {
         </Card>
       ) : (
         <>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {paginatedVideos.map((video) => (
-            <Card key={video.id} className="group hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                {/* Thumbnail */}
-                <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                  <div className="absolute top-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-                    {formatDuration(video.duration)}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
-                      <Play className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {paginatedVideos.map((video, index) => (
+                <motion.div
+                  key={video.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                >
+                  <Card className="group hover:shadow-lg transition-shadow h-full">
+                    <CardContent className="p-0">
+                      {/* Thumbnail */}
+                      <div className="relative aspect-video overflow-hidden rounded-t-lg">
+                        <img
+                          src={video.thumbnail}
+                          alt={video.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        <div className="absolute top-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                          {formatDuration(video.duration)}
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                            <Play className="w-6 h-6 text-white" />
+                          </div>
+                        </div>
+                      </div>
 
-                {/* Content */}
-                <div className="p-4">
-                  <h3 className="font-semibold line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-                    {video.title}
-                  </h3>
-                  
-                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                    <span className="flex items-center">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(video.publishedAt)}
-                    </span>
-                  </div>
+                      {/* Content */}
+                      <div className="p-4">
+                        <h3 className="font-semibold line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                          {video.title}
+                        </h3>
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="flex items-center space-x-1">
-                      <Eye className="w-3 h-3" />
-                      <span>{formatNumber(video.viewCount)}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <ThumbsUp className="w-3 h-3" />
-                      <span>{formatNumber(video.likeCount)}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <MessageCircle className="w-3 h-3" />
-                      <span>{formatNumber(video.commentCount)}</span>
-                    </div>
-                  </div>
+                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+                          <span className="flex items-center">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            {formatDate(video.publishedAt)}
+                          </span>
+                        </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                    <Badge variant={video.engagementRate > 5 ? "default" : "secondary"} className="text-xs">
-                      {video.engagementRate.toFixed(1)}% engagement
-                    </Badge>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <ChevronDown className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem 
-                          onClick={() => window.open(`https://youtube.com/watch?v=${video.videoId}`, '_blank')}
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View on YouTube
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <BarChart3 className="w-4 h-4 mr-2" />
-                          View Analytics
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        {totalPages > 1 && (
-          <Pagination className="mt-6">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); goToPage(currentPage - 1); }} />
-              </PaginationItem>
-              {pageNumbers.map((num, idx) => (
-                <PaginationItem key={`${num}-${idx}`}>
-                  {num === "..." ? (
-                    <PaginationEllipsis />
-                  ) : (
-                    <PaginationLink
-                      href="#"
-                      isActive={currentPage === num}
-                      onClick={(e) => { e.preventDefault(); goToPage(num as number); }}
-                    >
-                      {num}
-                    </PaginationLink>
-                  )}
-                </PaginationItem>
+                        {/* Stats */}
+                        <div className="grid grid-cols-3 gap-2 text-xs">
+                          <div className="flex items-center space-x-1">
+                            <Eye className="w-3 h-3" />
+                            <span>{formatNumber(video.viewCount)}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <ThumbsUp className="w-3 h-3" />
+                            <span>{formatNumber(video.likeCount)}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <MessageCircle className="w-3 h-3" />
+                            <span>{formatNumber(video.commentCount)}</span>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                          <Badge variant={video.engagementRate > 5 ? "default" : "secondary"} className="text-xs">
+                            {video.engagementRate.toFixed(1)}% engagement
+                          </Badge>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronDown className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => window.open(`${YOUTUBE_API.WATCH_URL}?v=${video.videoId}`, '_blank')}
+                              >
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                View on YouTube
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <BarChart3 className="w-4 h-4 mr-2" />
+                                View Analytics
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
-              <PaginationItem>
-                <PaginationNext href="#" onClick={(e) => { e.preventDefault(); goToPage(currentPage + 1); }} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
+            </AnimatePresence>
+          </motion.div>
+          {totalPages > 1 && (
+            <Pagination className="mt-6">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); goToPage(currentPage - 1); }} />
+                </PaginationItem>
+                {pageNumbers.map((num, idx) => (
+                  <PaginationItem key={`${num}-${idx}`}>
+                    {num === "..." ? (
+                      <PaginationEllipsis />
+                    ) : (
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === num}
+                        onClick={(e) => { e.preventDefault(); goToPage(num as number); }}
+                      >
+                        {num}
+                      </PaginationLink>
+                    )}
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext href="#" onClick={(e) => { e.preventDefault(); goToPage(currentPage + 1); }} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </>
       )}
     </div>

@@ -3,6 +3,7 @@ import { stackServerApp } from '@/stack';
 import { eq, and, desc } from 'drizzle-orm';
 import { getDb, youtubeChannels, youtubeVideos } from '@/lib/db';
 import { youTubeAPI } from '@/lib/youtube';
+import { YOUTUBE_API } from '@/lib/constants';
 import { nanoid } from 'nanoid';
 
 /**
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const channelId = searchParams.get('channelId');
     const refresh = searchParams.get('refresh') === 'true';
-    const maxResults = parseInt(searchParams.get('maxResults') || '20');
+    const maxResults = parseInt(searchParams.get('maxResults') || String(YOUTUBE_API.DEFAULTS.MAX_RESULTS));
 
     if (!channelId) {
       return NextResponse.json({ error: 'Channel ID is required' }, { status: 400 });
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
       try {
         const tokenResponse = await youTubeAPI.refreshAccessToken(channelData.refreshToken);
         accessToken = tokenResponse.access_token;
-        
+
         // Update token in database
         await db
           .update(youtubeChannels)
@@ -60,12 +61,33 @@ export async function GET(request: NextRequest) {
             accessToken: tokenResponse.access_token,
             tokenExpiresAt: new Date(Date.now() + (tokenResponse.expires_in * 1000)),
             updatedAt: new Date(),
+            isActive: true, // Ensure it's marked active on success
           })
           .where(eq(youtubeChannels.id, channelData.id));
-      } catch (tokenError) {
+      } catch (tokenError: any) {
         console.error('Token refresh failed:', tokenError);
+
+        // Check if it's an invalid grant (revoked/expired refresh token)
+        const errorMessage = tokenError.message || '';
+        if (errorMessage.includes('invalid_grant') || errorMessage.includes('Token refresh failed')) {
+          // Mark channel as inactive so we don't keep trying
+          await db
+            .update(youtubeChannels)
+            .set({ isActive: false })
+            .where(eq(youtubeChannels.id, channelData.id));
+
+          return NextResponse.json(
+            {
+              error: 'YouTube connection expired',
+              code: 'TOKEN_EXPIRED',
+              message: 'Please reconnect your YouTube account to continue.'
+            },
+            { status: 401 }
+          );
+        }
+
         return NextResponse.json(
-          { error: 'YouTube authentication expired. Please reconnect your account.' },
+          { error: 'YouTube authentication failed. Please try again later.' },
           { status: 401 }
         );
       }
@@ -123,7 +145,7 @@ export async function GET(request: NextRequest) {
 
     // Process and save videos to database
     const processedVideos = [];
-    
+
     for (const video of videoDetails) {
       const videoData = {
         id: nanoid(),

@@ -58,6 +58,10 @@ interface TokenResponse {
   token_type: string;
 }
 
+import { YOUTUBE_API } from './constants';
+
+// ... (interfaces remain the same)
+
 export class YouTubeAPI {
   private clientId: string;
   private clientSecret: string;
@@ -73,11 +77,7 @@ export class YouTubeAPI {
    * Generate OAuth URL for YouTube authentication
    */
   getAuthUrl(state?: string): string {
-    const scopes = [
-      'https://www.googleapis.com/auth/youtube.readonly',
-      'https://www.googleapis.com/auth/youtube',
-      'https://www.googleapis.com/auth/yt-analytics.readonly'
-    ].join(' ');
+    const scopes = YOUTUBE_API.SCOPES.join(' ');
 
     const params = new URLSearchParams({
       client_id: this.clientId,
@@ -89,14 +89,14 @@ export class YouTubeAPI {
       ...(state && { state })
     });
 
-    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+    return `${YOUTUBE_API.AUTH_URL}?${params.toString()}`;
   }
 
   /**
    * Exchange authorization code for access tokens
    */
   async exchangeCodeForTokens(code: string): Promise<TokenResponse> {
-    const response = await fetch('https://oauth2.googleapis.com/token', {
+    const response = await fetch(YOUTUBE_API.TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -122,7 +122,7 @@ export class YouTubeAPI {
    * Refresh access token using refresh token
    */
   async refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
-    const response = await fetch('https://oauth2.googleapis.com/token', {
+    const response = await fetch(YOUTUBE_API.TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -148,7 +148,7 @@ export class YouTubeAPI {
    */
   async getChannels(accessToken: string): Promise<YouTubeChannel[]> {
     const response = await fetch(
-      'https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&mine=true',
+      `${YOUTUBE_API.BASE_URL}/channels?part=snippet,statistics,contentDetails&mine=true`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -168,9 +168,9 @@ export class YouTubeAPI {
   /**
    * Get videos from a playlist (typically uploads playlist)
    */
-  async getPlaylistVideos(accessToken: string, playlistId: string, maxResults: number = 20): Promise<any[]> {
+  async getPlaylistVideos(accessToken: string, playlistId: string, maxResults: number = YOUTUBE_API.DEFAULTS.MAX_RESULTS): Promise<any[]> {
     const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${playlistId}&maxResults=${maxResults}`,
+      `${YOUTUBE_API.BASE_URL}/playlistItems?part=snippet,contentDetails&playlistId=${playlistId}&maxResults=${maxResults}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -194,7 +194,7 @@ export class YouTubeAPI {
     if (videoIds.length === 0) return [];
 
     const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds.join(',')}`,
+      `${YOUTUBE_API.BASE_URL}/videos?part=snippet,statistics,contentDetails&id=${videoIds.join(',')}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -214,9 +214,9 @@ export class YouTubeAPI {
   /**
    * Search for videos by query (ordered by view count)
    */
-  async searchVideos(accessToken: string, query: string, maxResults = 10): Promise<string[]> {
+  async searchVideos(accessToken: string, query: string, maxResults = YOUTUBE_API.DEFAULTS.SEARCH_MAX_RESULTS): Promise<string[]> {
     const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&order=viewCount&maxResults=${maxResults}`,
+      `${YOUTUBE_API.BASE_URL}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&order=viewCount&maxResults=${maxResults}`,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
@@ -234,9 +234,9 @@ export class YouTubeAPI {
    * Get YouTube Analytics data
    */
   async getChannelAnalytics(
-    accessToken: string, 
-    channelId: string, 
-    startDate: string, 
+    accessToken: string,
+    channelId: string,
+    startDate: string,
     endDate: string
   ): Promise<any> {
     // Use a conservative set of metrics broadly supported across channels
@@ -254,7 +254,7 @@ export class YouTubeAPI {
     ].join(',');
 
     const response = await fetch(
-      `https://youtubeanalytics.googleapis.com/v2/reports?ids=channel==${channelId}&metrics=${metrics}&startDate=${startDate}&endDate=${endDate}`,
+      `${YOUTUBE_API.ANALYTICS_BASE_URL}/reports?ids=channel==${channelId}&metrics=${metrics}&startDate=${startDate}&endDate=${endDate}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -290,7 +290,7 @@ export class YouTubeAPI {
     ].join(',');
 
     const response = await fetch(
-      `https://youtubeanalytics.googleapis.com/v2/reports?ids=video==${videoId}&metrics=${metrics}&startDate=${startDate}&endDate=${endDate}`,
+      `${YOUTUBE_API.ANALYTICS_BASE_URL}/reports?ids=video==${videoId}&metrics=${metrics}&startDate=${startDate}&endDate=${endDate}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -312,7 +312,7 @@ export class YouTubeAPI {
   async validateToken(accessToken: string): Promise<boolean> {
     try {
       const response = await fetch(
-        'https://www.googleapis.com/youtube/v3/channels?part=id&mine=true',
+        `${YOUTUBE_API.BASE_URL}/channels?part=id&mine=true`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

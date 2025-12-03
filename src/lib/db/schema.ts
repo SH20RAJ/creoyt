@@ -60,6 +60,8 @@ export const youtubeVideos = sqliteTable('youtube_videos', {
   channelIdIdx: index('channel_id_idx').on(table.channelId),
   videoIdIdx: index('video_id_idx').on(table.videoId),
   publishedAtIdx: index('published_at_idx').on(table.publishedAt),
+  viewCountIdx: index('view_count_idx').on(table.viewCount),
+  engagementRateIdx: index('engagement_rate_idx').on(table.engagementRate),
 }));
 
 // YouTube analytics data - time-series data for insights
