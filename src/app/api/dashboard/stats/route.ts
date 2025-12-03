@@ -1,10 +1,14 @@
+
 import { NextRequest, NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
+import { contentProjects, youtubeChannels, youtubeVideos } from '@/lib/db/schema';
+import { eq, sql, and, ne } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    
+
     if (!userId) {
       return NextResponse.json(
         { error: 'User ID is required' },
@@ -12,59 +16,73 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // In a real app, you would calculate these from database
-    // For demo purposes, return realistic stats that change over time
-    const baseDate = new Date();
-    const daysSinceSignup = Math.floor((baseDate.getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24));
-    
-    // Generate stats that grow over time but have some randomness
-    const totalProjects = Math.min(50, Math.floor(daysSinceSignup / 7) + Math.floor(Math.random() * 5));
-    const activeProjects = Math.min(totalProjects, Math.floor(totalProjects * 0.6) + Math.floor(Math.random() * 3));
-    const totalWords = totalProjects * 1200 + Math.floor(Math.random() * 10000);
-    const avgEngagement = 65 + Math.floor(Math.random() * 25); // Between 65-90%
+    const db = getDb();
 
-    // Additional detailed stats
+    // Fetch Content Projects Stats
+    const [projectsStats] = await db
+      .select({
+        totalProjects: sql<number>`count(*)`,
+        totalWords: sql<number>`sum(${contentProjects.wordCount})`,
+        activeProjects: sql<number>`sum(case when ${contentProjects.status} != 'published' then 1 else 0 end)`
+      })
+      .from(contentProjects)
+      .where(eq(contentProjects.userId, userId));
+
+    // Fetch YouTube Stats
+    const [ytChannelStats] = await db
+      .select({
+        totalSubscribers: sql<number>`sum(${youtubeChannels.subscriberCount})`,
+        totalViews: sql<number>`sum(${youtubeChannels.viewCount})`,
+        totalVideos: sql<number>`sum(${youtubeChannels.videoCount})`
+      })
+      .from(youtubeChannels)
+      .where(and(eq(youtubeChannels.userId, userId), eq(youtubeChannels.isActive, true)));
+
+    // Calculate engagement (mock for now as we don't have direct engagement data in projects yet)
+    // In a real scenario, this would come from analytics tables
+    const avgEngagement = 0;
+
     const stats = {
-      totalProjects,
-      activeProjects,
-      totalWords,
+      totalProjects: projectsStats?.totalProjects || 0,
+      activeProjects: projectsStats?.activeProjects || 0,
+      totalWords: projectsStats?.totalWords || 0,
       avgEngagement,
-      
-      // Extended analytics
+
+      youtube: {
+        subscribers: ytChannelStats?.totalSubscribers || 0,
+        views: ytChannelStats?.totalViews || 0,
+        videos: ytChannelStats?.totalVideos || 0
+      },
+
+      // Keep these as placeholders or calculate if possible
       weeklyStats: {
-        projectsCreated: Math.floor(Math.random() * 5) + 2,
-        wordsWritten: Math.floor(Math.random() * 5000) + 2000,
-        avgSessionTime: Math.floor(Math.random() * 30) + 15, // minutes
-        completionRate: Math.floor(Math.random() * 20) + 75 // percentage
+        projectsCreated: 0, // Would need time-based query
+        wordsWritten: 0,
+        avgSessionTime: 0,
+        completionRate: 0
       },
-      
+
       contentTypes: {
-        blog: Math.floor(totalProjects * 0.4),
-        social: Math.floor(totalProjects * 0.3),
-        email: Math.floor(totalProjects * 0.2),
-        marketing: Math.floor(totalProjects * 0.1)
+        blog: 0, // Can be fetched with group by
+        social: 0,
+        email: 0,
+        marketing: 0
       },
-      
+
       performance: {
-        topPerformingType: ['blog', 'social', 'email', 'marketing'][Math.floor(Math.random() * 4)],
-        avgWordsPerProject: Math.floor(totalWords / Math.max(1, totalProjects)),
-        projectsThisMonth: Math.floor(Math.random() * 8) + 3,
-        streakDays: Math.floor(Math.random() * 15) + 1
+        topPerformingType: 'N/A',
+        avgWordsPerProject: projectsStats?.totalProjects ? Math.floor((projectsStats.totalWords || 0) / projectsStats.totalProjects) : 0,
+        projectsThisMonth: 0,
+        streakDays: 0
       },
-      
+
       growth: {
-        projectsGrowth: Math.floor(Math.random() * 40) + 20, // 20-60% growth
-        engagementGrowth: Math.floor(Math.random() * 30) + 10, // 10-40% growth
-        productivityGrowth: Math.floor(Math.random() * 50) + 25, // 25-75% growth
+        projectsGrowth: 0,
+        engagementGrowth: 0,
+        productivityGrowth: 0,
       },
-      
-      achievements: [
-        { id: 1, title: 'First Project', description: 'Created your first AI-generated content', unlocked: true },
-        { id: 2, title: 'Content Creator', description: 'Generated 10+ pieces of content', unlocked: totalProjects >= 10 },
-        { id: 3, title: 'Productivity Master', description: 'Maintained 7-day creation streak', unlocked: Math.random() > 0.6 },
-        { id: 4, title: 'Engagement Expert', description: 'Achieved 80%+ average engagement', unlocked: avgEngagement >= 80 },
-        { id: 5, title: 'Word Wizard', description: 'Written 25,000+ words', unlocked: totalWords >= 25000 }
-      ]
+
+      achievements: [] // Implement achievement system later
     };
 
     return NextResponse.json({

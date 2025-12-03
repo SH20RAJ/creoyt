@@ -16,7 +16,7 @@ interface ChatRequest {
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json();
-    
+
     if (!body.messages || !Array.isArray(body.messages)) {
       return NextResponse.json(
         { error: 'Messages array is required' },
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     if (OpenAIService.isConfigured()) {
       try {
         const openaiService = new OpenAIService();
-        
+
         const response = await openaiService.generateContent(body.messages, {
           maxTokens: body.maxTokens || 1000,
           temperature: body.temperature || 0.7,
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         });
 
         const content = response.choices[0]?.message?.content || 'AI response generated successfully';
-        
+
         return NextResponse.json({
           response: content,
           provider: 'openai',
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     // Check if we're running in Cloudflare Workers environment with AI binding
     const AI = (globalThis as { AI?: CloudflareAI }).AI;
-    
+
     if (AI) {
       try {
         const aiResponse = await AI.run('@cf/meta/llama-3.1-8b-instruct', {
@@ -73,9 +73,9 @@ export async function POST(request: NextRequest) {
 
     // Enhanced placeholder response indicating AI is ready but needs configuration
     const lastMessage = body.messages[body.messages.length - 1].content;
-    const isAISetupQuery = lastMessage.toLowerCase().includes('ai') || 
-                          lastMessage.toLowerCase().includes('artificial intelligence') ||
-                          lastMessage.toLowerCase().includes('llama');
+    const isAISetupQuery = lastMessage.toLowerCase().includes('ai') ||
+      lastMessage.toLowerCase().includes('artificial intelligence') ||
+      lastMessage.toLowerCase().includes('llama');
 
     if (isAISetupQuery) {
       return NextResponse.json({
@@ -128,57 +128,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // For development, return placeholder data
+    // Return empty list - no chat history stored yet
     if (conversationId) {
       return NextResponse.json({
-        id: conversationId,
-        userId,
-        title: 'Sample Conversation',
-        modelUsed: 'llama-3.1-8b',
-        totalMessages: 4,
-        createdAt: Date.now() - 86400000,
-        updatedAt: Date.now() - 3600000,
-        messages: [
-          {
-            id: 'msg-1',
-            conversationId,
-            role: 'user',
-            content: 'Hello, can you help me create content?',
-            responseTime: 250,
-            createdAt: Date.now() - 3600000
-          },
-          {
-            id: 'msg-2',
-            conversationId,
-            role: 'assistant',
-            content: 'Of course! I can help you create various types of content including blog posts, social media content, marketing copy, and more. What type of content would you like to create?',
-            responseTime: 1200,
-            createdAt: Date.now() - 3500000
-          }
-        ]
-      });
-    } else {
-      return NextResponse.json([
-        {
-          id: 'conv-1',
-          userId,
-          title: 'Content Creation Chat',
-          modelUsed: 'llama-3.1-8b',
-          totalMessages: 8,
-          createdAt: Date.now() - 86400000,
-          updatedAt: Date.now() - 3600000
-        },
-        {
-          id: 'conv-2',
-          userId,
-          title: 'Marketing Copy Review',
-          modelUsed: 'llama-3.1-8b',
-          totalMessages: 6,
-          createdAt: Date.now() - 172800000,
-          updatedAt: Date.now() - 7200000
-        }
-      ]);
+        error: 'Conversation not found'
+      }, { status: 404 });
     }
+
+    return NextResponse.json([]);
   } catch (error) {
     console.error('Chat History API Error:', error);
     return NextResponse.json(

@@ -1,12 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OpenAIService } from '@/lib/ai/openai-service';
+import { getDb } from '@/lib/db';
+import { aiSuggestions } from '@/lib/db/schema';
+import { eq, desc, and, isNull } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
     const { userId } = (await request.json()) as any;
-    
+
     if (!OpenAIService.isConfigured()) {
-      // Return fallback suggestions if OpenAI is not configured
+      // Return suggestions from DB if OpenAI is not configured
+      const db = getDb();
+      const dbSuggestions = await db
+        .select()
+        .from(aiSuggestions)
+        .where(and(eq(aiSuggestions.userId, userId), eq(aiSuggestions.isUsed, false)))
+        .orderBy(desc(aiSuggestions.createdAt))
+        .limit(6);
+
+      if (dbSuggestions.length > 0) {
+        return NextResponse.json({
+          suggestions: dbSuggestions.map(s => ({
+            id: s.id,
+            title: s.title,
+            type: s.contentType,
+            description: s.description,
+            trending: s.trending,
+            engagement: s.estimatedEngagement
+          }))
+        });
+      }
+
       return NextResponse.json({
         suggestions: getFallbackSuggestions()
       });
@@ -78,7 +102,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Suggestions API Error:', error);
-    
+
     return NextResponse.json({
       suggestions: getFallbackSuggestions(),
       generated: false,

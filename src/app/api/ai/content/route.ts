@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { CloudflareAI } from '@/types/cloudflare';
+import { getDb } from '@/lib/db';
+import { aiSuggestions } from '@/lib/db/schema';
+import { eq, desc, and } from 'drizzle-orm';
 
 interface GenerateContentRequest {
   contentType: 'blog_post' | 'social_media' | 'marketing_copy' | 'email_campaign' | 'product_description';
@@ -40,7 +43,7 @@ export async function POST(request: NextRequest) {
 
       // Check if we're running in Cloudflare Workers environment with AI binding
       const AI = (globalThis as { AI?: CloudflareAI }).AI;
-      
+
       if (AI) {
         try {
           // Create a specialized prompt based on content type
@@ -62,7 +65,7 @@ export async function POST(request: NextRequest) {
           });
 
           const content = aiResponse.response || aiResponse.content || 'AI-generated content';
-          
+
           return NextResponse.json({
             success: true,
             content,
@@ -194,6 +197,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const contentType = searchParams.get('contentType');
     const topic = searchParams.get('topic');
+    const userId = searchParams.get('userId');
 
     if (!contentType || !topic) {
       return NextResponse.json(
@@ -202,17 +206,35 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Placeholder suggestions
-    const suggestions = [
-      `"10 Essential Tips for ${topic}"`,
-      `"The Ultimate Guide to ${topic}"`,
-      `"How ${topic} Can Transform Your Business"`,
-      `"Common Mistakes to Avoid with ${topic}"`,
-      `"The Future of ${topic}: Trends and Predictions"`
-    ];
+    // Try to get suggestions from database
+    if (userId) {
+      const db = getDb();
+      const dbSuggestions = await db
+        .select()
+        .from(aiSuggestions)
+        .where(
+          and(
+            eq(aiSuggestions.userId, userId),
+            eq(aiSuggestions.contentType, contentType),
+            eq(aiSuggestions.isUsed, false)
+          )
+        )
+        .orderBy(desc(aiSuggestions.createdAt))
+        .limit(5);
 
+      if (dbSuggestions.length > 0) {
+        return NextResponse.json({
+          suggestions: dbSuggestions.map(s => s.title),
+          contentType,
+          topic,
+          generatedAt: new Date().toISOString()
+        });
+      }
+    }
+
+    // Return empty list if no suggestions exist
     return NextResponse.json({
-      suggestions,
+      suggestions: [],
       contentType,
       topic,
       generatedAt: new Date().toISOString()
